@@ -1,2 +1,2 @@
 # ojousima.dps310.c
-MIT-licensed portable driver for Texas Instruments TMP117 temperature sensor
+MIT-licensed portable driver for Infineon DPS310 pressure and temperature sensor
