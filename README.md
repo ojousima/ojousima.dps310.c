@@ -19,4 +19,7 @@ astyle --project=.astylerc --recursive "./src/*.h"
 ```
 
 # Static code analysis
-Run `make` To run PVS Studio on project. Report can be found at _pvs.tasklist_.
+Run `make` to run PVS Studio on project. Report can be found at _pvs.tasklist_.
+
+# Documentation
+Run `make` to generate Doxygen docs with git version information. 
