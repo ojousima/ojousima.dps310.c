@@ -14,6 +14,6 @@ The report can be foun under _build/artifacts/gcov_.
 Code shall be formatted with Artistic Style using .astylerc in project root as the
 ruleset.
 ```
-astyle - project=.astylerc - recursive "./tasks/*.c"
-astyle - project=.astylerc - recursive "./tasks/*.h"
+astyle --project=.astylerc --recursive "./src/*.c"
+astyle --project=.astylerc --recursive "./src/*.h"
 ```
