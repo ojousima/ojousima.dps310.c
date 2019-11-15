@@ -1,6 +1,6 @@
 # Source, copyright: https://github.com/viva64/pvs-studio-makefile-examples
 # commit 82a0f0a, /example-1
-# Modified for C on mac. 
+# Modified for C on mac, added Doxygen
    #                               Apache License
    #                         Version 2.0, January 2004
    #                      http://www.apache.org/licenses/
@@ -202,7 +202,7 @@
    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    # See the License for the specific language governing permissions and
    # limitations under the License.
-   
+
 CXX=gcc
 
 PVS_CFG=./PVS-Studio.cfg
@@ -221,7 +221,13 @@ IOBJECTS=$(SOURCES:.c=.o.PVS-Studio.i)
 POBJECTS=$(SOURCES:.c=.o.PVS-Studio.log)
 EXECUTABLE=dps
 
-all: $(SOURCES) $(EXECUTABLE)
+# Tag on this commit
+TAG := $(shell git describe --tags --exact-match)
+# Commit hash from git
+COMMIT := $(shell git rev-parse --short HEAD)
+VERSION := $(if $(TAG),$(TAG),$(COMMIT))
+
+all: $(SOURCES) $(EXECUTABLE) doxygen
 
 $(EXECUTABLE): $(OBJECTS)
 # Converting
@@ -237,3 +243,7 @@ $(EXECUTABLE): $(OBJECTS)
 
 clean:
 	rm -f $(OBJECTS) $(IOBJECTS) $(POBJECTS) $(PVS_LOG)
+
+doxygen:
+	export PROJECT_VERSION=$(VERSION) 
+	doxygen

@@ -53,3 +53,12 @@ dkms.conf
 
 # Ceedling output
 build
+
+# PVS-Studio output
+*.PVS-Studio.i
+*.PVS-Studio.log
+pvs.tasklist
+
+# Doxygen generated files
+doxygen
+doxygen.error
