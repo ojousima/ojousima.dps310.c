@@ -17,3 +17,6 @@ ruleset.
 astyle --project=.astylerc --recursive "./src/*.c"
 astyle --project=.astylerc --recursive "./src/*.h"
 ```
+
+# Static code analysis
+Run `make` To run PVS Studio on project. Report can be found at _pvs.tasklist_.
