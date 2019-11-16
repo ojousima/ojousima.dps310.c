@@ -210,7 +210,7 @@ PVS_CFG=./PVS-Studio.cfg
 LOG_FORMAT=tasklist
 PVS_LOG=./pvs.tasklist
 
-CFLAGS=-c
+CFLAGS=-c -Wall -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow
 OFLAGS=-O3
 LDFLAGS=
 DFLAGS=
