@@ -1,4 +1,6 @@
 # ojousima.dps310.c
+[![Build Status](https://travis-ci.org/ojousima/ojousima.dps310.c.svg?branch=master)](https://travis-ci.org/ojousima/ojousima.dps310.c)
+
 MIT-licensed portable driver for Infineon DPS310 pressure and temperature sensor
 
 # Running unit tests
@@ -23,3 +25,7 @@ Run `make` to run PVS Studio on project. Report can be found at _pvs.tasklist_.
 
 # Documentation
 Run `make` to generate Doxygen docs with git version information. 
+
+# Continuous integration pipeline
+The project is built on Travis and build status is reflected on a badge on top of the 
+header.
