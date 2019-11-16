@@ -62,3 +62,6 @@ pvs.tasklist
 # Doxygen generated files
 doxygen
 doxygen.error
+
+# Astyle backups
+*.orig
