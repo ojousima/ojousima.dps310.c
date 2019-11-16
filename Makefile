@@ -214,7 +214,7 @@ CFLAGS=-c -Wall -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shado
 OFLAGS=-O3
 LDFLAGS=
 DFLAGS=
-INCLUDES=src
+INCLUDES=
 SOURCES=src/dps310.c
 OBJECTS=$(SOURCES:.c=.o)
 IOBJECTS=$(SOURCES:.c=.o.PVS-Studio.i)
