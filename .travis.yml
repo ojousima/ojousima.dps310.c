@@ -18,7 +18,7 @@ install:
 script:
   - ceedling test:all
   - ceedling gcov:all utils:gcov
-  - astyle --recursive ./src/*.c ./src/*.h > astyle.out
+  - astyle --recursive "./src/*.c" "./src/*.h"
   - git diff --exit-code --diff-filter=d --color
   - make 
   
