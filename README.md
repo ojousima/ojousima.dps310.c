@@ -20,7 +20,8 @@ astyle --project=.astylerc --recursive "./src/*.c" "./src/*.h"
 ```
 
 # Static code analysis
-Run `make` to run PVS Studio on project. Report can be found at _pvs.tasklist_.
+Run `make` to run PVS Studio on project. Report can be found at _doxygen/pvs/fullhtml/index.html_.
+[Here](../pvs/fullhtml/index.html) is a link to documentation through Doxygen-generated documentation.
 
 # Documentation
 Run `make` to generate Doxygen docs with git version information. 
@@ -28,3 +29,8 @@ Run `make` to generate Doxygen docs with git version information.
 # Continuous integration pipeline
 The project is built on Travis and build status is reflected on a badge on top of the 
 header.
+
+# Using the project as a template. 
+If you wish to use this project as a template for your own project, checkout tag v0.1.0
+and change the project name and file names and setup the continuous integration pipeline
+for the project.

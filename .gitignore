@@ -65,3 +65,7 @@ doxygen.error
 
 # Astyle backups
 *.orig
+
+# Mac OSX files
+.DS_Store
+

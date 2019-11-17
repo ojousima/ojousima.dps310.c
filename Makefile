@@ -207,8 +207,9 @@ CXX=gcc
 
 PVS_CFG=./PVS-Studio.cfg
 # csv, errorfile, fullhtml, html, tasklist, xml
-LOG_FORMAT=tasklist
-PVS_LOG=./pvs.tasklist
+LOG_FORMAT=fullhtml
+PVS_LOG=./doxygen/pvs
+DOXYGEN_DIR=./doxygen
 
 CFLAGS=-c -Wall -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow
 OFLAGS=-O3
@@ -227,7 +228,9 @@ TAG := $(shell git describe --tags --exact-match)
 COMMIT := $(shell git rev-parse --short HEAD)
 VERSION := $(if $(TAG),$(TAG),$(COMMIT))
 
-all: $(SOURCES) $(EXECUTABLE) doxygen
+.PHONY: clean doxygen
+
+all: clean doxygen $(SOURCES) $(EXECUTABLE) 
 
 $(EXECUTABLE): $(OBJECTS)
 # Converting
@@ -242,7 +245,10 @@ $(EXECUTABLE): $(OBJECTS)
 	pvs-studio --cfg $(PVS_CFG) --source-file $< --i-file $@.PVS-Studio.i --output-file $@.PVS-Studio.log
 
 clean:
-	rm -f $(OBJECTS) $(IOBJECTS) $(POBJECTS) $(PVS_LOG)
+	rm -f $(OBJECTS) $(IOBJECTS) $(POBJECTS) 
+	rm -rf $(PVS_LOG)/fullhtml
+	rm -rf $(DOXYGEN_DIR)/html
+	rm -rf $(DOXYGEN_DIR)/latex
 
 doxygen:
 	export PROJECT_VERSION=$(VERSION) 
