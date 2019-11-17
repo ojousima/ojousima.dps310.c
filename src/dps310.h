@@ -19,12 +19,12 @@
 
 #define DPS310_PRODUCT_ID_VAL 0u //!< Product ID read from DPS310 register-
 
-  /**
-   * @brief returns the Product ID of the connected Dps310 sensor
-   *
-   * @return Product ID of DPS310, i.e. 0x00
-   */
-  uint8_t dps310_get_product_id(void);
+/**
+ * @brief returns the Product ID of the connected Dps310 sensor
+ *
+ * @return Product ID of DPS310, i.e. 0x00
+ */
+uint8_t dps310_get_product_id (void);
 
 #endif // DPS310_H
 /*}*/

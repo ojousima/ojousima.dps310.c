@@ -253,3 +253,6 @@ clean:
 doxygen:
 	export PROJECT_VERSION=$(VERSION) 
 	doxygen
+
+astyle:
+	astyle --project=.astylerc --recursive "./src/*.c" "./src/*.h"
