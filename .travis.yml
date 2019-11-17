@@ -2,6 +2,9 @@ language: c
 
 os: linux
 dist: trusty
+# Use full depth for SonarCLoud
+git:
+  depth: false 
 
 before_install:
   - wget -q -O - https://files.viva64.com/etc/pubkey.txt | sudo apt-key add -
@@ -21,7 +24,14 @@ script:
   - ceedling gcov:all utils:gcov
   - astyle --recursive "./src/*.c" "./src/*.h"
   - git diff --exit-code --diff-filter=d --color
-  - make 
+  - build-wrapper-linux-x86-64 --out-dir bw-output make all
+  - sonar-scanner
+
+addons:
+  sonarcloud:
+    organization: "ojousima.dps310.c" # the key of the org you chose at step #3
+    token:
+      secure: $SONAR_TOKEN
 
 before_deploy:
   - sed -i '/doxygen/d' .gitignore
