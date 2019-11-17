@@ -26,19 +26,12 @@ script:
   - ceedling test:all
   - ceedling gcov:all utils:gcov
   - gcov /build/gcov/out/*.gcno
-  - sonar-scanner \
-    -Dsonar.projectKey=ojousima.dps310.c \
-    -Dsonar.sources=./src \
-    -Dsonar.cfamily.build-wrapper-output=bw-output \
-    -Dsonar.cfamily.gcov.reportsPath=. \
-    -Dsonar.host.url=https://sonarcloud.io \
-    -Dsonar.login=$SONAR_TOKEN
+  - sonar-scanner -X
 
 addons:
   sonarcloud:
     organization: "ojousima" # the key of the org you chose at step #3
-    token:
-      secure: $SONAR_TOKEN
+    projectKey: "ojousima.dps310.c"
 
 before_deploy:
   - sed -i '/doxygen/d' .gitignore
