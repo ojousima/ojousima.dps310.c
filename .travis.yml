@@ -25,11 +25,19 @@ script:
   - astyle --recursive "./src/*.c" "./src/*.h"
   - git diff --exit-code --diff-filter=d --color
   - build-wrapper-linux-x86-64 --out-dir bw-output make all
-  - sonar-scanner
+  - gcov /build/gcov/out/*.gcno
+  - sonar-scanner \
+    -Dsonar.projectKey=ojousima.dps310.c \
+    -Dsonar.organization=ojousima \
+    -Dsonar.sources=./src \
+    -Dsonar.cfamily.build-wrapper-output=bw-output \
+    -Dsonar.cfamily.gcov.reportsPath=. \
+    -Dsonar.host.url=https://sonarcloud.io \
+    -Dsonar.login=$SONAR_TOKEN
 
 addons:
   sonarcloud:
-    organization: "ojousima.dps310.c" # the key of the org you chose at step #3
+    organization: "ojousima" # the key of the org you chose at step #3
     token:
       secure: $SONAR_TOKEN
 
