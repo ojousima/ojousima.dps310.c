@@ -54,6 +54,15 @@ dkms.conf
 # Ceedling output
 build
 
+# Gcov output
+*.gcov
+
+# Sonar scanner files
+sonar_scan.sh
+build-wrapper-*
+bw-output
+.scannerwork
+
 # PVS-Studio output
 *.PVS-Studio.i
 *.PVS-Studio.log
