@@ -211,7 +211,7 @@ LOG_FORMAT=fullhtml
 PVS_LOG=./doxygen/html
 DOXYGEN_DIR=./doxygen
 
-CFLAGS=-c -Wall -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow
+CFLAGS=-c -Wall -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow -std=c99
 OFLAGS=-O3
 LDFLAGS=
 DFLAGS=
