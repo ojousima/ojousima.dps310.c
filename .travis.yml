@@ -1,7 +1,6 @@
 language: c
 
-os:
-  - linux
+dist: trusty
 
 before_install:
   - wget -q -O - https://files.viva64.com/etc/pubkey.txt | sudo apt-key add -
@@ -22,6 +21,9 @@ script:
   - astyle --recursive "./src/*.c" "./src/*.h"
   - git diff --exit-code --diff-filter=d --color
   - make 
+
+before_deploy:
+  - sed -i '/doxygen/d' .gitignore
   
 deploy:
   provider: pages
