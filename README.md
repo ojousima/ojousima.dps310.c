@@ -21,7 +21,7 @@ astyle --project=.astylerc --recursive "./src/*.c" "./src/*.h"
 
 # Static code analysis
 Run `make` to run PVS Studio on project. Report can be found at _doxygen/pvs/fullhtml/index.html_.
-[Here](../pvs/fullhtml/index.html) is a link to documentation through Doxygen-generated documentation.
+[Here](./fullhtml/index.html) is a link to documentation through Doxygen-generated documentation.
 
 # Documentation
 Run `make` to generate Doxygen docs with git version information. 
