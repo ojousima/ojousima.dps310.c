@@ -208,7 +208,7 @@ CXX=gcc
 PVS_CFG=./PVS-Studio.cfg
 # csv, errorfile, fullhtml, html, tasklist, xml
 LOG_FORMAT=fullhtml
-PVS_LOG=./doxygen/pvs
+PVS_LOG=./doxygen/html
 DOXYGEN_DIR=./doxygen
 
 CFLAGS=-c -Wall -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow
