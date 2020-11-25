@@ -16,7 +16,11 @@
 
 #include <stdint.h>
 
-#define DPS310_PRODUCT_ID_VAL (0U) //!< Product ID read from DPS310 register
+#define DPS310_PRODUCT_ID_VAL  (0U)    //!< Product ID read from DPS310 register
+#define DPS310_REVISION_ID_VAL (0x01U) //!< Revision ID read from DPS310 register
+#define DPS310_SUCCESS         (0U)    //!< Return code on successful operation.
+#define DPS310_POR_DELAY_MS    (12U)   //!< Milliseconds after power-on before comms.
+#define DPS310_COEF_DELAY_MS   (40U)   //!< Milliseconds after reset before coefs can be read.
 
 /**
  * @brief Sleep at least this many milliseconds.
@@ -36,7 +40,7 @@ typedef void(*dps310_sleep)(const uint32_t ms);
  * @param[in] data_len Length of data.
  * @return 0 on success, non-zero error code on error.
  */
-typedef uint32_t(*dps310_read)(const void* const comm_ctx, const uint8_t reg_addr, uint8_t * const data, const uint8_t data_len);
+typedef int32_t(*dps310_read)(const void* const comm_ctx, const uint8_t reg_addr, uint8_t * const data, const uint8_t data_len);
 
 /**
  * @brief Write data from bus.
@@ -49,7 +53,7 @@ typedef uint32_t(*dps310_read)(const void* const comm_ctx, const uint8_t reg_add
  * @param[in] data_len Length of data.
  * @return 0 on success, non-zero error code on error.
  */
-typedef uint32_t(*dps310_write)(const void* const comm_ctx, const uint8_t reg_addr, const uint8_t * const data, const uint8_t data_len);
+typedef int32_t(*dps310_write)(const void* const comm_ctx, const uint8_t reg_addr, const uint8_t * const data, const uint8_t data_len);
 
 typedef enum {
     DPS310_MR_INVALID = 0,
@@ -90,6 +94,8 @@ typedef struct
   dps310_os_t pres_osr;
 
   // compensation coefficients
+  int32_t c0;
+  int32_t c1;
   int32_t c00;
   int32_t c10;
   int32_t c01;
