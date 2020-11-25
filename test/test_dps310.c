@@ -24,6 +24,24 @@ static void init_dps_regs(void)
     memset(dps310_registers, 0, sizeof(dps310_registers));
     dps310_registers[DPS310_MEAS_CFG_REG] = DPS310_MEAS_CFG_BOOT_VAL;
     dps310_registers[DPS310_PROD_ID_REG]  = DPS310_PROD_ID_BOOT_VAL;
+    dps310_registers[0x10] = 0xF9U; // C0 = -100
+    dps310_registers[0x11] = 0xC0U;
+    dps310_registers[0x12] = 0x01U; // C1 = 1
+    dps310_registers[0x13] = 0xFBU; // C00 = -20 000
+    dps310_registers[0x14] = 0x1EU;
+    dps310_registers[0x15] = 0x00U;
+    dps310_registers[0x16] = 0x03U; // C10 = 1000 
+    dps310_registers[0x17] = 0xE8U;
+    dps310_registers[0x18] = 0x07U; // C01 = 2000
+    dps310_registers[0x19] = 0xD0U; 
+    dps310_registers[0x1A] = 0xFFU; // C11 = -250 
+    dps310_registers[0x1B] = 0x06U;
+    dps310_registers[0x1C] = 0xFEU; // C20 = -350 
+    dps310_registers[0x1D] = 0xA2U;
+    dps310_registers[0x1E] = 0x00U; // C21 = 5 
+    dps310_registers[0x1F] = 0x05U;         
+    dps310_registers[0x20] = 0x00U; // C30 = 10
+    dps310_registers[0x21] = 0x0AU;
 }
 
 static void assert_on_write_error(const uint8_t reg, const uint8_t value)
@@ -152,24 +170,7 @@ static dps310_ctx_t dps =
 
 static void init_dps_coefs(void)
 {
-    dps310_registers[0x10] = 0xF9U; // C0 = -100
-    dps310_registers[0x11] = 0xC0U;
-    dps310_registers[0x12] = 0x01U; // C1 = 1
-    dps310_registers[0x13] = 0xFBU; // C00 = -20 000
-    dps310_registers[0x14] = 0x1EU;
-    dps310_registers[0x15] = 0x00U;
-    dps310_registers[0x16] = 0x03U; // C10 = 1000 
-    dps310_registers[0x17] = 0xE8U;
-    dps310_registers[0x18] = 0x07U; // C01 = 2000
-    dps310_registers[0x19] = 0xD0U; 
-    dps310_registers[0x1A] = 0xFFU; // C11 = -250 
-    dps310_registers[0x1B] = 0x06U;
-    dps310_registers[0x1C] = 0xFEU; // C20 = -350 
-    dps310_registers[0x1D] = 0xA2U;
-    dps310_registers[0x1E] = 0x00U; // C21 = 5 
-    dps310_registers[0x1F] = 0x05U;         
-    dps310_registers[0x20] = 0x00U; // C30 = 10
-    dps310_registers[0x21] = 0x0AU;
+
 }
 
 void setUp(void)
@@ -195,10 +196,10 @@ void test_dps310_init_ok(void)
   TEST_ASSERT(0x00U == dps.product_id);
   TEST_ASSERT(0x01U == dps.revision_id);
   // TODO: Check coefficients
-  TEST_ASSERT(1U == dps.temp_mr);
-  TEST_ASSERT(1U == dps.temp_osr);
-  TEST_ASSERT(1U == dps.pres_mr);
-  TEST_ASSERT(1U == dps.pres_osr);
+  TEST_ASSERT(DPS310_MR_1 == dps.temp_mr);
+  TEST_ASSERT(DPS310_OS_1 == dps.temp_osr);
+  TEST_ASSERT(DPS310_MR_1 == dps.pres_mr);
+  TEST_ASSERT(DPS310_OS_1 == dps.pres_osr);
 
   TEST_ASSERT(-100 == dps.c0);
   TEST_ASSERT(1 == dps.c1);
