@@ -10,6 +10,7 @@ static uint32_t time_ms;
 static uint32_t drdy_ms;
 static int32_t bus_code;
 static uint8_t efuse_writes;
+static uint8_t soft_resets;
 
 static void check_reserved_registers(void)
 {
@@ -46,7 +47,6 @@ static void init_dps_regs(void)
 
 static void assert_on_write_error(const uint8_t reg, const uint8_t value)
 {
-  bool valid_efuse = false;
   switch(reg)
   {
       case DPS310_PRES_CFG_REG:
@@ -71,9 +71,11 @@ static void assert_on_write_error(const uint8_t reg, const uint8_t value)
       case DPS310_EFUSE_1_REG:
           TEST_ASSERT((DPS310_EFUSE_1_VAL == value) || (0 == value));
           efuse_writes++;
+          break;
       case DPS310_EFUSE_2_REG:
           TEST_ASSERT((DPS310_EFUSE_2_VAL == value));
           efuse_writes++;
+          break;
       default:
           TEST_ASSERT(0U);
           break;
@@ -89,6 +91,7 @@ static void simulate_write_action(const uint8_t reg_addr, const uint8_t data)
         {
           init_dps_regs();
           drdy_ms += DPS310_COEF_DELAY_MS;
+          soft_resets++;
         }
         break;
 
@@ -181,6 +184,7 @@ void setUp(void)
     drdy_ms  = 0;
     bus_code = 0;
     efuse_writes = 0;
+    soft_resets = 0;
     reset_dps_ctx(&dps);
 }
 
@@ -195,7 +199,7 @@ void test_dps310_init_ok(void)
   int32_t err_code = dps310_init(&dps);
   TEST_ASSERT(0x00U == dps.product_id);
   TEST_ASSERT(0x01U == dps.revision_id);
-  // TODO: Check coefficients
+  
   TEST_ASSERT(DPS310_MR_1 == dps.temp_mr);
   TEST_ASSERT(DPS310_OS_1 == dps.temp_osr);
   TEST_ASSERT(DPS310_MR_1 == dps.pres_mr);
@@ -214,7 +218,7 @@ void test_dps310_init_ok(void)
   TEST_ASSERT(5U == efuse_writes);
   TEST_ASSERT(DPS310_MODE_STANDBY_VAL 
               == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MODE_MASK));
-  TEST_ASSERT(DPS310_SOFT_RST_VAL == dps310_registers[DPS310_RST_CFG_REG]);
+  TEST_ASSERT(1 == soft_resets);
   TEST_ASSERT(0U == dps310_registers[DPS310_EFUSE_0_REG]);
   TEST_ASSERT(0U == dps310_registers[DPS310_EFUSE_1_REG]);
   TEST_ASSERT(DPS310_EFUSE_2_VAL == dps310_registers[DPS310_EFUSE_2_REG]);

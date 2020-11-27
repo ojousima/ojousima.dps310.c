@@ -37,7 +37,7 @@ static int32_t read_coefs(dps310_ctx_t* const ctx)
   ctx->c0 = twos_complement(reg_val, DPS310_COEF_C0_LEN_BITS);
   reg_val = (((uint32_t)coefs[DPS310_COEF_C1_OFFSET] * 256U)
             + ((uint32_t)coefs[DPS310_COEF_C1_OFFSET + 1U]))
-              & DPS310_COEF_C1_LEN_BITS;
+              & ((1U << DPS310_COEF_C1_LEN_BITS) - 1U);
   ctx->c1 = twos_complement(reg_val, DPS310_COEF_C1_LEN_BITS);
   reg_val = (((uint32_t)coefs[DPS310_COEF_C00_OFFSET] * 256U * 256U)
             + ((uint32_t)coefs[DPS310_COEF_C00_OFFSET + 1U] * 256U)
@@ -47,7 +47,7 @@ static int32_t read_coefs(dps310_ctx_t* const ctx)
   reg_val = (((uint32_t)coefs[DPS310_COEF_C10_OFFSET] * 256U * 256U)
             + ((uint32_t)coefs[DPS310_COEF_C10_OFFSET + 1U] * 256U)
             + ((uint32_t)coefs[DPS310_COEF_C10_OFFSET + 2U]))
-              & DPS310_COEF_C1_LEN_BITS;
+              & ((1U << DPS310_COEF_C10_LEN_BITS) - 1U);
   ctx->c10 = twos_complement(reg_val, DPS310_COEF_C10_LEN_BITS);
   reg_val = (((uint32_t)coefs[DPS310_COEF_C01_OFFSET] * 256U)
             + ((uint32_t)coefs[DPS310_COEF_C01_OFFSET + 1U]));
@@ -92,6 +92,37 @@ static int32_t read_revision(dps310_ctx_t* const ctx)
   return err_code;
 }
 
+// Undocumented workaround for undocumented feature of DPS310, lifted from 
+// DPS310 Arduino driver. 
+// https://github.com/Infineon/DPS310-Pressure-Sensor/blob/888200c7efd8edb19ce69a2144e28ba31cdad449/src/DpsClass.cpp#L448
+static const int32_t efuse_write (dps310_ctx_t* const ctx)
+{
+  int32_t ret_code = DPS310_SUCCESS;
+  uint8_t regs[5U] = 
+  {
+    DPS310_EFUSE_0_REG,
+    DPS310_EFUSE_1_REG,
+    DPS310_EFUSE_2_REG,
+    DPS310_EFUSE_0_REG,
+    DPS310_EFUSE_1_REG
+  };
+  uint8_t cmds[5U] = 
+  {
+    DPS310_EFUSE_0_VAL,
+    DPS310_EFUSE_1_VAL,
+    DPS310_EFUSE_2_VAL,
+    0U,
+    0U
+  };
+  uint8_t cmd_idx = 0U;
+  while((cmd_idx < sizeof(cmds)) && (DPS310_SUCCESS == ret_code))
+  {
+    ret_code = ctx->write(ctx->comm_ctx, regs[cmd_idx], &cmds[cmd_idx], 1U); 
+    cmd_idx++;
+  }
+  return ret_code;
+}
+
 int32_t dps310_init(dps310_ctx_t* const ctx)
 {
     int32_t err_code = DPS310_SUCCESS;
@@ -101,6 +132,10 @@ int32_t dps310_init(dps310_ctx_t* const ctx)
     {
       ctx->sleep(DPS310_COEF_DELAY_MS);
       err_code = read_revision(ctx);
+    }
+    if(DPS310_SUCCESS == err_code)
+    {
+      err_code = efuse_write(ctx);
     }
     if(DPS310_SUCCESS == err_code)
     {
