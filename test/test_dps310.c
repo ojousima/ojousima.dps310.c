@@ -10,6 +10,7 @@ static uint32_t time_ms;
 static uint32_t drdy_ms;
 static int32_t bus_code;
 static uint8_t efuse_writes;
+static uint8_t soft_resets;
 
 static void check_reserved_registers(void)
 {
@@ -24,11 +25,28 @@ static void init_dps_regs(void)
     memset(dps310_registers, 0, sizeof(dps310_registers));
     dps310_registers[DPS310_MEAS_CFG_REG] = DPS310_MEAS_CFG_BOOT_VAL;
     dps310_registers[DPS310_PROD_ID_REG]  = DPS310_PROD_ID_BOOT_VAL;
+    dps310_registers[0x10] = 0xF9U; // C0 = -100
+    dps310_registers[0x11] = 0xC0U;
+    dps310_registers[0x12] = 0x01U; // C1 = 1
+    dps310_registers[0x13] = 0xFBU; // C00 = -20 000
+    dps310_registers[0x14] = 0x1EU;
+    dps310_registers[0x15] = 0x00U;
+    dps310_registers[0x16] = 0x03U; // C10 = 1000 
+    dps310_registers[0x17] = 0xE8U;
+    dps310_registers[0x18] = 0x07U; // C01 = 2000
+    dps310_registers[0x19] = 0xD0U; 
+    dps310_registers[0x1A] = 0xFFU; // C11 = -250 
+    dps310_registers[0x1B] = 0x06U;
+    dps310_registers[0x1C] = 0xFEU; // C20 = -350 
+    dps310_registers[0x1D] = 0xA2U;
+    dps310_registers[0x1E] = 0x00U; // C21 = 5 
+    dps310_registers[0x1F] = 0x05U;         
+    dps310_registers[0x20] = 0x00U; // C30 = 10
+    dps310_registers[0x21] = 0x0AU;
 }
 
 static void assert_on_write_error(const uint8_t reg, const uint8_t value)
 {
-  bool valid_efuse = false;
   switch(reg)
   {
       case DPS310_PRES_CFG_REG:
@@ -53,9 +71,11 @@ static void assert_on_write_error(const uint8_t reg, const uint8_t value)
       case DPS310_EFUSE_1_REG:
           TEST_ASSERT((DPS310_EFUSE_1_VAL == value) || (0 == value));
           efuse_writes++;
+          break;
       case DPS310_EFUSE_2_REG:
           TEST_ASSERT((DPS310_EFUSE_2_VAL == value));
           efuse_writes++;
+          break;
       default:
           TEST_ASSERT(0U);
           break;
@@ -71,6 +91,7 @@ static void simulate_write_action(const uint8_t reg_addr, const uint8_t data)
         {
           init_dps_regs();
           drdy_ms += DPS310_COEF_DELAY_MS;
+          soft_resets++;
         }
         break;
 
@@ -152,24 +173,7 @@ static dps310_ctx_t dps =
 
 static void init_dps_coefs(void)
 {
-    dps310_registers[0x10] = 0xF9U; // C0 = -100
-    dps310_registers[0x11] = 0xC0U;
-    dps310_registers[0x12] = 0x01U; // C1 = 1
-    dps310_registers[0x13] = 0xFBU; // C00 = -20 000
-    dps310_registers[0x14] = 0x1EU;
-    dps310_registers[0x15] = 0x00U;
-    dps310_registers[0x16] = 0x03U; // C10 = 1000 
-    dps310_registers[0x17] = 0xE8U;
-    dps310_registers[0x18] = 0x07U; // C01 = 2000
-    dps310_registers[0x19] = 0xD0U; 
-    dps310_registers[0x1A] = 0xFFU; // C11 = -250 
-    dps310_registers[0x1B] = 0x06U;
-    dps310_registers[0x1C] = 0xFEU; // C20 = -350 
-    dps310_registers[0x1D] = 0xA2U;
-    dps310_registers[0x1E] = 0x00U; // C21 = 5 
-    dps310_registers[0x1F] = 0x05U;         
-    dps310_registers[0x20] = 0x00U; // C30 = 10
-    dps310_registers[0x21] = 0x0AU;
+
 }
 
 void setUp(void)
@@ -180,6 +184,7 @@ void setUp(void)
     drdy_ms  = 0;
     bus_code = 0;
     efuse_writes = 0;
+    soft_resets = 0;
     reset_dps_ctx(&dps);
 }
 
@@ -194,11 +199,11 @@ void test_dps310_init_ok(void)
   int32_t err_code = dps310_init(&dps);
   TEST_ASSERT(0x00U == dps.product_id);
   TEST_ASSERT(0x01U == dps.revision_id);
-  // TODO: Check coefficients
-  TEST_ASSERT(1U == dps.temp_mr);
-  TEST_ASSERT(1U == dps.temp_osr);
-  TEST_ASSERT(1U == dps.pres_mr);
-  TEST_ASSERT(1U == dps.pres_osr);
+  
+  TEST_ASSERT(DPS310_MR_1 == dps.temp_mr);
+  TEST_ASSERT(DPS310_OS_1 == dps.temp_osr);
+  TEST_ASSERT(DPS310_MR_1 == dps.pres_mr);
+  TEST_ASSERT(DPS310_OS_1 == dps.pres_osr);
 
   TEST_ASSERT(-100 == dps.c0);
   TEST_ASSERT(1 == dps.c1);
@@ -213,7 +218,7 @@ void test_dps310_init_ok(void)
   TEST_ASSERT(5U == efuse_writes);
   TEST_ASSERT(DPS310_MODE_STANDBY_VAL 
               == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MODE_MASK));
-  TEST_ASSERT(DPS310_SOFT_RST_VAL == dps310_registers[DPS310_RST_CFG_REG]);
+  TEST_ASSERT(1 == soft_resets);
   TEST_ASSERT(0U == dps310_registers[DPS310_EFUSE_0_REG]);
   TEST_ASSERT(0U == dps310_registers[DPS310_EFUSE_1_REG]);
   TEST_ASSERT(DPS310_EFUSE_2_VAL == dps310_registers[DPS310_EFUSE_2_REG]);

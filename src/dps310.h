@@ -18,9 +18,13 @@
 
 #define DPS310_PRODUCT_ID_VAL  (0U)    //!< Product ID read from DPS310 register
 #define DPS310_REVISION_ID_VAL (0x01U) //!< Revision ID read from DPS310 register
-#define DPS310_SUCCESS         (0U)    //!< Return code on successful operation.
+#define DPS310_SUCCESS         (0)     //!< Return code on successful operation.
+#define DPS310_INVALID_PARAM   (-1)    //!< Return code on invalid configuration parameter
+#define DPS310_UNKNOWN_REV     (-1)    //!< Return code on mismatched revision code
 #define DPS310_POR_DELAY_MS    (12U)   //!< Milliseconds after power-on before comms.
 #define DPS310_COEF_DELAY_MS   (40U)   //!< Milliseconds after reset before coefs can be read.
+#define DPS310_DEFAULT_MR      (1U)    //!< One measurement per second by default.
+#define DPS310_DEFAULT_OS      (1U)    //!< One oversample per measurement by default.
 
 /**
  * @brief Sleep at least this many milliseconds.
