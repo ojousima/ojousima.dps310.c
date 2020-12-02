@@ -71,61 +71,95 @@ static dps310_status_t read_coefs (dps310_ctx_t * const ctx)
     return reg_read_ret;
 }
 
-static dps310_status_t soft_reset (const dps310_ctx_t * const ctx)
+static dps310_status_t soft_reset (dps310_ctx_t * const ctx)
 {
+    dps310_status_t status = DPS310_SUCCESS;
     uint8_t cmd = DPS310_SOFT_RST_VAL;
-    return ctx->write (ctx->comm_ctx, DPS310_RST_CFG_REG, &cmd, 1U);
+    status |= ctx->write (ctx->comm_ctx, DPS310_RST_CFG_REG, &cmd, 1U);
+
+    if (DPS310_SUCCESS == status)
+    {
+        ctx->device_status = DPS310_READY;
+    }
+    else
+    {
+        status |= DPS310_BUS_ERROR;
+        ctx->device_status = DPS310_BUS_ERROR;
+    }
+
+    return status;
 }
 
 static dps310_status_t read_revision (dps310_ctx_t * const ctx)
 {
+    dps310_status_t status = DPS310_SUCCESS;
     uint8_t revision[1U] = {0xFFU};
-    dps310_status_t err_code = ctx->read (ctx->comm_ctx, DPS310_PROD_ID_REG, revision, 1U);
 
-    if (DPS310_SUCCESS == err_code)
+    if (DPS310_READY == ctx->device_status)
     {
-        ctx->product_id = revision[0U]  & DPS310_PROD_ID_MASK;
-        ctx->revision_id = (revision[0U] & DPS310_PROD_ID_REV_MASK)
-                           >> DPS310_PROD_ID_REV_SHIFT;
+        status |= ctx->read (ctx->comm_ctx, DPS310_PROD_ID_REG, revision, 1U);
 
-        if ( (DPS310_PRODUCT_ID_VAL != ctx->product_id)
-                || (DPS310_REVISION_ID_VAL != ctx->revision_id))
+        if (DPS310_SUCCESS == status)
         {
-            err_code = DPS310_UNKNOWN_REV;
+            ctx->product_id = revision[0U]  & DPS310_PROD_ID_MASK;
+            ctx->revision_id = (revision[0U] & DPS310_PROD_ID_REV_MASK)
+                               >> DPS310_PROD_ID_REV_SHIFT;
+
+            if ( (DPS310_PRODUCT_ID_VAL != ctx->product_id)
+                    || (DPS310_REVISION_ID_VAL != ctx->revision_id))
+            {
+                status |= DPS310_UNKNOWN_REV;
+                ctx->device_status = DPS310_INVALID_STATE;
+            }
+        }
+        else
+        {
+            status |= DPS310_BUS_ERROR;
+            ctx->device_status = DPS310_BUS_ERROR;
         }
     }
 
-    return err_code;
+    return status;
 }
 
 // Undocumented workaround for undocumented feature of DPS310, lifted from
 // DPS310 Arduino driver.
 // https://github.com/Infineon/DPS310-Pressure-Sensor/blob/888200c7efd8edb19ce69a2144e28ba31cdad449/src/DpsClass.cpp#L448
-static const dps310_status_t efuse_write (const dps310_ctx_t * const ctx)
+static const dps310_status_t efuse_write (dps310_ctx_t * const ctx)
 {
     dps310_status_t ret_code = DPS310_SUCCESS;
-    uint8_t regs[5U] =
-    {
-        DPS310_EFUSE_0_REG,
-        DPS310_EFUSE_1_REG,
-        DPS310_EFUSE_2_REG,
-        DPS310_EFUSE_0_REG,
-        DPS310_EFUSE_1_REG
-    };
-    uint8_t cmds[5U] =
-    {
-        DPS310_EFUSE_0_VAL,
-        DPS310_EFUSE_1_VAL,
-        DPS310_EFUSE_2_VAL,
-        0U,
-        0U
-    };
-    uint8_t cmd_idx = 0U;
 
-    while ( (cmd_idx < sizeof (cmds)) && (DPS310_SUCCESS == ret_code))
+    if (DPS310_READY == ctx->device_status)
     {
-        ret_code = ctx->write (ctx->comm_ctx, regs[cmd_idx], &cmds[cmd_idx], 1U);
-        cmd_idx++;
+        uint8_t regs[5U] =
+        {
+            DPS310_EFUSE_0_REG,
+            DPS310_EFUSE_1_REG,
+            DPS310_EFUSE_2_REG,
+            DPS310_EFUSE_0_REG,
+            DPS310_EFUSE_1_REG
+        };
+        uint8_t cmds[5U] =
+        {
+            DPS310_EFUSE_0_VAL,
+            DPS310_EFUSE_1_VAL,
+            DPS310_EFUSE_2_VAL,
+            0U,
+            0U
+        };
+        uint8_t cmd_idx = 0U;
+
+        while ( (cmd_idx < sizeof (cmds)) && (DPS310_SUCCESS == ret_code))
+        {
+            ret_code = ctx->write (ctx->comm_ctx, regs[cmd_idx], &cmds[cmd_idx], 1U);
+            cmd_idx++;
+        }
+
+        if (DPS310_SUCCESS != ret_code)
+        {
+            ret_code |= DPS310_BUS_ERROR;
+            ctx->device_status = DPS310_BUS_ERROR;
+        }
     }
 
     return ret_code;
@@ -254,23 +288,28 @@ dps310_status_t dps310_config_temp (dps310_ctx_t * const ctx, const dps310_mr_t 
 {
     dps310_status_t err_code = DPS310_SUCCESS;
     uint8_t cmd = 0U;
-    err_code = set_mr_reg (&cmd, temp_mr);
 
-    if (DPS310_SUCCESS == err_code)
+    if (DPS310_READY == ctx->device_status)
     {
-        err_code = set_os_reg (&cmd, temp_osr);
-    }
+        err_code |= set_mr_reg (&cmd, temp_mr);
+        err_code |= set_os_reg (&cmd, temp_osr);
 
-    // TODO: SET coef_src
-    if (DPS310_SUCCESS == err_code)
-    {
-        err_code = ctx->write (ctx->comm_ctx, DPS310_TEMP_CFG_REG, &cmd, 1U);
-    }
+        // TODO: SET coef_src
+        if (DPS310_SUCCESS == err_code)
+        {
+            err_code |= ctx->write (ctx->comm_ctx, DPS310_TEMP_CFG_REG, &cmd, 1U);
 
-    if (DPS310_SUCCESS == err_code)
-    {
-        ctx->temp_mr = temp_mr;
-        ctx->temp_osr = temp_osr;
+            if (DPS310_SUCCESS == err_code)
+            {
+                ctx->temp_mr = temp_mr;
+                ctx->temp_osr = temp_osr;
+            }
+            else
+            {
+                err_code |= DPS310_BUS_ERROR;
+                ctx->device_status = DPS310_INVALID_STATE;
+            }
+        }
     }
 
     return err_code;
@@ -281,22 +320,27 @@ dps310_status_t dps310_config_pres (dps310_ctx_t * const ctx, const dps310_mr_t 
 {
     dps310_status_t err_code = DPS310_SUCCESS;
     uint8_t cmd = 0U;
-    err_code = set_mr_reg (&cmd, pres_mr);
 
-    if (DPS310_SUCCESS == err_code)
+    if (DPS310_READY == ctx->device_status)
     {
-        err_code = set_os_reg (&cmd, pres_osr);
-    }
+        err_code |= set_mr_reg (&cmd, pres_mr);
+        err_code |= set_os_reg (&cmd, pres_osr);
 
-    if (DPS310_SUCCESS == err_code)
-    {
-        err_code = ctx->write (ctx->comm_ctx, DPS310_PRES_CFG_REG, &cmd, 1U);
-    }
+        if (DPS310_SUCCESS == err_code)
+        {
+            err_code |= ctx->write (ctx->comm_ctx, DPS310_PRES_CFG_REG, &cmd, 1U);
 
-    if (DPS310_SUCCESS == err_code)
-    {
-        ctx->pres_mr = pres_mr;
-        ctx->pres_osr = pres_osr;
+            if (DPS310_SUCCESS == err_code)
+            {
+                ctx->pres_mr = pres_mr;
+                ctx->pres_osr = pres_osr;
+            }
+            else
+            {
+                err_code |= DPS310_BUS_ERROR;
+                ctx->device_status = DPS310_BUS_ERROR;
+            }
+        }
     }
 
     return err_code;

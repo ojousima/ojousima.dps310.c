@@ -256,3 +256,10 @@ void test_dps310_init_invalid_ctx(void)
   err_code = dps310_init(&dps_null_1);
   TEST_ASSERT(DPS310_ERROR_NULL == err_code);
 }
+
+void test_dps310_init_bus_error(void)
+{
+    bus_code = 11;
+    dps310_status_t err_code = dps310_init(&dps);
+    TEST_ASSERT((DPS310_BUS_ERROR + bus_code) == err_code);
+}
