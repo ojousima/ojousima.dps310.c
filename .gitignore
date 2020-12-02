@@ -67,6 +67,7 @@ bw-output
 *.PVS-Studio.i
 *.PVS-Studio.log
 pvs.tasklist
+pvs.error
 
 # Doxygen generated files
 doxygen
