@@ -362,4 +362,14 @@ dps310_status_t dps310_config_pres (dps310_ctx_t * const ctx, const dps310_mr_t 
     return err_code;
 }
 
+dps310_status_t dps310_measure_continuous_async (dps310_ctx_t * const ctx)
+{
+    return DPS310_ERROR_NOT_IMPLEMENTED;
+}
+
+dps310_status_t dps310_standby (dps310_ctx_t * const ctx)
+{
+    return DPS310_ERROR_NOT_IMPLEMENTED;
+}
+
 /** @} */
