@@ -15,12 +15,13 @@
 #include "dps310.h"
 #include "dps310_reg.h"
 
+// Valid up to 31 bits
 static int32_t twos_complement (const uint32_t value, const uint8_t bits)
 {
     const int32_t max_signed_value_exclusive = (int32_t) (1U << (bits - 1U));
-    int32_t complement = value;
+    int32_t complement = (int32_t) value;
 
-    if (value >= max_signed_value_exclusive)
+    if (complement >= max_signed_value_exclusive)
     {
         complement -= 2 * max_signed_value_exclusive;
     }
@@ -28,11 +29,11 @@ static int32_t twos_complement (const uint32_t value, const uint8_t bits)
     return complement;
 }
 
-static int32_t read_coefs (dps310_ctx_t * const ctx)
+static dps310_status_t read_coefs (dps310_ctx_t * const ctx)
 {
     uint8_t coefs[DPS310_COEF_REG_LEN] = {0};
-    int32_t reg_read_ret = ctx->read (ctx->comm_ctx, DPS310_COEF_START_REG,
-                                      coefs, DPS310_COEF_REG_LEN);
+    dps310_status_t reg_read_ret = ctx->read (ctx->comm_ctx, DPS310_COEF_START_REG,
+                                   coefs, DPS310_COEF_REG_LEN);
     uint32_t reg_val = ( ( (uint32_t) coefs[DPS310_COEF_C0_OFFSET] * 256U)
                          + ( (uint32_t) coefs[DPS310_COEF_C0_OFFSET + 1U]))
                        >> DPS310_COEF_C0_SHIFT;
@@ -69,16 +70,16 @@ static int32_t read_coefs (dps310_ctx_t * const ctx)
     return reg_read_ret;
 }
 
-static int32_t soft_reset (dps310_ctx_t * const ctx)
+static dps310_status_t soft_reset (const dps310_ctx_t * const ctx)
 {
     uint8_t cmd = DPS310_SOFT_RST_VAL;
     return ctx->write (ctx->comm_ctx, DPS310_RST_CFG_REG, &cmd, 1U);
 }
 
-static int32_t read_revision (dps310_ctx_t * const ctx)
+static dps310_status_t read_revision (dps310_ctx_t * const ctx)
 {
     uint8_t revision[1U] = {0xFFU};
-    int32_t err_code = ctx->read (ctx->comm_ctx, DPS310_PROD_ID_REG, revision, 1U);
+    dps310_status_t err_code = ctx->read (ctx->comm_ctx, DPS310_PROD_ID_REG, revision, 1U);
 
     if (DPS310_SUCCESS == err_code)
     {
@@ -99,9 +100,9 @@ static int32_t read_revision (dps310_ctx_t * const ctx)
 // Undocumented workaround for undocumented feature of DPS310, lifted from
 // DPS310 Arduino driver.
 // https://github.com/Infineon/DPS310-Pressure-Sensor/blob/888200c7efd8edb19ce69a2144e28ba31cdad449/src/DpsClass.cpp#L448
-static const int32_t efuse_write (dps310_ctx_t * const ctx)
+static const dps310_status_t efuse_write (const dps310_ctx_t * const ctx)
 {
-    int32_t ret_code = DPS310_SUCCESS;
+    dps310_status_t ret_code = DPS310_SUCCESS;
     uint8_t regs[5U] =
     {
         DPS310_EFUSE_0_REG,
@@ -129,44 +130,23 @@ static const int32_t efuse_write (dps310_ctx_t * const ctx)
     return ret_code;
 }
 
-int32_t dps310_init (dps310_ctx_t * const ctx)
+dps310_status_t dps310_init (dps310_ctx_t * const ctx)
 {
-    int32_t err_code = DPS310_SUCCESS;
+    dps310_status_t err_code = DPS310_SUCCESS;
     ctx->sleep (DPS310_POR_DELAY_MS);
-    err_code = soft_reset (ctx);
-
-    if (DPS310_SUCCESS == err_code)
-    {
-        ctx->sleep (DPS310_COEF_DELAY_MS);
-        err_code = read_revision (ctx);
-    }
-
-    if (DPS310_SUCCESS == err_code)
-    {
-        err_code = efuse_write (ctx);
-    }
-
-    if (DPS310_SUCCESS == err_code)
-    {
-        err_code = read_coefs (ctx);
-    }
-
-    if (DPS310_SUCCESS == err_code)
-    {
-        err_code = dps310_config_temp (ctx, DPS310_DEFAULT_MR, DPS310_DEFAULT_OS);
-    }
-
-    if (DPS310_SUCCESS == err_code)
-    {
-        err_code = dps310_config_pres (ctx, DPS310_DEFAULT_MR, DPS310_DEFAULT_OS);
-    }
-
+    err_code |= soft_reset (ctx);
+    ctx->sleep (DPS310_COEF_DELAY_MS);
+    err_code |= read_revision (ctx);
+    err_code |= efuse_write (ctx);
+    err_code |= read_coefs (ctx);
+    err_code |= dps310_config_temp (ctx, DPS310_DEFAULT_MR, DPS310_DEFAULT_OS);
+    err_code |= dps310_config_pres (ctx, DPS310_DEFAULT_MR, DPS310_DEFAULT_OS);
     return err_code;
 }
 
-static int32_t set_mr_reg (uint8_t * const reg, const dps310_mr_t mr)
+static dps310_status_t set_mr_reg (uint8_t * const reg, const dps310_mr_t mr)
 {
-    int32_t err_code = DPS310_SUCCESS;
+    dps310_status_t err_code = DPS310_SUCCESS;
 
     switch (mr)
     {
@@ -204,14 +184,15 @@ static int32_t set_mr_reg (uint8_t * const reg, const dps310_mr_t mr)
 
     default:
         err_code = DPS310_INVALID_PARAM;
+        break;
     }
 
     return err_code;
 }
 
-static int32_t set_os_reg (uint8_t * const reg, const dps310_os_t os)
+static dps310_status_t set_os_reg (uint8_t * const reg, const dps310_os_t os)
 {
-    int32_t err_code = DPS310_SUCCESS;
+    dps310_status_t err_code = DPS310_SUCCESS;
 
     switch (os)
     {
@@ -249,15 +230,16 @@ static int32_t set_os_reg (uint8_t * const reg, const dps310_os_t os)
 
     default:
         err_code = DPS310_INVALID_PARAM;
+        break;
     }
 
     return err_code;
 }
 
-int32_t dps310_config_temp (dps310_ctx_t * const ctx, const dps310_mr_t temp_mr,
-                            const dps310_os_t temp_osr)
+dps310_status_t dps310_config_temp (dps310_ctx_t * const ctx, const dps310_mr_t temp_mr,
+                                    const dps310_os_t temp_osr)
 {
-    int32_t err_code = DPS310_SUCCESS;
+    dps310_status_t err_code = DPS310_SUCCESS;
     uint8_t cmd = 0U;
     err_code = set_mr_reg (&cmd, temp_mr);
 
@@ -281,10 +263,10 @@ int32_t dps310_config_temp (dps310_ctx_t * const ctx, const dps310_mr_t temp_mr,
     return err_code;
 }
 
-int32_t dps310_config_pres (dps310_ctx_t * const ctx, const dps310_mr_t pres_mr,
-                            const dps310_os_t pres_osr)
+dps310_status_t dps310_config_pres (dps310_ctx_t * const ctx, const dps310_mr_t pres_mr,
+                                    const dps310_os_t pres_osr)
 {
-    int32_t err_code = DPS310_SUCCESS;
+    dps310_status_t err_code = DPS310_SUCCESS;
     uint8_t cmd = 0U;
     err_code = set_mr_reg (&cmd, pres_mr);
 
@@ -307,4 +289,4 @@ int32_t dps310_config_pres (dps310_ctx_t * const ctx, const dps310_mr_t pres_mr,
     return err_code;
 }
 
-/*@}*/
+/** @} */

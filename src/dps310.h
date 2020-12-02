@@ -16,15 +16,24 @@
 
 #include <stdint.h>
 
-#define DPS310_PRODUCT_ID_VAL  (0U)    //!< Product ID read from DPS310 register
-#define DPS310_REVISION_ID_VAL (0x01U) //!< Revision ID read from DPS310 register
-#define DPS310_SUCCESS         (0)     //!< Return code on successful operation.
-#define DPS310_INVALID_PARAM   (-1)    //!< Return code on invalid configuration parameter
-#define DPS310_UNKNOWN_REV     (-1)    //!< Return code on mismatched revision code
-#define DPS310_POR_DELAY_MS    (12U)   //!< Milliseconds after power-on before comms.
-#define DPS310_COEF_DELAY_MS   (40U)   //!< Milliseconds after reset before coefs can be read.
-#define DPS310_DEFAULT_MR      (1U)    //!< One measurement per second by default.
-#define DPS310_DEFAULT_OS      (1U)    //!< One oversample per measurement by default.
+#define DPS310_PRODUCT_ID_VAL  (0U)        //!< Product ID read from DPS310 register
+#define DPS310_REVISION_ID_VAL (0x01U)     //!< Revision ID read from DPS310 register
+#define DPS310_SUCCESS         (0U)        //!< Return code on successful operation.
+#define DPS310_READY           (1U << 0U)  //!< Flag for DPS310 struct, sensor can receive commands.
+#define DPS310_BUSY            (1U << 1U)  //!< Flag for DPS310 struct, single async measurement is in progress.
+#define DPS310_CONTINUOUS      (1U << 2U)  //!< Flag for DPS310 struct, continuous measurement is in progress.
+#define DPS310_ERROR_NULL      (1U << 9U)  //!< Return code on NULL context or interface function.
+#define DPS310_INVALID_PARAM   (1U << 10U) //!< Return code on invalid configuration parameter
+#define DPS310_UNKNOWN_REV     (1U << 11U) //!< Return code on mismatched revision code.
+#define DPS310_OTHER_ERROR     (1U << 13U) //!< Error not elsewhere specified
+#define DPS310_BUS_ERROR       (1U << 30U) //!< Communication has failed on bus.
+#define DPS310_INVALID_STATE   (1U << 31U) //!< Flag for DPS310 struct, sensor must be un- and reinitialized.
+#define DPS310_POR_DELAY_MS    (12U)       //!< Milliseconds after power-on before comms.
+#define DPS310_COEF_DELAY_MS   (40U)       //!< Milliseconds after reset before coefs can be read.
+#define DPS310_DEFAULT_MR      (1U)        //!< One measurement per second by default.
+#define DPS310_DEFAULT_OS      (1U)        //!< One oversample per measurement by default.
+
+typedef uint32_t dps310_status_t; //!< Status code bitfield.
 
 /**
  * @brief Sleep at least this many milliseconds.
@@ -42,10 +51,10 @@ typedef void (*dps310_sleep) (const uint32_t ms);
  * @param[in] reg_addr Address of register to read.
  * @param[out] data Pointer to which data will be written. Must be data_len bytes long.
  * @param[in] data_len Length of data.
- * @return 0 on success, non-zero error code on error.
+ * @return 0 on success, DPS310_BUS_ERROR + optional application code on error.
  */
-typedef int32_t (*dps310_read) (const void * const comm_ctx, const uint8_t reg_addr,
-                                uint8_t * const data, const uint8_t data_len);
+typedef uint32_t (*dps310_read) (const void * const comm_ctx, const uint8_t reg_addr,
+                                 uint8_t * const data, const uint8_t data_len);
 
 /**
  * @brief Write data from bus.
@@ -56,10 +65,10 @@ typedef int32_t (*dps310_read) (const void * const comm_ctx, const uint8_t reg_a
  * @param[in] reg_addr Address of register to write.
  * @param[in] data Pointer to which data will be written. Must be data_len bytes long.
  * @param[in] data_len Length of data.
- * @return 0 on success, non-zero error code on error.
+ * @return 0 on success, DPS310_BUS_ERROR + optional application code on error.
  */
-typedef int32_t (*dps310_write) (const void * const comm_ctx, const uint8_t reg_addr,
-                                 const uint8_t * const data, const uint8_t data_len);
+typedef uint32_t (*dps310_write) (const void * const comm_ctx, const uint8_t reg_addr,
+                                  const uint8_t * const data, const uint8_t data_len);
 
 typedef enum
 {
@@ -90,7 +99,7 @@ typedef enum
 typedef struct
 {
     //flags
-    uint8_t init_fail;
+    dps310_status_t device_status;
 
     uint8_t product_id;
     uint8_t revision_id;
@@ -123,79 +132,90 @@ typedef struct
 } dps310_ctx_t;
 
 /**
- * @brief Returns the Product ID of the connected DPS310 sensor.
- *
- * @return Product ID of DPS310, i.e. 0x00.
- */
-int32_t dps310_get_product_id (dps310_ctx_t * const ctx);
-
-/**
- * @brief Returns the Revision ID of the connected DPS310 sensor.
- *
- * @return Revision ID of DPS310.
- */
-int32_t dps310_get_revision_id (dps310_ctx_t * const ctx);
-
-/**
  * @brief Set the DPS310 to standby mode.
  *
- * @return status code, 0 on success.
+ * @retval DPS310_SUCCESS on success.
+ * @retval DPS310_ERROR_NULL if ctx or Function pointers are NULL.
+ * @retval DPS310_INVALID_STATE if ctx is not initialized or has internal error.
  */
-int32_t dps310_standby (dps310_ctx_t * const ctx);
+dps310_status_t dps310_standby (dps310_ctx_t * const ctx);
 
 /**
  * @brief Perform one temperature measurement.
  *
  * Uses the oversampling rate of given context and blocks until measurement is ready.
+ * The sensor must be in standby before calling this function.
  *
- * @param[out] result        Peference to a float where the result will be written.
- * @return status code, 0 on success.
+ * @param[out] result        Pointer to a float where the result will be written.
+ * @retval DPS310_SUCCESS on success.
+ * @retval DPS310_ERROR_NULL if ctx or Function pointers are NULL.
+ * @retval DPS310_INVALID_STATE if ctx is not initialized, is busy or has internal error.
  */
-int32_t dps310_measure_temp_once_sync (dps310_ctx_t * const ctx, float * const result);
+dps310_status_t dps310_measure_temp_once_sync (dps310_ctx_t * const ctx,
+        float * const result);
 
 /**
  * @brief Starts a single temperature measurement.
  *
- * @return status code, 0 on success.
+ * Uses the oversampling rate of given context and blocks until measurement is ready.
+ * The sensor must be in standby before calling this function.
+ *
+ * @retval DPS310_SUCCESS on success.
+ * @retval DPS310_ERROR_NULL if ctx or Function pointers are NULL.
+ * @retval DPS310_INVALID_STATE if ctx is not initialized, is busy or has internal error.
  */
-int32_t dps310_measure_temp_once_async (dps310_ctx_t * const ctx);
+dps310_status_t dps310_measure_temp_once_async (dps310_ctx_t * const ctx);
 
 /**
  * @brief Perform one pressure measurement.
  *
  * @param[out] result A poitner to a float value where the result will be written.
- * @return status code, 0 on success.
+ * @retval DPS310_SUCCESS on success.
+ * @retval DPS310_ERROR_NULL if ctx or Function pointers are NULL.
+ * @retval DPS310_INVALID_STATE if ctx is not initialized, is busy or has internal error.
  */
-int32_t dps310_measure_pressure_once_sync (dps310_ctx_t * const ctx,
+dps310_status_t dps310_measure_pressure_once_sync (dps310_ctx_t * const ctx,
         float * const result);
 
 /**
  * @brief Start a single pressure measurement.
  *
- * @return status code, 0 on success.
+ * The sensor must be in DPS310_READY mode before this is called.
+ *
+ * @retval DPS310_SUCCESS on success.
+ * @retval DPS310_ERROR_NULL if ctx or Function pointers are NULL.
+ * @retval DPS310_INVALID_STATE if ctx is not initialized, is busy or has internal error.
  */
-int32_t dps310_measure_pressure_once_async (dps310_ctx_t * const ctx);
+dps310_status_t dps310_measure_pressure_once_async (dps310_ctx_t * const ctx);
 
 /**
  * @brief Get the result async measurement, in C or Pa.
  *
+ * This function must be called while DPS310 is marked as busy. It will return the
+ * previous async measurement and mark DPS310 state as ready.
+ *
  * @param[out] result   A pointer to a float value where the result will be written.
- * @return status code, 0 on success.
+ * @retval DPS310_SUCCESS on success.
+ * @retval DPS310_ERROR_NULL if ctx or Function pointers are NULL.
+ * @retval DPS310_INVALID_STATE if ctx is not initialized, is not busy or has internal error.
  */
-int32_t dps310_get_single_result (float const * result);
+dps310_status_t dps310_get_single_result (dps310_ctx_t * const ctx, float const * result);
 
 /**
  * @brief Starts a continuous temperature and pressure measurement.
  *
- * Mmeasurement rate and oversampling rate for temperature and pressure measurement are read from the context.
+ * Measurement rate and oversampling rate for temperature and pressure measurement are read from the context.
+ * Thw sensor must be in DPS310_READY mode when this function is called.
  *
  * @param tempMr        measure rate for temperature
  * @param tempOsr       oversampling rate for temperature
  * @param prsMr         measure rate for pressure
  * @param prsOsr        oversampling rate for pressure
- * @return status code, 0 on success.
+ * @retval DPS310_SUCCESS on success.
+ * @retval DPS310_ERROR_NULL if ctx or Function pointers are NULL.
+ * @retval DPS310_INVALID_STATE if ctx is not initialized, is busy or has internal error.
  */
-int32_t dps310_measure_continuous_async (dps310_ctx_t * const ctx);
+dps310_status_t dps310_measure_continuous_async (dps310_ctx_t * const ctx);
 
 /**
  * @brief Get the interrupt status flag of the FIFO.
@@ -204,7 +224,7 @@ int32_t dps310_measure_continuous_async (dps310_ctx_t * const ctx);
  * @retval 0 if the FIFO is not full or FIFO interrupt is disabled.
  * @retval -1 on error.
  */
-int32_t dps310_get_int_fifo_full (dps310_ctx_t * const ctx);
+dps310_status_t dps310_get_int_fifo_full (dps310_ctx_t * const ctx);
 
 /**
  * @brief Get the interrupt status flag that indicates a finished temperature measurement.
@@ -213,7 +233,7 @@ int32_t dps310_get_int_fifo_full (dps310_ctx_t * const ctx);
  * @retval 0 if the temperature measurement is not ready or temperature interrupt is disabled.
  * @retval -1 on error.
  */
-int32_t dps310_get_int_temp_ready (dps310_ctx_t * const ctx);
+dps310_status_t dps310_get_int_temp_ready (dps310_ctx_t * const ctx);
 
 /**
  * @brief Get the interrupt status flag that indicates a finished pressure measurement.
@@ -222,7 +242,7 @@ int32_t dps310_get_int_temp_ready (dps310_ctx_t * const ctx);
  * @retval 0 if the temperature measurement is not ready or temperature interrupt is disabled.
  * @retval -1 on error.
  */
-int32_t dps310_get_int_pres_ready (dps310_ctx_t * const ctx);
+dps310_status_t dps310_get_int_pres_ready (dps310_ctx_t * const ctx);
 
 
 /**
@@ -233,8 +253,8 @@ int32_t dps310_get_int_pres_ready (dps310_ctx_t * const ctx);
  * @param[in,out] count Input: Number of elements in buffer. Output: number of read elements, 0 if no elements were read.
  * @return status code, 0 on success.
  */
-int32_t dps310_get_cont_results (dps310_ctx_t * const ctx, float * const temp,
-                                 float * const pres, uint8_t * const count);
+dps310_status_t dps310_get_cont_results (dps310_ctx_t * const ctx, float * const temp,
+        float * const pres, uint8_t * const count);
 
 /**
  * @brief Initialize DPS310 instance.
@@ -247,7 +267,7 @@ int32_t dps310_get_cont_results (dps310_ctx_t * const ctx, float * const temp,
  * @return Status code, 0 on success.
  *
  */
-int32_t dps310_init (dps310_ctx_t * const ctx);
+dps310_status_t dps310_init (dps310_ctx_t * const ctx);
 
 /**
  * @brief Uninitialize DPS310 instance.
@@ -258,7 +278,7 @@ int32_t dps310_init (dps310_ctx_t * const ctx);
  * @return Status code, 0 on success.
  *
  */
-int32_t dps310_uninit (dps310_ctx_t * const ctx);
+dps310_status_t dps310_uninit (dps310_ctx_t * const ctx);
 
 /**
  * @brief Configure temperature measurement.
@@ -273,8 +293,8 @@ int32_t dps310_uninit (dps310_ctx_t * const ctx);
  * @param[in] temp_mr Measurement rate.
  * @param[in] temp_osr Oversampling per measurement.
  */
-int32_t dps310_config_temp (dps310_ctx_t * const ctx, const dps310_mr_t temp_mr,
-                            const dps310_os_t temp_osr);
+dps310_status_t dps310_config_temp (dps310_ctx_t * const ctx, const dps310_mr_t temp_mr,
+                                    const dps310_os_t temp_osr);
 
 /**
  * @brief Configure pressure measurement.
@@ -290,8 +310,8 @@ int32_t dps310_config_temp (dps310_ctx_t * const ctx, const dps310_mr_t temp_mr,
  * @param[in] pres_osr Oversampling per measurement.
  *
  */
-int32_t dps310_config_pres (dps310_ctx_t * const ctx, const dps310_mr_t pres_mr,
-                            const dps310_os_t pres_osr);
+dps310_status_t dps310_config_pres (dps310_ctx_t * const ctx, const dps310_mr_t pres_mr,
+                                    const dps310_os_t pres_osr);
 
 /**
  * @brief Configure DPS310 interrupts.
@@ -299,20 +319,9 @@ int32_t dps310_config_pres (dps310_ctx_t * const ctx, const dps310_mr_t pres_mr,
  *
  * @return Status code, 0 on success.
  */
-int32_t dps310_set_int_sources (dps310_ctx_t * const ctx, const uint8_t intr_source,
-                                const uint8_t polarity);
-
-
-/** Workaround hardware issue in some devices. Call in init of every device. */
-static int32_t dps310_workaround_efuse (dps310_ctx_t * const ctx);
-/** Read coefficients of device */
-static int32_t dps310_read_coeffs (dps310_ctx_t * const ctx);
-/** Clear out FIFO readings */
-static int32_t dps310_flush_fifo (dps310_ctx_t * const ctx);
-/** Calculate temperature from raw ADC value. */
-static float dps310_calc_temp (dps310_ctx_t * const ctx, const int32_t raw);
-/** Calculate pressure from raw ADC value. */
-static float dps310_calc_pres (dps310_ctx_t * const ctx, const int32_t raw);
+dps310_status_t dps310_set_int_sources (dps310_ctx_t * const ctx,
+                                        const uint8_t intr_source,
+                                        const uint8_t polarity);
 
 #endif // DPS310_H
 /** @} */
