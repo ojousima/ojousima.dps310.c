@@ -225,3 +225,34 @@ void test_dps310_init_ok(void)
   TEST_ASSERT(time_ms >= (DPS310_POR_DELAY_MS + DPS310_COEF_DELAY_MS));
   TEST_ASSERT(DPS310_SUCCESS == err_code);
 }
+
+void test_dps310_init_null(void)
+{
+  dps310_status_t err_code = dps310_init(NULL);
+  TEST_ASSERT(DPS310_ERROR_NULL == err_code);
+}
+
+void test_dps310_init_invalid_ctx(void)
+{
+  dps310_ctx_t dps_null_all = { 0 };
+  dps310_ctx_t dps_null_2 =  
+  {
+  .sleep = &mock_sleep,
+  .read  = NULL,
+  .write = NULL
+  };
+  dps310_ctx_t dps_null_1 = 
+  {
+  .sleep = &mock_sleep,
+  .read  = &mock_read,
+  .write = NULL
+  };
+  dps310_ctx_t dps_orig = { 0 };
+  dps310_status_t err_code = dps310_init(&dps_null_all);
+  TEST_ASSERT(DPS310_ERROR_NULL == err_code);
+  TEST_ASSERT(!memcmp(&dps_null_all, &dps_orig, sizeof(dps310_ctx_t)));
+  err_code = dps310_init(&dps_null_2);
+  TEST_ASSERT(DPS310_ERROR_NULL == err_code);
+  err_code = dps310_init(&dps_null_1);
+  TEST_ASSERT(DPS310_ERROR_NULL == err_code);
+}

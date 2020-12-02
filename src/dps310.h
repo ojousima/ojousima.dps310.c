@@ -264,7 +264,8 @@ dps310_status_t dps310_get_cont_results (dps310_ctx_t * const ctx, float * const
  * After initialization, sensor is placed in standby, with oversampling and measurement rate configured to 1.
  *
  * @param[in,out] ctx Input: Context to initialize. Output: Values read from physical sensor are entered into context.
- * @return Status code, 0 on success.
+ * @retval DPS_SUCCESS on success
+ * @retval DPS_ERROR_NULL if ctx, ctx.write, read or sleep is null.
  *
  */
 dps310_status_t dps310_init (dps310_ctx_t * const ctx);

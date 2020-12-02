@@ -14,6 +14,7 @@
 
 #include "dps310.h"
 #include "dps310_reg.h"
+#include <stddef.h>
 
 // Valid up to 31 bits
 static int32_t twos_complement (const uint32_t value, const uint8_t bits)
@@ -133,14 +134,26 @@ static const dps310_status_t efuse_write (const dps310_ctx_t * const ctx)
 dps310_status_t dps310_init (dps310_ctx_t * const ctx)
 {
     dps310_status_t err_code = DPS310_SUCCESS;
-    ctx->sleep (DPS310_POR_DELAY_MS);
-    err_code |= soft_reset (ctx);
-    ctx->sleep (DPS310_COEF_DELAY_MS);
-    err_code |= read_revision (ctx);
-    err_code |= efuse_write (ctx);
-    err_code |= read_coefs (ctx);
-    err_code |= dps310_config_temp (ctx, DPS310_DEFAULT_MR, DPS310_DEFAULT_OS);
-    err_code |= dps310_config_pres (ctx, DPS310_DEFAULT_MR, DPS310_DEFAULT_OS);
+
+    if ( (NULL == ctx)
+            || (NULL == ctx->sleep)
+            || (NULL == ctx->write)
+            || (NULL == ctx->read))
+    {
+        err_code = DPS310_ERROR_NULL;
+    }
+    else
+    {
+        ctx->sleep (DPS310_POR_DELAY_MS);
+        err_code |= soft_reset (ctx);
+        ctx->sleep (DPS310_COEF_DELAY_MS);
+        err_code |= read_revision (ctx);
+        err_code |= efuse_write (ctx);
+        err_code |= read_coefs (ctx);
+        err_code |= dps310_config_temp (ctx, DPS310_DEFAULT_MR, DPS310_DEFAULT_OS);
+        err_code |= dps310_config_pres (ctx, DPS310_DEFAULT_MR, DPS310_DEFAULT_OS);
+    }
+
     return err_code;
 }
 
