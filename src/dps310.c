@@ -109,7 +109,7 @@ static dps310_status_t read_revision (dps310_ctx_t * const ctx)
                     || (DPS310_REVISION_ID_VAL != ctx->revision_id))
             {
                 status |= DPS310_UNKNOWN_REV;
-                ctx->device_status = DPS310_INVALID_STATE;
+                ctx->device_status = DPS310_UNKNOWN_REV;
             }
         }
         else
@@ -117,6 +117,10 @@ static dps310_status_t read_revision (dps310_ctx_t * const ctx)
             status |= DPS310_BUS_ERROR;
             ctx->device_status = DPS310_BUS_ERROR;
         }
+    }
+    else
+    {
+        status |= ctx->device_status;
     }
 
     return status;
@@ -160,6 +164,10 @@ static const dps310_status_t efuse_write (dps310_ctx_t * const ctx)
             ret_code |= DPS310_BUS_ERROR;
             ctx->device_status = DPS310_BUS_ERROR;
         }
+    }
+    else
+    {
+        ret_code = ctx->device_status;
     }
 
     return ret_code;
@@ -311,6 +319,10 @@ dps310_status_t dps310_config_temp (dps310_ctx_t * const ctx, const dps310_mr_t 
             }
         }
     }
+    else
+    {
+        err_code = ctx->device_status;
+    }
 
     return err_code;
 }
@@ -341,6 +353,10 @@ dps310_status_t dps310_config_pres (dps310_ctx_t * const ctx, const dps310_mr_t 
                 ctx->device_status = DPS310_BUS_ERROR;
             }
         }
+    }
+    else
+    {
+        err_code = ctx->device_status;
     }
 
     return err_code;

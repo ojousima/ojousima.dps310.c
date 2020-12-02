@@ -11,6 +11,7 @@ static uint32_t drdy_ms;
 static int32_t bus_code;
 static uint8_t efuse_writes;
 static uint8_t soft_resets;
+static uint8_t rev_id;
 
 static void check_reserved_registers(void)
 {
@@ -24,7 +25,7 @@ static void init_dps_regs(void)
 {
     memset(dps310_registers, 0, sizeof(dps310_registers));
     dps310_registers[DPS310_MEAS_CFG_REG] = DPS310_MEAS_CFG_BOOT_VAL;
-    dps310_registers[DPS310_PROD_ID_REG]  = DPS310_PROD_ID_BOOT_VAL;
+    dps310_registers[DPS310_PROD_ID_REG]  = rev_id;
     dps310_registers[0x10] = 0xF9U; // C0 = -100
     dps310_registers[0x11] = 0xC0U;
     dps310_registers[0x12] = 0x01U; // C1 = 1
@@ -178,6 +179,7 @@ static void init_dps_coefs(void)
 
 void setUp(void)
 {
+    rev_id = DPS310_PROD_ID_BOOT_VAL;
     init_dps_regs();
     init_dps_coefs();
     time_ms  = 0;
@@ -224,6 +226,7 @@ void test_dps310_init_ok(void)
   TEST_ASSERT(DPS310_EFUSE_2_VAL == dps310_registers[DPS310_EFUSE_2_REG]);
   TEST_ASSERT(time_ms >= (DPS310_POR_DELAY_MS + DPS310_COEF_DELAY_MS));
   TEST_ASSERT(DPS310_SUCCESS == err_code);
+  TEST_ASSERT(DPS310_READY == dps.device_status);
 }
 
 void test_dps310_init_null(void)
@@ -262,4 +265,13 @@ void test_dps310_init_bus_error(void)
     bus_code = 11;
     dps310_status_t err_code = dps310_init(&dps);
     TEST_ASSERT((DPS310_BUS_ERROR + bus_code) == err_code);
+    TEST_ASSERT(DPS310_BUS_ERROR == dps.device_status);
+}
+
+void test_dps310_init_revision_error(void)
+{
+    rev_id = 0xFFU; // Invalid ID
+    dps310_status_t err_code = dps310_init(&dps);
+    TEST_ASSERT(DPS310_UNKNOWN_REV == err_code);
+    TEST_ASSERT(DPS310_UNKNOWN_REV == dps.device_status);
 }
