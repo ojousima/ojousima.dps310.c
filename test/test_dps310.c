@@ -105,7 +105,7 @@ static void assert_on_read_error(void)
     TEST_ASSERT(time_ms >= drdy_ms);
 }
 
-static int32_t mock_write(const void* const comm_ctx, 
+static uint32_t mock_write(const void* const comm_ctx, 
                           const uint8_t reg_addr, 
                           const uint8_t * const data, 
                           const uint8_t data_len)
@@ -119,7 +119,7 @@ static int32_t mock_write(const void* const comm_ctx,
     return bus_code;
 }
 
-static int32_t mock_read( const void* const comm_ctx, 
+static uint32_t mock_read( const void* const comm_ctx, 
                           const uint8_t reg_addr, 
                           uint8_t * const data, 
                           const uint8_t data_len)
@@ -140,7 +140,7 @@ static void mock_sleep(uint32_t ms)
 static void reset_dps_ctx(dps310_ctx_t* const p_dps)
 {
     //flags
-  p_dps->init_fail = 0;
+  p_dps->device_status = DPS310_SUCCESS;
 
   p_dps->product_id = 0;
   p_dps->revision_id = 0;
@@ -196,7 +196,7 @@ void tearDown(void)
 void test_dps310_init_ok(void)
 {
   drdy_ms += DPS310_POR_DELAY_MS;
-  int32_t err_code = dps310_init(&dps);
+  dps310_status_t err_code = dps310_init(&dps);
   TEST_ASSERT(0x00U == dps.product_id);
   TEST_ASSERT(0x01U == dps.revision_id);
   
