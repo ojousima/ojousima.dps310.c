@@ -35,13 +35,3 @@ addons:
 
 before_deploy:
   - sed -i '/doxygen/d' .gitignore
-  
-deploy:
-  provider: pages
-  cleanup: false
-  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
-  keep_history: false
-  local_dir: doxygen/html
-  edge: true
-  on:
-    branch: master

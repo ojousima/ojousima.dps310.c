@@ -140,8 +140,8 @@ static void mock_sleep(uint32_t ms)
 
 static void reset_dps_ctx(dps310_ctx_t* const p_dps)
 {
-    //flags
-  p_dps->device_status = DPS310_SUCCESS;
+    //
+  p_dps->device_status = DPS310_NOT_INITIALIZED;
 
   p_dps->product_id = 0;
   p_dps->revision_id = 0;
@@ -183,7 +183,7 @@ void setUp(void)
     init_dps_regs();
     init_dps_coefs();
     time_ms  = 0;
-    drdy_ms  = 0;
+    drdy_ms  = DPS310_POR_DELAY_MS;;
     bus_code = 0;
     efuse_writes = 0;
     soft_resets = 0;
@@ -197,7 +197,6 @@ void tearDown(void)
 
 void test_dps310_init_ok(void)
 {
-  drdy_ms += DPS310_POR_DELAY_MS;
   dps310_status_t err_code = dps310_init(&dps);
   TEST_ASSERT(0x00U == dps.product_id);
   TEST_ASSERT(0x01U == dps.revision_id);
@@ -265,13 +264,43 @@ void test_dps310_init_bus_error(void)
     bus_code = 11;
     dps310_status_t err_code = dps310_init(&dps);
     TEST_ASSERT((DPS310_BUS_ERROR + bus_code) == err_code);
-    TEST_ASSERT(DPS310_BUS_ERROR == dps.device_status);
+    TEST_ASSERT(DPS310_BUS_ERROR & dps.device_status);
 }
 
 void test_dps310_init_revision_error(void)
 {
     rev_id = 0xFFU; // Invalid ID
     dps310_status_t err_code = dps310_init(&dps);
-    TEST_ASSERT(DPS310_UNKNOWN_REV == err_code);
+    TEST_ASSERT(DPS310_UNKNOWN_REV & err_code);
     TEST_ASSERT(DPS310_UNKNOWN_REV == dps.device_status);
+}
+
+void test_dps310_standby_ok (void)
+{
+    dps310_init(&dps);
+    dps310_measure_continuous_async (&dps);
+    dps310_status_t err_code = dps310_standby (&dps);
+    TEST_ASSERT(DPS310_READY == dps.device_status);
+    TEST_ASSERT(DPS310_SUCCESS == err_code);
+}
+
+void test_dps310_standby_bus_error(void)
+{
+    dps310_init(&dps);
+    bus_code = 11;
+    dps310_status_t err_code = dps310_standby (&dps);
+    TEST_ASSERT((DPS310_BUS_ERROR + bus_code) == err_code);
+    TEST_ASSERT(DPS310_BUS_ERROR == dps.device_status);
+}
+
+void test_dps310_standby_not_init (void)
+{
+    dps310_status_t err_code = dps310_standby (&dps);
+    TEST_ASSERT(DPS310_INVALID_STATE == err_code);
+}
+
+void test_dps310_standby_null (void)
+{
+    dps310_status_t err_code = dps310_standby (NULL);
+    TEST_ASSERT(DPS310_ERROR_NULL == err_code);
 }
