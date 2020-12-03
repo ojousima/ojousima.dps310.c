@@ -19,9 +19,11 @@
 #define DPS310_PRODUCT_ID_VAL  (0U)        //!< Product ID read from DPS310 register
 #define DPS310_REVISION_ID_VAL (0x01U)     //!< Revision ID read from DPS310 register
 #define DPS310_SUCCESS         (0U)        //!< Return code on successful operation.
+#define DPS310_NOT_INITIALIZED (0U)        //!< Status flag on uninitialized DPS context.
 #define DPS310_READY           (1U << 0U)  //!< Flag for DPS310 struct, sensor can receive commands.
 #define DPS310_BUSY            (1U << 1U)  //!< Flag for DPS310 struct, single async measurement is in progress.
 #define DPS310_CONTINUOUS      (1U << 2U)  //!< Flag for DPS310 struct, continuous measurement is in progress.
+#define DPS310_MAX_OK          (1U << 8U)  //!< Highest allowed value for "OK" status codes.
 #define DPS310_ERROR_NULL      (1U << 9U)  //!< Return code on NULL context or interface function.
 #define DPS310_INVALID_PARAM   (1U << 10U) //!< Return code on invalid configuration parameter
 #define DPS310_UNKNOWN_REV     (1U << 11U) //!< Return code on mismatched revision code.

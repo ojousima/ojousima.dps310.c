@@ -140,8 +140,8 @@ static void mock_sleep(uint32_t ms)
 
 static void reset_dps_ctx(dps310_ctx_t* const p_dps)
 {
-    //flags
-  p_dps->device_status = DPS310_SUCCESS;
+    //
+  p_dps->device_status = DPS310_NOT_INITIALIZED;
 
   p_dps->product_id = 0;
   p_dps->revision_id = 0;
@@ -264,14 +264,14 @@ void test_dps310_init_bus_error(void)
     bus_code = 11;
     dps310_status_t err_code = dps310_init(&dps);
     TEST_ASSERT((DPS310_BUS_ERROR + bus_code) == err_code);
-    TEST_ASSERT(DPS310_BUS_ERROR == dps.device_status);
+    TEST_ASSERT(DPS310_BUS_ERROR & dps.device_status);
 }
 
 void test_dps310_init_revision_error(void)
 {
     rev_id = 0xFFU; // Invalid ID
     dps310_status_t err_code = dps310_init(&dps);
-    TEST_ASSERT(DPS310_UNKNOWN_REV == err_code);
+    TEST_ASSERT(DPS310_UNKNOWN_REV & err_code);
     TEST_ASSERT(DPS310_UNKNOWN_REV == dps.device_status);
 }
 
@@ -286,8 +286,8 @@ void test_dps310_standby_ok (void)
 
 void test_dps310_standby_bus_error(void)
 {
-    bus_code = 11;
     dps310_init(&dps);
+    bus_code = 11;
     dps310_status_t err_code = dps310_standby (&dps);
     TEST_ASSERT((DPS310_BUS_ERROR + bus_code) == err_code);
     TEST_ASSERT(DPS310_BUS_ERROR == dps.device_status);
