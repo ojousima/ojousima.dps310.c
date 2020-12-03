@@ -26,7 +26,7 @@
 #define DPS310_INVALID_PARAM   (1U << 10U) //!< Return code on invalid configuration parameter
 #define DPS310_UNKNOWN_REV     (1U << 11U) //!< Return code on mismatched revision code.
 #define DPS310_OTHER_ERROR     (1U << 13U) //!< Error not elsewhere specified
-#define DPS310_ERROR_NOT_IMPLEMENTED (1U << 14U) //!< Functionality not implemented yet.
+#define DPS310_NOT_IMPLEMENTED (1U << 14U) //!< Functionality not implemented yet.
 #define DPS310_BUS_ERROR       (1U << 30U) //!< Communication has failed on bus.
 #define DPS310_INVALID_STATE   (1U << 31U) //!< Flag for DPS310 struct, sensor must be un- and reinitialized.
 #define DPS310_POR_DELAY_MS    (12U)       //!< Milliseconds after power-on before comms.
@@ -143,6 +143,8 @@ typedef struct
  * After calling this function, the context->device_state will be DPS310_READY.
  * Most configuration must be done while DPS310 is in standby mode, i.e. not
  * in continuous measurement mode or running a measurement.
+ *
+ * The state of sensor is undefined after error, run initialization to reset sensor.
  *
  * @param[in,out] ctx Input: State of sensor. Output: Updated state of sensor.
  * @retval DPS310_SUCCESS on success.

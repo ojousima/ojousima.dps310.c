@@ -283,3 +283,24 @@ void test_dps310_standby_ok (void)
     TEST_ASSERT(DPS310_READY == dps.device_status);
     TEST_ASSERT(DPS310_SUCCESS == err_code);
 }
+
+void test_dps310_standby_bus_error(void)
+{
+    bus_code = 11;
+    dps310_init(&dps);
+    dps310_status_t err_code = dps310_standby (&dps);
+    TEST_ASSERT((DPS310_BUS_ERROR + bus_code) == err_code);
+    TEST_ASSERT(DPS310_BUS_ERROR == dps.device_status);
+}
+
+void test_dps310_standby_not_init (void)
+{
+    dps310_status_t err_code = dps310_standby (&dps);
+    TEST_ASSERT(DPS310_INVALID_STATE == err_code);
+}
+
+void test_dps310_standby_null (void)
+{
+    dps310_status_t err_code = dps310_standby (NULL);
+    TEST_ASSERT(DPS310_ERROR_NULL == err_code);
+}
