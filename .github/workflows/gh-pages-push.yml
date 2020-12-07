@@ -50,7 +50,7 @@ jobs:
     - name: Run PVS Studio
       run: |
           mkdir -p doxygen/html
-          make pvs
+          sudo make pvs
 
     - name: Install SSH Client 🔑
       uses: webfactory/ssh-agent@v0.2.0
