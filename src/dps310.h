@@ -229,10 +229,6 @@ dps310_status_t dps310_get_single_result (dps310_ctx_t * const ctx, float * cons
  * Thw sensor must be in DPS310_READY mode when this function is called.
  *
  * @param[in,out] ctx Input: State of sensor. Output: Updated state of sensor.
- * @param tempMr        measure rate for temperature
- * @param tempOsr       oversampling rate for temperature
- * @param prsMr         measure rate for pressure
- * @param prsOsr        oversampling rate for pressure
  * @retval DPS310_SUCCESS on success.
  * @retval DPS310_ERROR_NULL if ctx or Function pointers are NULL.
  * @retval DPS310_INVALID_STATE if ctx is not initialized, is busy or has internal error.
