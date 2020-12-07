@@ -5,6 +5,9 @@
 #include <stdbool.h>
 #include <string.h>
 
+#define INIT_TIME_MS (DPS310_POR_DELAY_MS + DPS310_COEF_DELAY_MS)
+#define SINGLE_MEASURE_TIME_MS (4U) // 3.6F to be exact, one sensor, one sample.
+
 static uint8_t dps310_registers[DPS310_SIM_TABLE_SIZE];
 static uint32_t time_ms;
 static uint32_t drdy_ms;
@@ -83,6 +86,53 @@ static void assert_on_write_error(const uint8_t reg, const uint8_t value)
   }
 }
 
+static uint32_t get_meas_time_ms (const dps310_os_t os)
+{
+    uint32_t time = 0U;
+    switch(os)
+    {
+      case DPS310_OS_1:
+          time = 4U; // 3.6F to be exact
+          break;
+      default:
+      break;
+    }
+    return time;
+}
+
+static uint32_t get_temp_meas_time_ms(void)
+{
+    uint8_t temp_os_val = dps310_registers[DPS310_TEMP_CFG_REG] & DPS310_OS_MASK;
+    dps310_os_t os =  DPS310_OS_INVALID;
+    switch(temp_os_val)
+    {
+      case 0:
+        os = DPS310_OS_1;
+        break;
+
+      default:
+        break;
+    }
+    return get_meas_time_ms(os);
+}
+
+
+static void simulate_measurement_action(const uint8_t data)
+{
+    switch(data)
+    {
+        case DPS310_MODE_ONE_TEMP_VAL:
+            drdy_ms += get_temp_meas_time_ms();
+            // For OS 1 register value 0x7A1200 and C0 -100, C1 1 => -34.7412 C
+            // scaled_raw 15.2587
+            dps310_registers[DPS310_TEMP_VAL_REG] = 0x7AU;
+            dps310_registers[DPS310_TEMP_VAL_REG + 1] = 0x12U;
+            dps310_registers[DPS310_TEMP_VAL_REG + 2] = 0x00U;
+            dps310_registers[DPS310_MEAS_CFG_REG] &= ~DPS310_MEAS_CFG_WMASK;
+            break;
+    }
+}
+
 static void simulate_write_action(const uint8_t reg_addr, const uint8_t data)
 {
   switch(reg_addr)
@@ -94,6 +144,9 @@ static void simulate_write_action(const uint8_t reg_addr, const uint8_t data)
           drdy_ms += DPS310_COEF_DELAY_MS;
           soft_resets++;
         }
+        break;
+    case DPS310_MEAS_CFG_REG:
+        simulate_measurement_action(data);
         break;
 
     default:
@@ -287,7 +340,7 @@ void test_dps310_standby_ok (void)
 void test_dps310_standby_bus_error(void)
 {
     dps310_init(&dps);
-    bus_code = 11;
+    bus_code = 11U;
     dps310_status_t err_code = dps310_standby (&dps);
     TEST_ASSERT((DPS310_BUS_ERROR + bus_code) == err_code);
     TEST_ASSERT(DPS310_BUS_ERROR == dps.device_status);
@@ -303,4 +356,18 @@ void test_dps310_standby_null (void)
 {
     dps310_status_t err_code = dps310_standby (NULL);
     TEST_ASSERT(DPS310_ERROR_NULL == err_code);
+}
+
+void test_dps310_measure_temp_once_sync_ok (void)
+{
+    float result = 0;
+    // Setup measurement registers
+    dps310_init(&dps);
+    dps310_status_t status = dps310_measure_temp_once_sync (&dps, &result);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT_FLOAT_WITHIN (0.01F, -34.7412F, result);
+    TEST_ASSERT (time_ms >= (INIT_TIME_MS + SINGLE_MEASURE_TIME_MS));
+    TEST_ASSERT_FLOAT_WITHIN (0.01F, 15.2587F, dps.last_temp_scal);
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
 }

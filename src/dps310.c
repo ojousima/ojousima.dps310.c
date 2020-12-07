@@ -431,4 +431,125 @@ dps310_status_t dps310_standby (dps310_ctx_t * const ctx)
     return err_code;
 }
 
+uint32_t temp_measurement_time_get (const dps310_ctx_t * const ctx)
+{
+    // Actually 2 + 1.6 * OSR, but rounding up.
+    return 3U + (uint32_t) (1.6F * (float) ctx->temp_osr);
+}
+
+
+dps310_status_t dps310_measure_temp_once_sync (dps310_ctx_t * const ctx,
+        float * const result)
+{
+    dps310_status_t err_code = DPS310_SUCCESS;
+    err_code |= dps310_measure_temp_once_async (ctx);
+    ctx->sleep (temp_measurement_time_get (ctx));
+    err_code |= dps310_get_single_result (ctx, result);
+    return err_code;
+}
+
+dps310_status_t dps310_measure_temp_once_async (dps310_ctx_t * const ctx)
+{
+    dps310_status_t err_code = ctx_ready_check (ctx);
+
+    if (DPS310_SUCCESS == err_code)
+    {
+        uint8_t cmd = DPS310_MODE_ONE_TEMP_VAL;
+        err_code |= ctx->write (ctx->comm_ctx, DPS310_MEAS_CFG_REG, &cmd, 1U);
+
+        if (DPS310_SUCCESS != err_code)
+        {
+            err_code |= DPS310_BUS_ERROR;
+            ctx->device_status = DPS310_BUS_ERROR;
+        }
+    }
+
+    return err_code;
+}
+
+// Datasheet 4.9.3
+static uint32_t os_to_scale_factor (const dps310_os_t os)
+{
+    uint32_t sf = 0;
+
+    switch (os)
+    {
+    case DPS310_OS_1:
+        sf = 524288U;
+        break;
+
+    case DPS310_OS_2:
+        sf = 1572864U;
+        break;
+
+    case DPS310_OS_4:
+        sf = 3670016U;
+        break;
+
+    case DPS310_OS_8:
+        sf = 7864320U;
+        break;
+
+    case DPS310_OS_16:
+        sf = 253952U;
+        break;
+
+    case DPS310_OS_32:
+        sf = 516096U;
+        break;
+
+    case DPS310_OS_64:
+        sf = 1040384U;
+        break;
+
+    case DPS310_OS_128:
+        sf = 2088960U;
+        break;
+
+    default:
+        sf = 1;
+        break;
+    }
+
+    return sf;
+}
+
+static float calculate_temperature (dps310_ctx_t * const ctx, const int32_t raw)
+{
+    uint32_t sf = os_to_scale_factor (ctx->temp_osr);
+    float raw_scaled = ( (float) raw) / ( (float) sf);
+    ctx->last_temp_scal = raw_scaled;
+    return ( (float) ctx->c0 * DPS310_C0_WEIGHT) + ( (float) ctx->c1 * raw_scaled);
+}
+
+dps310_status_t dps310_get_single_result (dps310_ctx_t * const ctx, float * const result)
+{
+    dps310_status_t err_code = ctx_ready_check (ctx);
+
+    if (DPS310_SUCCESS == err_code)
+    {
+        uint8_t reg_value[DPS310_TEMP_VAL_LEN] = {0};
+        err_code |= ctx->read (ctx->comm_ctx,
+                               DPS310_TEMP_VAL_REG,
+                               reg_value,
+                               DPS310_TEMP_VAL_LEN);
+
+        if (DPS310_SUCCESS == err_code)
+        {
+            uint32_t b24_value = (reg_value[0U] << 16U)
+                                 + (reg_value[1U] << 8U)
+                                 + reg_value[2U];
+            int32_t raw_value = twos_complement (b24_value, 24U);
+            *result = calculate_temperature (ctx, raw_value);
+        }
+        else
+        {
+            err_code |= DPS310_BUS_ERROR;
+            ctx->device_status = DPS310_BUS_ERROR;
+        }
+    }
+
+    return err_code;
+}
+
 /** @} */

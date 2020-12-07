@@ -220,7 +220,7 @@ dps310_status_t dps310_measure_pressure_once_async (dps310_ctx_t * const ctx);
  * @retval DPS310_ERROR_NULL if ctx or Function pointers are NULL.
  * @retval DPS310_INVALID_STATE if ctx is not initialized, is not busy or has internal error.
  */
-dps310_status_t dps310_get_single_result (dps310_ctx_t * const ctx, float const * result);
+dps310_status_t dps310_get_single_result (dps310_ctx_t * const ctx, float * const result);
 
 /**
  * @brief Starts a continuous temperature and pressure measurement.
