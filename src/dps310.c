@@ -367,7 +367,7 @@ dps310_status_t dps310_config_temp (dps310_ctx_t * const ctx, const dps310_mr_t 
         {
             err_code |= ctx->write (ctx->comm_ctx, DPS310_TEMP_CFG_REG, &cmd, 1U);
 
-            if (temp_osr >= DPS310_MR_16)
+            if (temp_osr >= DPS310_OS_16)
             {
                 err_code |=  mask_set (ctx,
                                        DPS310_CFG_REG,
