@@ -39,10 +39,6 @@ jobs:
               exit 1
           fi
 
-    # Generate folder for PVS report
-    - name: mkdir
-      run: mkdir -p doxygen/html
-
     - name: Install PVS Studio
       run: |
           wget -q -O - https://files.viva64.com/etc/pubkey.txt | sudo apt-key add -
@@ -54,7 +50,7 @@ jobs:
     - name: Run PVS Studio
       run: |
           mkdir -p doxygen/html
-          make clean pvs
+          make pvs
 
     - name: Install SSH Client 🔑
       uses: webfactory/ssh-agent@v0.2.0
