@@ -1,8 +1,13 @@
 var searchData=
 [
-  ['dps310_20driver',['DPS310 driver',['../group___d_p_s310.html',1,'']]],
-  ['dps310_2ec',['dps310.c',['../dps310_8c.html',1,'']]],
-  ['dps310_2eh',['dps310.h',['../dps310_8h.html',1,'']]],
-  ['dps310_5fget_5fproduct_5fid',['dps310_get_product_id',['../group___d_p_s310.html#ga37d20d8de50698589258701e49f3c185',1,'dps310.c']]],
-  ['dps310_5fproduct_5fid_5fval',['DPS310_PRODUCT_ID_VAL',['../group___d_p_s310.html#ga88f2058e788aabd53e8ef7d290f38284',1,'dps310.h']]]
+  ['c0_0',['c0',['../structdps310__ctx__t.html#a13b7d3080c01bd723ab1a6fe17b7e840',1,'dps310_ctx_t']]],
+  ['c00_1',['c00',['../structdps310__ctx__t.html#a913266c7212fc488cf960c7f0f8f1065',1,'dps310_ctx_t']]],
+  ['c01_2',['c01',['../structdps310__ctx__t.html#a5ef1692b14cd2e6d03faa9bd460d8af4',1,'dps310_ctx_t']]],
+  ['c1_3',['c1',['../structdps310__ctx__t.html#a7e300c073e7360e62cc53374daf1a492',1,'dps310_ctx_t']]],
+  ['c10_4',['c10',['../structdps310__ctx__t.html#a6427725362954ffc20aa81aa5bfa5d1a',1,'dps310_ctx_t']]],
+  ['c11_5',['c11',['../structdps310__ctx__t.html#ad2e3230eaa557433a062ab8697d29b3b',1,'dps310_ctx_t']]],
+  ['c20_6',['c20',['../structdps310__ctx__t.html#a42263a4235334344fea2d7718ec524b8',1,'dps310_ctx_t']]],
+  ['c21_7',['c21',['../structdps310__ctx__t.html#afa481b1a972592afc414fc5474700c73',1,'dps310_ctx_t']]],
+  ['c30_8',['c30',['../structdps310__ctx__t.html#ace8136eb85d2e094729a1968a5bb8e06',1,'dps310_ctx_t']]],
+  ['comm_5fctx_9',['comm_ctx',['../structdps310__ctx__t.html#a013aad7d4675e53ac098813d2a83bbf3',1,'dps310_ctx_t']]]
 ];
