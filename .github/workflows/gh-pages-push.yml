@@ -5,7 +5,7 @@ name: GH-Pages-Deploy
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
-  push:
+  pull_request:
     branches: [ master ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -52,7 +52,9 @@ jobs:
           pvs-studio-analyzer credentials  ${{ secrets.PVS_USERNAME }} ${{ secrets.PVS_KEY }}
 
     - name: Run PVS Studio
-      run: make pvs
+      run: |
+          mkdir -p doxygen/html
+          make clean pvs
 
     - name: Install SSH Client 🔑
       uses: webfactory/ssh-agent@v0.2.0
