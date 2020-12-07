@@ -507,3 +507,14 @@ void test_dps310_measure_temp_once_sync_os_128 (void)
     TEST_ASSERT (7U == (dps310_registers[DPS310_TEMP_CFG_REG] & 0x0FU));
     TEST_ASSERT(dps310_registers[DPS310_CFG_REG] & DPS310_CFG_TEMPSH_MASK);
 }
+
+void test_dps310_measure_temp_once_sync_null (void)
+{
+    float result = 0;
+    dps310_status_t status;
+    status = dps310_measure_temp_once_sync (NULL, &result);
+    TEST_ASSERT (DPS310_ERROR_NULL == status);
+    dps310_init(&dps);
+    status = dps310_measure_temp_once_sync (&dps, NULL);
+    TEST_ASSERT (DPS310_ERROR_NULL == status);
+}

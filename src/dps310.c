@@ -505,10 +505,23 @@ uint32_t temp_measurement_time_get (const dps310_ctx_t * const ctx)
 dps310_status_t dps310_measure_temp_once_sync (dps310_ctx_t * const ctx,
         float * const result)
 {
-    dps310_status_t err_code = DPS310_SUCCESS;
-    err_code |= dps310_measure_temp_once_async (ctx);
-    ctx->sleep (temp_measurement_time_get (ctx));
-    err_code |= dps310_get_single_result (ctx, result);
+    dps310_status_t err_code = ctx_ready_check (ctx);
+
+    if (NULL == result)
+    {
+        err_code = DPS310_ERROR_NULL;
+    }
+    else if (DPS310_SUCCESS == err_code)
+    {
+        err_code |= dps310_measure_temp_once_async (ctx);
+        ctx->sleep (temp_measurement_time_get (ctx));
+        err_code |= dps310_get_single_result (ctx, result);
+    }
+    else
+    {
+        // No action needed.
+    }
+
     return err_code;
 }
 
