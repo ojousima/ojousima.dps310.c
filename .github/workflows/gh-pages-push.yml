@@ -26,7 +26,7 @@ jobs:
     # Generate Dox
     - name: Generate dox 
       uses: mattnotmitt/doxygen-action@v1
-        with:
+      with:
           working-directory: '.'
           doxyfile-path: 'Doxyfile'
 
