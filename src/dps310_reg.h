@@ -30,6 +30,7 @@
 #define DPS310_MODE_MASK         (0x07U)
 #define DPS310_CFG_REG           (0x09U)
 #define DPS310_CFG_WMASK         (0xFFU)
+#define DPS310_CFG_TEMPSH_MASK   (0x08U)
 #define DPS310_RST_CFG_REG       (0x0CU)
 #define DPS310_RST_CFG_WMASK     (0x8FU)
 #define DPS310_SOFT_RST_VAL      (0x09U)

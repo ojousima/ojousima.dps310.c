@@ -340,6 +340,17 @@ static dps310_status_t set_os_reg (uint8_t * const reg, const dps310_os_t os)
     return err_code;
 }
 
+static dps310_status_t
+mask_set (const dps310_ctx_t * const ctx, const uint8_t reg_addr, const uint8_t mask)
+{
+    dps310_status_t err_code = DPS310_SUCCESS;
+    uint8_t reg_val = 0;
+    err_code |= ctx->read (ctx->comm_ctx, reg_addr, &reg_val, 1U);
+    reg_val |= mask;
+    err_code |= ctx->write (ctx->comm_ctx, reg_addr, &reg_val, 1U);
+    return err_code;
+}
+
 dps310_status_t dps310_config_temp (dps310_ctx_t * const ctx, const dps310_mr_t temp_mr,
                                     const dps310_os_t temp_osr)
 {
@@ -355,6 +366,13 @@ dps310_status_t dps310_config_temp (dps310_ctx_t * const ctx, const dps310_mr_t 
         if (DPS310_SUCCESS == err_code)
         {
             err_code |= ctx->write (ctx->comm_ctx, DPS310_TEMP_CFG_REG, &cmd, 1U);
+
+            if (temp_osr >= DPS310_MR_16)
+            {
+                err_code |=  mask_set (ctx,
+                                       DPS310_CFG_REG,
+                                       DPS310_CFG_TEMPSH_MASK);
+            }
 
             if (DPS310_SUCCESS == err_code)
             {
@@ -431,10 +449,56 @@ dps310_status_t dps310_standby (dps310_ctx_t * const ctx)
     return err_code;
 }
 
+static uint8_t os_to_num (const dps310_os_t os)
+{
+    uint8_t num = 0;
+
+    switch (os)
+    {
+    case DPS310_OS_1:
+        num = 1U;
+        break;
+
+    case DPS310_OS_2:
+        num = 2U;
+        break;
+
+    case DPS310_OS_4:
+        num = 4U;
+        break;
+
+    case DPS310_OS_8:
+        num = 8U;
+        break;
+
+    case DPS310_OS_16:
+        num = 16U;
+        break;
+
+    case DPS310_OS_32:
+        num = 32U;
+        break;
+
+    case DPS310_OS_64:
+        num = 64U;
+        break;
+
+    case DPS310_OS_128:
+        num = 128U;
+        break;
+
+    default:
+        num = 0;
+        break;
+    }
+
+    return num;
+}
+
 uint32_t temp_measurement_time_get (const dps310_ctx_t * const ctx)
 {
     // Actually 2 + 1.6 * OSR, but rounding up.
-    return 3U + (uint32_t) (1.6F * (float) ctx->temp_osr);
+    return 3U + (uint32_t) (1.6F * (float) os_to_num (ctx->temp_osr));
 }
 
 
