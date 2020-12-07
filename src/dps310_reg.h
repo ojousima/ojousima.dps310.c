@@ -14,18 +14,23 @@
  *
  */
 
+#define DPS310_TEMP_VAL_REG      (0x03U)
+#define DPS310_TEMP_VAL_LEN      (0x03U)
 #define DPS310_PRES_CFG_REG      (0x06U)
 #define DPS310_PRES_CFG_WMASK    (0x7FU)
 #define DPS310_TEMP_CFG_REG      (0x07U)
 #define DPS310_TEMP_CFG_WMASK    (0xFFU)
 #define DPS310_MR_SHIFT          (4U)
+#define DPS310_OS_MASK           (0x07U)
 #define DPS310_MEAS_CFG_REG      (0x08U)
 #define DPS310_MEAS_CFG_WMASK    (0x07U)
 #define DPS310_MEAS_CFG_BOOT_VAL (0xC0U)
 #define DPS310_MODE_STANDBY_VAL  (0x00U)
+#define DPS310_MODE_ONE_TEMP_VAL (0x02U)
 #define DPS310_MODE_MASK         (0x07U)
 #define DPS310_CFG_REG           (0x09U)
 #define DPS310_CFG_WMASK         (0xFFU)
+#define DPS310_CFG_TEMPSH_MASK   (0x08U)
 #define DPS310_RST_CFG_REG       (0x0CU)
 #define DPS310_RST_CFG_WMASK     (0x8FU)
 #define DPS310_SOFT_RST_VAL      (0x09U)
@@ -75,6 +80,7 @@
 #define DPS310_EFUSE_2_VAL         (0x02U)
 #define DPS310_SIM_TABLE_SIZE      (0x63U)
 
+#define DPS310_C0_WEIGHT (0.5F)
 
 /** @} */
 

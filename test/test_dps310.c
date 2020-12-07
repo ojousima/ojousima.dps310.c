@@ -5,6 +5,16 @@
 #include <stdbool.h>
 #include <string.h>
 
+#define INIT_TIME_MS (DPS310_POR_DELAY_MS + DPS310_COEF_DELAY_MS)
+#define MEASURE_1_TIME_MS (4U) // 3.6F to be exact, one sensor, one sample.
+#define MEASURE_2_TIME_MS (6U) // 5.2F to be exact, one sensor, oversample 2.
+#define MEASURE_4_TIME_MS (9U) // 8.24F to be exact, one sensor, oversample 4.
+#define MEASURE_8_TIME_MS (15U) // 14.8F to be exact, one sensor, oversample 8.
+#define MEASURE_16_TIME_MS (28U) // 27.6F to be exact, one sensor, oversample 16.
+#define MEASURE_32_TIME_MS (54U) // 53.2F to be exact, one sensor, oversample 32.
+#define MEASURE_64_TIME_MS (105U) // 104.4F to be exact, one sensor, oversample 64.
+#define MEASURE_128_TIME_MS (207U) // 206.8F to be exact, one sensor, oversample 128.
+
 static uint8_t dps310_registers[DPS310_SIM_TABLE_SIZE];
 static uint32_t time_ms;
 static uint32_t drdy_ms;
@@ -83,6 +93,53 @@ static void assert_on_write_error(const uint8_t reg, const uint8_t value)
   }
 }
 
+static uint32_t get_meas_time_ms (const dps310_os_t os)
+{
+    uint32_t time = 0U;
+    switch(os)
+    {
+      case DPS310_OS_1:
+          time = 4U; // 3.6F to be exact
+          break;
+      default:
+      break;
+    }
+    return time;
+}
+
+static uint32_t get_temp_meas_time_ms(void)
+{
+    uint8_t temp_os_val = dps310_registers[DPS310_TEMP_CFG_REG] & DPS310_OS_MASK;
+    dps310_os_t os =  DPS310_OS_INVALID;
+    switch(temp_os_val)
+    {
+      case 0:
+        os = DPS310_OS_1;
+        break;
+
+      default:
+        break;
+    }
+    return get_meas_time_ms(os);
+}
+
+
+static void simulate_measurement_action(const uint8_t data)
+{
+    switch(data)
+    {
+        case DPS310_MODE_ONE_TEMP_VAL:
+            drdy_ms += get_temp_meas_time_ms();
+            // For OS 1 register value 0x7A1200 and C0 -100, C1 1 => -34.7412 C
+            // scaled_raw 15.2587
+            dps310_registers[DPS310_TEMP_VAL_REG] = 0x7AU;
+            dps310_registers[DPS310_TEMP_VAL_REG + 1] = 0x12U;
+            dps310_registers[DPS310_TEMP_VAL_REG + 2] = 0x00U;
+            dps310_registers[DPS310_MEAS_CFG_REG] &= ~DPS310_MEAS_CFG_WMASK;
+            break;
+    }
+}
+
 static void simulate_write_action(const uint8_t reg_addr, const uint8_t data)
 {
   switch(reg_addr)
@@ -94,6 +151,9 @@ static void simulate_write_action(const uint8_t reg_addr, const uint8_t data)
           drdy_ms += DPS310_COEF_DELAY_MS;
           soft_resets++;
         }
+        break;
+    case DPS310_MEAS_CFG_REG:
+        simulate_measurement_action(data);
         break;
 
     default:
@@ -287,7 +347,7 @@ void test_dps310_standby_ok (void)
 void test_dps310_standby_bus_error(void)
 {
     dps310_init(&dps);
-    bus_code = 11;
+    bus_code = 11U;
     dps310_status_t err_code = dps310_standby (&dps);
     TEST_ASSERT((DPS310_BUS_ERROR + bus_code) == err_code);
     TEST_ASSERT(DPS310_BUS_ERROR == dps.device_status);
@@ -303,4 +363,158 @@ void test_dps310_standby_null (void)
 {
     dps310_status_t err_code = dps310_standby (NULL);
     TEST_ASSERT(DPS310_ERROR_NULL == err_code);
+}
+
+void test_dps310_measure_temp_once_sync_ok (void)
+{
+    float result = 0;
+    // Setup measurement registers
+    dps310_init(&dps);
+    dps310_status_t status = dps310_measure_temp_once_sync (&dps, &result);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT_FLOAT_WITHIN (0.01F, -34.7412F, result);
+    TEST_ASSERT (time_ms >= (INIT_TIME_MS + MEASURE_1_TIME_MS));
+    TEST_ASSERT_FLOAT_WITHIN (0.01F, 15.2587F, dps.last_temp_scal);
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+}
+
+void test_dps310_measure_temp_once_sync_os_2 (void)
+{
+    float result = 0;
+    // Setup measurement registers
+    dps310_init(&dps);
+    dps310_status_t status = dps310_config_temp (&dps, DPS310_MR_1, DPS310_OS_2);
+    status |= dps310_measure_temp_once_sync (&dps, &result);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    // C0 -100, C1 1, tRAW 8 000 000, OS 2
+    TEST_ASSERT_FLOAT_WITHIN (0.01F, -44.9137F, result);
+    TEST_ASSERT (time_ms >= (INIT_TIME_MS + MEASURE_2_TIME_MS));
+    TEST_ASSERT_FLOAT_WITHIN (0.01F, 5.086F, dps.last_temp_scal);
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (1U == (dps310_registers[DPS310_TEMP_CFG_REG] & 0x0FU));
+}
+
+
+void test_dps310_measure_temp_once_sync_os_4 (void)
+{
+    float result = 0;
+    // Setup measurement registers
+    dps310_init(&dps);
+    dps310_status_t status = dps310_config_temp (&dps, DPS310_MR_1, DPS310_OS_4);
+    status |= dps310_measure_temp_once_sync (&dps, &result);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    // C0 -100, C1 1, tRAW 8 000 000, OS 4
+    TEST_ASSERT_FLOAT_WITHIN (0.01F, -47.8201F, result);
+    TEST_ASSERT (time_ms >= (INIT_TIME_MS + MEASURE_4_TIME_MS));
+    TEST_ASSERT_FLOAT_WITHIN (0.01F, 2.1798F, dps.last_temp_scal);
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (2U == (dps310_registers[DPS310_TEMP_CFG_REG] & 0x0FU));
+}
+
+
+void test_dps310_measure_temp_once_sync_os_8 (void)
+{
+    float result = 0;
+    // Setup measurement registers
+    dps310_init(&dps);
+    dps310_status_t status = dps310_config_temp (&dps, DPS310_MR_1, DPS310_OS_8);
+    status |= dps310_measure_temp_once_sync (&dps, &result);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    // C0 -100, C1 1, tRAW 8 000 000, OS 8
+    TEST_ASSERT_FLOAT_WITHIN (0.01F, -48.9827F, result);
+    TEST_ASSERT (time_ms >= (INIT_TIME_MS + MEASURE_8_TIME_MS));
+    TEST_ASSERT_FLOAT_WITHIN (0.01F, 1.0172F, dps.last_temp_scal);
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (3U == (dps310_registers[DPS310_TEMP_CFG_REG] & 0x0FU));
+    TEST_ASSERT(0U == (dps310_registers[DPS310_CFG_REG] & DPS310_CFG_TEMPSH_MASK));
+}
+
+
+void test_dps310_measure_temp_once_sync_os_16 (void)
+{
+    float result = 0;
+    // Setup measurement registers
+    dps310_init(&dps);
+    dps310_status_t status = dps310_config_temp (&dps, DPS310_MR_1, DPS310_OS_16);
+    status |= dps310_measure_temp_once_sync (&dps, &result);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    // C0 -100, C1 1, tRAW 8 000 000, OS 16
+    TEST_ASSERT_FLOAT_WITHIN (0.01F, -18.4979F, result);
+    TEST_ASSERT (time_ms >= (INIT_TIME_MS + MEASURE_16_TIME_MS));
+    TEST_ASSERT_FLOAT_WITHIN (0.01F, 31.5020F, dps.last_temp_scal);
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (4U == (dps310_registers[DPS310_TEMP_CFG_REG] & 0x0FU));
+    TEST_ASSERT(dps310_registers[DPS310_CFG_REG] & DPS310_CFG_TEMPSH_MASK);
+}
+
+
+void test_dps310_measure_temp_once_sync_os_32 (void)
+{
+    float result = 0;
+    // Setup measurement registers
+    dps310_init(&dps);
+    dps310_status_t status = dps310_config_temp (&dps, DPS310_MR_1, DPS310_OS_32);
+    status |= dps310_measure_temp_once_sync (&dps, &result);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    // C0 -100, C1 1, tRAW 8 000 000, OS 32
+    TEST_ASSERT_FLOAT_WITHIN (0.01F, -34.4990F, result);
+    TEST_ASSERT (time_ms >= (INIT_TIME_MS + MEASURE_32_TIME_MS));
+    TEST_ASSERT_FLOAT_WITHIN (0.01F, 15.5009F, dps.last_temp_scal);
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (5U == (dps310_registers[DPS310_TEMP_CFG_REG] & 0x0FU));
+    TEST_ASSERT(dps310_registers[DPS310_CFG_REG] & DPS310_CFG_TEMPSH_MASK);
+}
+
+void test_dps310_measure_temp_once_sync_os_64 (void)
+{
+    float result = 0;
+    // Setup measurement registers
+    dps310_init(&dps);
+    dps310_status_t status = dps310_config_temp (&dps, DPS310_MR_1, DPS310_OS_64);
+    status |= dps310_measure_temp_once_sync (&dps, &result);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    // C0 -100, C1 1, tRAW 8 000 000, OS 64
+    TEST_ASSERT_FLOAT_WITHIN (0.01F, -42.3105F, result);
+    TEST_ASSERT (time_ms >= (INIT_TIME_MS + MEASURE_64_TIME_MS));
+    TEST_ASSERT_FLOAT_WITHIN (0.01F, 7.6894F, dps.last_temp_scal);
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (6U == (dps310_registers[DPS310_TEMP_CFG_REG] & 0x0FU));
+    TEST_ASSERT(dps310_registers[DPS310_CFG_REG] & DPS310_CFG_TEMPSH_MASK);
+}
+
+
+void test_dps310_measure_temp_once_sync_os_128 (void)
+{
+    float result = 0;
+    // Setup measurement registers
+    dps310_init(&dps);
+    dps310_status_t status = dps310_config_temp (&dps, DPS310_MR_1, DPS310_OS_128);
+    status |= dps310_measure_temp_once_sync (&dps, &result);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    // C0 -100, C1 1, tRAW 8 000 000, OS 64
+    TEST_ASSERT_FLOAT_WITHIN (0.01F, -46.1703F, result);
+    TEST_ASSERT (time_ms >= (INIT_TIME_MS + MEASURE_128_TIME_MS));
+    TEST_ASSERT_FLOAT_WITHIN (0.01F, 3.8296F, dps.last_temp_scal);
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (7U == (dps310_registers[DPS310_TEMP_CFG_REG] & 0x0FU));
+    TEST_ASSERT(dps310_registers[DPS310_CFG_REG] & DPS310_CFG_TEMPSH_MASK);
+}
+
+void test_dps310_measure_temp_once_sync_null (void)
+{
+    float result = 0;
+    dps310_status_t status;
+    status = dps310_measure_temp_once_sync (NULL, &result);
+    TEST_ASSERT (DPS310_ERROR_NULL == status);
+    dps310_init(&dps);
+    status = dps310_measure_temp_once_sync (&dps, NULL);
+    TEST_ASSERT (DPS310_ERROR_NULL == status);
 }
