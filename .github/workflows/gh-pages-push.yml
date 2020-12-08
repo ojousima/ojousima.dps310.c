@@ -39,6 +39,10 @@ jobs:
               exit 1
           fi
 
+    # Generate folder for PVS report
+    - name: mkdir
+      run: mkdir -p doxygen/html
+
     - name: Install PVS Studio
       run: |
           wget -q -O - https://files.viva64.com/etc/pubkey.txt | sudo apt-key add -
