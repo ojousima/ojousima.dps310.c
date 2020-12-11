@@ -670,14 +670,16 @@ static float calculate_temperature (dps310_ctx_t * const ctx, const int32_t raw)
     return ( (float) ctx->c0 * DPS310_C0_WEIGHT) + ( (float) ctx->c1 * raw_scaled);
 }
 
-static float calculate_pressure (dps310_ctx_t * const ctx, const int32_t raw)
+static float calculate_pressure (const dps310_ctx_t * const ctx, const int32_t raw)
 {
     uint32_t sf = os_to_scale_factor (ctx->pres_osr);
     float Praw_sc = ( (float) raw) / ( (float) sf);
     float Traw_sc = ctx->last_temp_scal;
     return ctx->c00
-           + Praw_sc * (ctx->c10 + Praw_sc * (ctx->c20 + Praw_sc * ctx->c30))
-           + Traw_sc * ctx->c01 + Traw_sc * Praw_sc * (ctx->c11 + Praw_sc * ctx->c21);
+           + Praw_sc * ( (float) ctx->c10 + Praw_sc * ( (float) ctx->c20 + Praw_sc *
+                         (float) ctx->c30))
+           + Traw_sc * (float) ctx->c01 + Traw_sc * Praw_sc * ( (float) ctx->c11 + Praw_sc *
+                   (float) ctx->c21);
 }
 
 static dps310_status_t dps310_get_single_temp (dps310_ctx_t * const ctx,
