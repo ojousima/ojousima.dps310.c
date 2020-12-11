@@ -21,8 +21,9 @@
 #define DPS310_SUCCESS         (0U)        //!< Return code on successful operation.
 #define DPS310_NOT_INITIALIZED (0U)        //!< Status flag on uninitialized DPS context.
 #define DPS310_READY           (1U << 0U)  //!< Flag for DPS310 struct, sensor can receive commands.
-#define DPS310_BUSY            (1U << 1U)  //!< Flag for DPS310 struct, single async measurement is in progress.
 #define DPS310_CONTINUOUS      (1U << 2U)  //!< Flag for DPS310 struct, continuous measurement is in progress.
+#define DPS310_TEMP_RDY        (1U << 3U)  //!< Flag for DPS310 struct, single temperature measurement is done.
+#define DPS310_PRES_RDY        (1U << 4U)  //!< Flag for DPS310 struct, single pressure measurement is done.
 #define DPS310_MAX_OK          (1U << 8U)  //!< Highest allowed value for "OK" status codes.
 #define DPS310_ERROR_NULL      (1U << 9U)  //!< Return code on NULL context or interface function.
 #define DPS310_INVALID_PARAM   (1U << 10U) //!< Return code on invalid configuration parameter
@@ -193,7 +194,7 @@ dps310_status_t dps310_measure_temp_once_async (dps310_ctx_t * const ctx);
  * @retval DPS310_ERROR_NULL if ctx or Function pointers are NULL.
  * @retval DPS310_INVALID_STATE if ctx is not initialized, is busy or has internal error.
  */
-dps310_status_t dps310_measure_pressure_once_sync (dps310_ctx_t * const ctx,
+dps310_status_t dps310_measure_pres_once_sync (dps310_ctx_t * const ctx,
         float * const result);
 
 /**
@@ -206,7 +207,7 @@ dps310_status_t dps310_measure_pressure_once_sync (dps310_ctx_t * const ctx,
  * @retval DPS310_ERROR_NULL if ctx or Function pointers are NULL.
  * @retval DPS310_INVALID_STATE if ctx is not initialized, is busy or has internal error.
  */
-dps310_status_t dps310_measure_pressure_once_async (dps310_ctx_t * const ctx);
+dps310_status_t dps310_measure_pres_once_async (dps310_ctx_t * const ctx);
 
 /**
  * @brief Get the result async measurement, in C or Pa.
