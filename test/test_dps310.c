@@ -31,6 +31,12 @@ static void check_reserved_registers(void)
     }
 }
 
+/**
+ * The register values here are heuristically iterated, i.e. guessed. 
+ * They produce some physically meaningless values, such as negative absolute pressure
+ * and values which DPS310 could not measure, but they can be used to verify the
+ * mathematics in driver.  
+ */
 static void init_dps_regs(void)
 {
     memset(dps310_registers, 0, sizeof(dps310_registers));
@@ -449,7 +455,6 @@ void test_dps310_measure_temp_once_sync_os_2 (void)
     TEST_ASSERT (1U == (dps310_registers[DPS310_TEMP_CFG_REG] & 0x0FU));
 }
 
-
 void test_dps310_measure_temp_once_sync_os_4 (void)
 {
     float result = 0;
@@ -583,4 +588,133 @@ void test_dps310_measure_pres_once_sync_ok (void)
     TEST_ASSERT (time_ms >= (INIT_TIME_MS + MEASURE_1_TIME_MS));
     TEST_ASSERT (DPS310_MODE_STANDBY_VAL 
                  == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+}
+
+void test_dps310_measure_pres_once_sync_null (void)
+{
+    float result = 0;
+    // Setup measurement registers
+    dps310_init(&dps);
+    dps.last_temp_scal = 75.0F;
+    dps310_status_t status = dps310_measure_pres_once_sync (NULL, &result);
+    TEST_ASSERT (DPS310_ERROR_NULL == status);
+    status = dps310_measure_pres_once_sync (&dps, NULL);
+    TEST_ASSERT (DPS310_ERROR_NULL == status);
+}
+
+void test_dps310_measure_pres_once_sync_os_2 (void)
+{
+    float result = 0;
+    // Setup measurement registers
+    dps310_init(&dps);
+    dps.last_temp_scal = 75.0F;
+    dps310_status_t status = dps310_config_pres (&dps, DPS310_MR_1, DPS310_OS_2);
+    status |= dps310_measure_pres_once_sync (&dps, &result);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT_FLOAT_WITHIN (0.1F, 41681.403F, result);
+    TEST_ASSERT (time_ms >= (INIT_TIME_MS + MEASURE_2_TIME_MS));
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (1U == (dps310_registers[DPS310_PRES_CFG_REG] & 0x0FU));
+}
+
+void test_dps310_measure_pres_once_sync_os_4 (void)
+{
+    float result = 0;
+    // Setup measurement registers
+    dps310_init(&dps);
+    dps.last_temp_scal = 75.0F;
+    dps310_status_t status = dps310_config_pres (&dps, DPS310_MR_1, DPS310_OS_4);
+    status |= dps310_measure_pres_once_sync (&dps, &result);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT_FLOAT_WITHIN (0.1F, 91530.439F, result);
+    TEST_ASSERT (time_ms >= (INIT_TIME_MS + MEASURE_4_TIME_MS));
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (2U == (dps310_registers[DPS310_PRES_CFG_REG] & 0x0FU));
+}
+
+void test_dps310_measure_pres_once_sync_os_8 (void)
+{
+    float result = 0;
+    // Setup measurement registers
+    dps310_init(&dps);
+    dps.last_temp_scal = 75.0F;
+    dps310_status_t status = dps310_config_pres (&dps, DPS310_MR_1, DPS310_OS_8);
+    status |= dps310_measure_pres_once_sync (&dps, &result);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT_FLOAT_WITHIN (0.1F, 111980.16F, result);
+    TEST_ASSERT (time_ms >= (INIT_TIME_MS + MEASURE_8_TIME_MS));
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (3U == (dps310_registers[DPS310_PRES_CFG_REG] & 0x0FU));
+    TEST_ASSERT (0U == (dps310_registers[DPS310_CFG_REG] & DPS310_CFG_PRESSH_MASK));
+}
+
+void test_dps310_measure_pres_once_sync_os_16 (void)
+{
+    float result = 0;
+    // Setup measurement registers
+    dps310_init(&dps);
+    dps.last_temp_scal = 75.0F;
+    dps310_status_t status = dps310_config_pres (&dps, DPS310_MR_1, DPS310_OS_16);
+    status |= dps310_measure_pres_once_sync (&dps, &result);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT_FLOAT_WITHIN (0.1F, -91732.592F, result);
+    TEST_ASSERT (time_ms >= (INIT_TIME_MS + MEASURE_16_TIME_MS));
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (4U == (dps310_registers[DPS310_PRES_CFG_REG] & 0x0FU));
+    TEST_ASSERT (dps310_registers[DPS310_CFG_REG] & DPS310_CFG_PRESSH_MASK);
+}
+
+void test_dps310_measure_pres_once_sync_os_32 (void)
+{
+    float result = 0;
+    // Setup measurement registers
+    dps310_init(&dps);
+    dps.last_temp_scal = 75.0F;
+    dps310_status_t status = dps310_config_pres (&dps, DPS310_MR_1, DPS310_OS_32);
+    status |= dps310_measure_pres_once_sync (&dps, &result);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT_FLOAT_WITHIN (0.1F, -101889.69F, result);
+    TEST_ASSERT (time_ms >= (INIT_TIME_MS + MEASURE_32_TIME_MS));
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (5U == (dps310_registers[DPS310_PRES_CFG_REG] & 0x0FU));
+    TEST_ASSERT (dps310_registers[DPS310_CFG_REG] & DPS310_CFG_PRESSH_MASK);
+}
+
+void test_dps310_measure_pres_once_sync_os_64 (void)
+{
+    float result = 0;
+    // Setup measurement registers
+    dps310_init(&dps);
+    dps.last_temp_scal = 75.0F;
+    dps310_status_t status = dps310_config_pres (&dps, DPS310_MR_1, DPS310_OS_64);
+    status |= dps310_measure_pres_once_sync (&dps, &result);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT_FLOAT_WITHIN (0.1F, -463.24456F, result);
+    TEST_ASSERT (time_ms >= (INIT_TIME_MS + MEASURE_64_TIME_MS));
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (6U == (dps310_registers[DPS310_PRES_CFG_REG] & 0x0FU));
+    TEST_ASSERT (dps310_registers[DPS310_CFG_REG] & DPS310_CFG_PRESSH_MASK);
+}
+
+void test_dps310_measure_pres_once_sync_os_128 (void)
+{
+    float result = 0;
+    // Setup measurement registers
+    dps310_init(&dps);
+    dps.last_temp_scal = 75.0F;
+    dps310_status_t status = dps310_config_pres (&dps, DPS310_MR_1, DPS310_OS_128);
+    status |= dps310_measure_pres_once_sync (&dps, &result);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT_FLOAT_WITHIN (0.1F, 62951.915F, result);
+    TEST_ASSERT (time_ms >= (INIT_TIME_MS + MEASURE_128_TIME_MS));
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (7U == (dps310_registers[DPS310_PRES_CFG_REG] & 0x0FU));
+    TEST_ASSERT (dps310_registers[DPS310_CFG_REG] & DPS310_CFG_PRESSH_MASK);
 }
