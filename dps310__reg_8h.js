@@ -1,6 +1,7 @@
 var dps310__reg_8h =
 [
     [ "DPS310_C0_WEIGHT", "group___d_p_s310.html#ga4231b41db7b0f5574bc2c9e6243b8d42", null ],
+    [ "DPS310_CFG_PRESSH_MASK", "group___d_p_s310.html#gad891abd09e4dc4bc58559844861406f0", null ],
     [ "DPS310_CFG_REG", "group___d_p_s310.html#gaa0b2e6f568b635fc545ea075a0c70e07", null ],
     [ "DPS310_CFG_TEMPSH_MASK", "group___d_p_s310.html#gaa806d35bee0585fe54dde18a4d6c7453", null ],
     [ "DPS310_CFG_WMASK", "group___d_p_s310.html#ga0f9c888830c3cbc81df122caf433a836", null ],
@@ -37,12 +38,15 @@ var dps310__reg_8h =
     [ "DPS310_MEAS_CFG_REG", "group___d_p_s310.html#ga2446fbe30ea63d5e2ff86e9e63d69886", null ],
     [ "DPS310_MEAS_CFG_WMASK", "group___d_p_s310.html#gab718c68c871b991516428337be443d0d", null ],
     [ "DPS310_MODE_MASK", "group___d_p_s310.html#ga6fed2ad62df853143d5c99baed1f6005", null ],
+    [ "DPS310_MODE_ONE_PRES_VAL", "group___d_p_s310.html#ga802c5fb6a5e3f1172ddd15b916a8022c", null ],
     [ "DPS310_MODE_ONE_TEMP_VAL", "group___d_p_s310.html#ga4b07f21bc4faeec55edbfd184bfbf43c", null ],
     [ "DPS310_MODE_STANDBY_VAL", "group___d_p_s310.html#ga1bdd97f5890e507ec147d11058316ee6", null ],
     [ "DPS310_MR_SHIFT", "group___d_p_s310.html#gaa8ac0c88288e6fe249a8d66ac1515f66", null ],
     [ "DPS310_OS_MASK", "group___d_p_s310.html#gadf8593a9d49214ee85400e309c11a024", null ],
     [ "DPS310_PRES_CFG_REG", "group___d_p_s310.html#ga83c1053768ae737fa6dab203f4bb1e58", null ],
     [ "DPS310_PRES_CFG_WMASK", "group___d_p_s310.html#gabf97b3a422fb92b2d09b5d17730d6b4f", null ],
+    [ "DPS310_PRES_VAL_LEN", "group___d_p_s310.html#gafb2fb7e47a9bc9b84f70e8fb8b904c6c", null ],
+    [ "DPS310_PRES_VAL_REG", "group___d_p_s310.html#ga088f3eb3f6094cff4c0ec3c86f3a11f6", null ],
     [ "DPS310_PROD_ID_BOOT_VAL", "group___d_p_s310.html#ga765576758574bbaca0028f16e4cda9de", null ],
     [ "DPS310_PROD_ID_MASK", "group___d_p_s310.html#ga6f188bcf3650189c76b6486baa572788", null ],
     [ "DPS310_PROD_ID_REG", "group___d_p_s310.html#ga95ed2af5ded8e756c7275555e882f06d", null ],
