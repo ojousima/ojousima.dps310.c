@@ -1,5 +1,6 @@
 var test__dps310_8c =
 [
+    [ "DPS310_SIM_TABLE_SIZE", "test__dps310_8c.html#ac14b31848af0e9e390ea86a52ad654b2", null ],
     [ "INIT_TIME_MS", "test__dps310_8c.html#a34f581b8e91b6c8bfda0bf8b4e569b60", null ],
     [ "MEASURE_128_TIME_MS", "test__dps310_8c.html#a1b1c561f30b375f8eb7abeb360b3617c", null ],
     [ "MEASURE_16_TIME_MS", "test__dps310_8c.html#a74ee4657b6356dba8af4573a60e91c52", null ],
@@ -11,6 +12,7 @@ var test__dps310_8c =
     [ "MEASURE_8_TIME_MS", "test__dps310_8c.html#a37593113f4dbd7057da9f646fed824d5", null ],
     [ "setUp", "test__dps310_8c.html#a95c834d6178047ce9e1bce7cbfea2836", null ],
     [ "tearDown", "test__dps310_8c.html#a9909011e5fea0c018842eec4d93d0662", null ],
+    [ "test_dps310_get_continuous_results_ok", "test__dps310_8c.html#a20484be665681fb695577a468daaf592", null ],
     [ "test_dps310_init_bus_error", "test__dps310_8c.html#a1e52f99b4b53b431b9ad0d30d5b74bb8", null ],
     [ "test_dps310_init_invalid_ctx", "test__dps310_8c.html#ad3446e00d0ad7d8c2a24d6ad3291ce49", null ],
     [ "test_dps310_init_null", "test__dps310_8c.html#a6a0f4ce823023b6ba32f458e3f8839fb", null ],

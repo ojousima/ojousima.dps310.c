@@ -8,7 +8,7 @@ var indexSectionsWithContent =
   5: "d",
   6: "d",
   7: "d",
-  8: "im",
+  8: "dim",
   9: "d",
   10: "o"
 };

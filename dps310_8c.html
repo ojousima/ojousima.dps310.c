@@ -93,6 +93,7 @@ $(document).ready(function(){initNavTree('dps310_8c.html',''); initResizable(); 
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="dps310_8h_source.html">dps310.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="dps310__reg_8h_source.html">dps310_reg.h</a>&quot;</code><br />
+<code>#include &lt;stdbool.h&gt;</code><br />
 <code>#include &lt;stddef.h&gt;</code><br />
 </div>
 <p><a href="dps310_8c_source.html">Go to the source code of this file.</a></p>
@@ -108,9 +109,6 @@ Functions</h2></td></tr>
 <tr class="memitem:ga61d8bfe49ec20143562adc55cff0ec2f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___d_p_s310.html#gab94af8718e0260c5de8ffb92a10eb816">dps310_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_p_s310.html#ga61d8bfe49ec20143562adc55cff0ec2f">dps310_config_pres</a> (<a class="el" href="structdps310__ctx__t.html">dps310_ctx_t</a> *const ctx, const <a class="el" href="group___d_p_s310.html#ga206153705c76aefe0254bc4e81d3380b">dps310_mr_t</a> pres_mr, const <a class="el" href="group___d_p_s310.html#gaa61a2290d5a19052c63cbcaf364a3861">dps310_os_t</a> pres_osr)</td></tr>
 <tr class="memdesc:ga61d8bfe49ec20143562adc55cff0ec2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configure pressure measurement.  <a href="group___d_p_s310.html#ga61d8bfe49ec20143562adc55cff0ec2f">More...</a><br /></td></tr>
 <tr class="separator:ga61d8bfe49ec20143562adc55cff0ec2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4889050ae32aaad8678095023f3c33ec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___d_p_s310.html#gab94af8718e0260c5de8ffb92a10eb816">dps310_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_p_s310.html#ga4889050ae32aaad8678095023f3c33ec">dps310_measure_continuous_async</a> (<a class="el" href="structdps310__ctx__t.html">dps310_ctx_t</a> *const ctx)</td></tr>
-<tr class="memdesc:ga4889050ae32aaad8678095023f3c33ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts a continuous temperature and pressure measurement.  <a href="group___d_p_s310.html#ga4889050ae32aaad8678095023f3c33ec">More...</a><br /></td></tr>
-<tr class="separator:ga4889050ae32aaad8678095023f3c33ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0086d62a4dc01b85a49f3b5c19dad3a9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___d_p_s310.html#gab94af8718e0260c5de8ffb92a10eb816">dps310_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_p_s310.html#ga0086d62a4dc01b85a49f3b5c19dad3a9">dps310_standby</a> (<a class="el" href="structdps310__ctx__t.html">dps310_ctx_t</a> *const ctx)</td></tr>
 <tr class="memdesc:ga0086d62a4dc01b85a49f3b5c19dad3a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the DPS310 to standby mode.  <a href="group___d_p_s310.html#ga0086d62a4dc01b85a49f3b5c19dad3a9">More...</a><br /></td></tr>
 <tr class="separator:ga0086d62a4dc01b85a49f3b5c19dad3a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -129,6 +127,12 @@ Functions</h2></td></tr>
 <tr class="memitem:ga0960168799525a18bc7432c10cdd0f23"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___d_p_s310.html#gab94af8718e0260c5de8ffb92a10eb816">dps310_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_p_s310.html#ga0960168799525a18bc7432c10cdd0f23">dps310_measure_pres_once_sync</a> (<a class="el" href="structdps310__ctx__t.html">dps310_ctx_t</a> *const ctx, float *const result)</td></tr>
 <tr class="memdesc:ga0960168799525a18bc7432c10cdd0f23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Perform one pressure measurement.  <a href="group___d_p_s310.html#ga0960168799525a18bc7432c10cdd0f23">More...</a><br /></td></tr>
 <tr class="separator:ga0960168799525a18bc7432c10cdd0f23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4889050ae32aaad8678095023f3c33ec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___d_p_s310.html#gab94af8718e0260c5de8ffb92a10eb816">dps310_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_p_s310.html#ga4889050ae32aaad8678095023f3c33ec">dps310_measure_continuous_async</a> (<a class="el" href="structdps310__ctx__t.html">dps310_ctx_t</a> *const ctx)</td></tr>
+<tr class="memdesc:ga4889050ae32aaad8678095023f3c33ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts a continuous temperature and pressure measurement.  <a href="group___d_p_s310.html#ga4889050ae32aaad8678095023f3c33ec">More...</a><br /></td></tr>
+<tr class="separator:ga4889050ae32aaad8678095023f3c33ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1164022ff128545e830786470d87f12f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___d_p_s310.html#gab94af8718e0260c5de8ffb92a10eb816">dps310_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_p_s310.html#ga1164022ff128545e830786470d87f12f">dps310_get_cont_results</a> (<a class="el" href="structdps310__ctx__t.html">dps310_ctx_t</a> *const ctx, float *const temp, uint8_t *const temp_count, float *const pres, uint8_t *const pres_count)</td></tr>
+<tr class="memdesc:ga1164022ff128545e830786470d87f12f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get results stored to FIFO in continuous mode, oldest measurement first.  <a href="group___d_p_s310.html#ga1164022ff128545e830786470d87f12f">More...</a><br /></td></tr>
+<tr class="separator:ga1164022ff128545e830786470d87f12f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Implementation of DPS310 driver. </p>

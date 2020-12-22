@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['init_5ftime_5fms_279',['INIT_TIME_MS',['../test__dps310_8c.html#a34f581b8e91b6c8bfda0bf8b4e569b60',1,'test_dps310.c']]]
+  ['dps310_5fsim_5ftable_5fsize_289',['DPS310_SIM_TABLE_SIZE',['../test__dps310_8c.html#ac14b31848af0e9e390ea86a52ad654b2',1,'test_dps310.c']]]
 ];
