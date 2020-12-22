@@ -14,6 +14,7 @@
 
 #include "dps310.h"
 #include "dps310_reg.h"
+#include <stdbool.h>
 #include <stddef.h>
 
 // Valid up to 31 bits
@@ -75,6 +76,35 @@ static dps310_status_t ctx_ready_check (const dps310_ctx_t * const ctx)
     }
     // Other states can be interpreted as invalid state.
     else if (DPS310_READY != ctx->device_status)
+    {
+        status = DPS310_INVALID_STATE;
+    }
+    else
+    {
+        // No action needed.
+    }
+
+    return status;
+}
+
+static dps310_status_t ctx_cont_check (const dps310_ctx_t * const ctx)
+{
+    dps310_status_t status = DPS310_SUCCESS;
+
+    if ( (NULL == ctx)
+            || (NULL == ctx->sleep)
+            || (NULL == ctx->write)
+            || (NULL == ctx->read))
+    {
+        status = DPS310_ERROR_NULL;
+    }
+    // Bus error code must be returned as-is to application.
+    else if (DPS310_BUS_ERROR == ctx->device_status)
+    {
+        status = DPS310_BUS_ERROR;
+    }
+    // Other states can be interpreted as invalid state.
+    else if (DPS310_CONTINUOUS != ctx->device_status)
     {
         status = DPS310_INVALID_STATE;
     }
@@ -458,11 +488,6 @@ dps310_status_t dps310_config_pres (dps310_ctx_t * const ctx, const dps310_mr_t 
     return err_code;
 }
 
-dps310_status_t dps310_measure_continuous_async (dps310_ctx_t * const ctx)
-{
-    return DPS310_NOT_IMPLEMENTED;
-}
-
 dps310_status_t dps310_standby (dps310_ctx_t * const ctx)
 {
     dps310_status_t err_code = ctx_status_check (ctx);
@@ -682,6 +707,15 @@ static float calculate_pressure (const dps310_ctx_t * const ctx, const int32_t r
                    (float) ctx->c21);
 }
 
+static inline __attribute__ ( (nonnull)) int32_t
+regs_to_i32 (const uint8_t * const regs)
+{
+    uint32_t b24_value = (regs[0U] << 16U)
+                         + (regs[1U] << 8U)
+                         + regs[2U];
+    return twos_complement (b24_value, 24U);
+}
+
 static dps310_status_t dps310_get_single_temp (dps310_ctx_t * const ctx,
         float * const result)
 {
@@ -694,11 +728,7 @@ static dps310_status_t dps310_get_single_temp (dps310_ctx_t * const ctx,
 
     if (DPS310_SUCCESS == err_code)
     {
-        uint32_t b24_value = (reg_value[0U] << 16U)
-                             + (reg_value[1U] << 8U)
-                             + reg_value[2U];
-        int32_t raw_value = twos_complement (b24_value, 24U);
-        *result = calculate_temperature (ctx, raw_value);
+        *result = calculate_temperature (ctx, regs_to_i32 (reg_value));
         ctx->device_status = DPS310_READY;
     }
     else
@@ -722,11 +752,7 @@ static dps310_status_t dps310_get_single_pres (dps310_ctx_t * const ctx,
 
     if (DPS310_SUCCESS == err_code)
     {
-        uint32_t b24_value = (reg_value[0U] << 16U)
-                             + (reg_value[1U] << 8U)
-                             + reg_value[2U];
-        int32_t raw_value = twos_complement (b24_value, 24U);
-        *result = calculate_pressure (ctx, raw_value);
+        *result = calculate_pressure (ctx, regs_to_i32 (reg_value));
         ctx->device_status = DPS310_READY;
     }
     else
@@ -780,6 +806,95 @@ dps310_measure_pres_once_sync (dps310_ctx_t * const ctx, float * const result)
     else
     {
         // No action needed.
+    }
+
+    return err_code;
+}
+
+dps310_status_t dps310_measure_continuous_async (dps310_ctx_t * const ctx)
+{
+    dps310_status_t err_code = ctx_ready_check (ctx);
+
+    if (DPS310_SUCCESS == err_code)
+    {
+        uint8_t reg_value[1U] = {DPS310_MODE_CONT_BOTH_VAL};
+        err_code |= ctx->write (ctx->comm_ctx,
+                                DPS310_MEAS_CFG_REG,
+                                reg_value,
+                                1U);
+
+        if (DPS310_SUCCESS == err_code)
+        {
+            ctx->device_status = DPS310_CONTINUOUS;
+        }
+        else
+        {
+            err_code |= DPS310_BUS_ERROR;
+            ctx->device_status = DPS310_BUS_ERROR;
+        }
+    }
+
+    return err_code;
+}
+
+static inline __attribute__ ( (nonnull)) bool
+fifo_entry_is_eof (const uint8_t * const entry)
+{
+    return ( (DPS310_FIFO_VAL_EOF_B0 ==  entry[0])
+             && (DPS310_FIFO_VAL_EOF_B1 ==  entry[1])
+             && (DPS310_FIFO_VAL_EOF_B2 ==  entry[2]));
+}
+
+static inline __attribute__ ( (nonnull)) bool
+fifo_entry_is_pres (const uint8_t * const entry)
+{
+    // FIFO entry type is identified by the least significant bit.
+    return (entry[2] & 0x01U);
+}
+
+dps310_status_t dps310_get_cont_results (dps310_ctx_t * const ctx, float * const temp,
+        uint8_t * const temp_count, float * const pres, uint8_t * const pres_count)
+{
+    dps310_status_t err_code = ctx_cont_check (ctx);
+    uint8_t temp_entries = 0U;
+    uint8_t pres_entries = 0U;
+
+    if (DPS310_SUCCESS == err_code)
+    {
+        uint8_t fifo_entry[3U] = {0};
+        bool output_full = false;
+
+        while ( (!fifo_entry_is_eof (fifo_entry)) && (!output_full)
+                && (DPS310_SUCCESS == err_code))
+        {
+            err_code |= ctx->read (ctx->comm_ctx, DPS310_FIFO_VAL_REG, fifo_entry,
+                                   DPS310_FIFO_VAL_LEN);
+
+            if (fifo_entry_is_pres (fifo_entry))
+            {
+                float result = calculate_pressure (ctx, regs_to_i32 (fifo_entry));
+                pres[pres_entries++] = result;
+                output_full = (pres_entries == *pres_count);
+            }
+            else if (!fifo_entry_is_eof (fifo_entry))
+            {
+                float result = calculate_temperature (ctx, regs_to_i32 (fifo_entry));
+                temp[temp_entries++] = result;
+                output_full = (temp_entries == *temp_count);
+            }
+            else
+            {
+                // EOF
+                *temp_count = temp_entries;
+                *pres_count = pres_entries;
+            }
+
+            if (DPS310_SUCCESS != err_code)
+            {
+                err_code |= DPS310_BUS_ERROR;
+                ctx->device_status = DPS310_BUS_ERROR;
+            }
+        }
     }
 
     return err_code;

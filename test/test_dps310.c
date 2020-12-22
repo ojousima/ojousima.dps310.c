@@ -14,8 +14,22 @@
 #define MEASURE_32_TIME_MS (54U) // 53.2F to be exact, one sensor, oversample 32.
 #define MEASURE_64_TIME_MS (105U) // 104.4F to be exact, one sensor, oversample 64.
 #define MEASURE_128_TIME_MS (207U) // 206.8F to be exact, one sensor, oversample 128.
+#define DPS310_SIM_TABLE_SIZE      (0x63U)
 
 static uint8_t dps310_registers[DPS310_SIM_TABLE_SIZE];
+// FIFO registers, 32 measurements, 4 pressure measurements for one temperature measurement. 
+// Type of measurement is identified by least significant bit of 3-byte measurement.
+// Last entry is FIFO EOF
+static const uint8_t dps310_fifo_p4_t1[3U*33U] = {
+  0x7AU, 0x10U, 0x01U, 0x7AU, 0x11U, 0x01U, 0x7AU, 0x12U, 0x01U, 0x7AU, 0x13U, 0x01U, 0x7AU, 0x10U, 0x00U,
+  0x7AU, 0x14U, 0x01U, 0x7AU, 0x15U, 0x01U, 0x7AU, 0x16U, 0x01U, 0x7AU, 0x17U, 0x01U, 0x7AU, 0x11U, 0x00U,
+  0x7AU, 0x18U, 0x01U, 0x7AU, 0x19U, 0x01U, 0x7AU, 0x1AU, 0x01U, 0x7AU, 0x1BU, 0x01U, 0x7AU, 0x12U, 0x00U,
+  0x7AU, 0x1CU, 0x01U, 0x7AU, 0x1DU, 0x01U, 0x7AU, 0x1EU, 0x01U, 0x7AU, 0x1FU, 0x01U, 0x7AU, 0x13U, 0x00U,
+  0x7AU, 0x20U, 0x01U, 0x7AU, 0x21U, 0x01U, 0x7AU, 0x22U, 0x01U, 0x7AU, 0x23U, 0x01U, 0x7AU, 0x14U, 0x00U,
+  0x7AU, 0x24U, 0x01U, 0x7AU, 0x25U, 0x01U, 0x7AU, 0x26U, 0x01U, 0x7AU, 0x27U, 0x01U, 0x7AU, 0x15U, 0x00U,
+  0x7AU, 0x28U, 0x01U, 0x7AU, 0x29U, 0x01U, 0x80U, 0x00U, 0x00U
+};
+static uint8_t fifo_idx;
 static uint32_t time_ms;
 static uint32_t drdy_ms;
 static int32_t bus_code;
@@ -239,14 +253,31 @@ static uint32_t mock_write(const void* const comm_ctx,
     return bus_code;
 }
 
-static uint32_t mock_read( const void* const comm_ctx, 
-                          const uint8_t reg_addr, 
-                          uint8_t * const data, 
-                          const uint8_t data_len)
+static void simulate_fifo_read(const uint8_t reg_addr)
+{
+    if( (DPS310_PRES_VAL_REG == reg_addr)
+       && (DPS310_MODE_CONT_BOTH_VAL 
+           == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK)))
+    {
+      dps310_registers[DPS310_PRES_VAL_REG] = dps310_fifo_p4_t1[fifo_idx];
+      dps310_registers[DPS310_PRES_VAL_REG + 1U] = dps310_fifo_p4_t1[fifo_idx + 1U];
+      dps310_registers[DPS310_PRES_VAL_REG + 2U] = dps310_fifo_p4_t1[fifo_idx + 2U];
+      fifo_idx +=3;
+    }
+}
+
+static uint32_t mock_read (const void* const comm_ctx, 
+                           const uint8_t reg_addr, 
+                           uint8_t * const data, 
+                           const uint8_t data_len)
 {
     for(uint8_t ii = 0; ii < data_len; ii++)
     {
         assert_on_read_error();
+        if(0 == ii)
+        {
+            simulate_fifo_read(reg_addr);
+        }
         data[ii] = dps310_registers[reg_addr + ii];
     }
     return bus_code;
@@ -306,6 +337,7 @@ void setUp(void)
     bus_code = 0;
     efuse_writes = 0;
     soft_resets = 0;
+    fifo_idx = 0;
     reset_dps_ctx(&dps);
 }
 
@@ -717,4 +749,23 @@ void test_dps310_measure_pres_once_sync_os_128 (void)
                  == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
     TEST_ASSERT (7U == (dps310_registers[DPS310_PRES_CFG_REG] & 0x0FU));
     TEST_ASSERT (dps310_registers[DPS310_CFG_REG] & DPS310_CFG_PRESSH_MASK);
+}
+
+
+void test_dps310_get_continuous_results_ok (void)
+{
+    float temperature[32U] = {0};
+    float pressure[32U] = {0};
+    uint8_t pres_count = 32U;
+    uint8_t temp_count = 32U;
+    // Setup measurement registers
+    dps310_init(&dps);
+    dps310_status_t status = dps310_config_temp (&dps, DPS310_MR_1, DPS310_OS_1);
+    status |= dps310_config_pres (&dps, DPS310_MR_4, DPS310_OS_1);
+    status |= dps310_measure_continuous_async (&dps);
+    status |= dps310_get_cont_results (&dps, temperature, &temp_count,
+                                        pressure, &pres_count);
+    TEST_ASSERT(DPS310_SUCCESS == status);
+    TEST_ASSERT(6U == temp_count);
+    TEST_ASSERT(26U == pres_count);
 }

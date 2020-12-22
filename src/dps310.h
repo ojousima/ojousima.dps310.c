@@ -229,6 +229,9 @@ dps310_status_t dps310_get_single_result (dps310_ctx_t * const ctx, float * cons
  * Measurement rate and oversampling rate for temperature and pressure measurement are read from the context.
  * Thw sensor must be in DPS310_READY mode when this function is called.
  *
+ * After this function has been called, only @ref dps310_get_cont_results, @ref dps310_standby
+ * and @ref dps310_uninit are allowed.
+ *
  * @param[in,out] ctx Input: State of sensor. Output: Updated state of sensor.
  * @retval DPS310_SUCCESS on success.
  * @retval DPS310_ERROR_NULL if ctx or Function pointers are NULL.
@@ -241,12 +244,17 @@ dps310_status_t dps310_measure_continuous_async (dps310_ctx_t * const ctx);
  *
  * @param[in,out] ctx Input: State of sensor. Output: Updated state of sensor.
  * @param[out] temp A pointer to buffer where temperature results will be placed to, in C.
+ * @param[in,out] temp_count Input: Number of elements in buffer. Output: number of read elements, 0 if no elements were read.
  * @param[out] pres A pointer to buffer where pressure results will be placed to, in Pa.
- * @param[in,out] count Input: Number of elements in buffer. Output: number of read elements, 0 if no elements were read.
+ * @param[in,out] pres_count Input: Number of elements in buffer. Output: number of read elements, 0 if no elements were read.
  * @return status code, 0 on success.
+ *
+ * @note If temperature and pressure have different measurement rates, the output values will not be even.
+ * e.g. if temperature measurement rate is 1 and pressure measurement rate is 4, there's going to be 4 pressure
+ * measurements for every temperature measurement.
  */
 dps310_status_t dps310_get_cont_results (dps310_ctx_t * const ctx, float * const temp,
-        float * const pres, uint8_t * const count);
+        uint8_t * const temp_count, float * const pres, uint8_t * const pres_count);
 
 /**
  * @brief Initialize DPS310 instance.
