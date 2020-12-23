@@ -781,6 +781,22 @@ void test_dps310_measure_pres_once_sync_os_128 (void)
     TEST_ASSERT (dps310_registers[DPS310_CFG_REG] & DPS310_CFG_PRESSH_MASK);
 }
 
+void test_dps310_config_pres_temp_os_mr (void)
+{
+    dps310_init (&dps);
+    dps310_status_t status = dps310_config_pres (&dps, DPS310_MR_16, DPS310_OS_16);
+    status = dps310_config_temp (&dps, DPS310_MR_16, DPS310_OS_16);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT (DPS310_MR_VAL_16 == (dps310_registers[DPS310_PRES_CFG_REG] &
+                                      DPS310_MR_MASK));
+    TEST_ASSERT (DPS310_OS_VAL_16 == (dps310_registers[DPS310_PRES_CFG_REG] &
+                                      DPS310_OS_MASK));
+    TEST_ASSERT (DPS310_MR_VAL_16 == (dps310_registers[DPS310_TEMP_CFG_REG] &
+                                      DPS310_MR_MASK));
+    TEST_ASSERT (DPS310_OS_VAL_16 == (dps310_registers[DPS310_TEMP_CFG_REG] &
+                                      DPS310_OS_MASK));
+}
+
 void test_dps310_measure_continuous_async_both_ok (void)
 {
     dps310_init (&dps);

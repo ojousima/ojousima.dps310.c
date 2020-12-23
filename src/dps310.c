@@ -317,41 +317,42 @@ static __attribute__ ((nonnull))
 dps310_status_t set_mr_reg (uint8_t * const reg, const dps310_mr_t mr)
 {
     dps310_status_t err_code = DPS310_SUCCESS;
+    *reg &= ~DPS310_MR_MASK;
 
     switch (mr)
     {
         // Switching sensor to off is controlled by a separate register, NONE has no effect.
         case DPS310_MR_NONE:
         case DPS310_MR_1:
-            *reg = 0U << DPS310_MR_SHIFT;
+            *reg |= DPS310_MR_VAL_1;
             break;
 
         case DPS310_MR_2:
-            *reg = 1U << DPS310_MR_SHIFT;
+            *reg |= DPS310_MR_VAL_2;
             break;
 
         case DPS310_MR_4:
-            *reg = 2U << DPS310_MR_SHIFT;
+            *reg |= DPS310_MR_VAL_4;
             break;
 
         case DPS310_MR_8:
-            *reg = 3U << DPS310_MR_SHIFT;
+            *reg |= DPS310_MR_VAL_8;
             break;
 
         case DPS310_MR_16:
-            *reg = 4U << DPS310_MR_SHIFT;
+            *reg |= DPS310_MR_VAL_16;
             break;
 
         case DPS310_MR_32:
-            *reg = 5U << DPS310_MR_SHIFT;
+            *reg |= DPS310_MR_VAL_32;
             break;
 
         case DPS310_MR_64:
-            *reg = 6U << DPS310_MR_SHIFT;
+            *reg |= DPS310_MR_VAL_64;
             break;
 
         case DPS310_MR_128:
-            *reg = 7U << DPS310_MR_SHIFT;
+            *reg |= DPS310_MR_VAL_128;
             break;
 
         default:
@@ -366,39 +367,40 @@ static __attribute__ ((nonnull)) dps310_status_t
 set_os_reg (uint8_t * const reg, const dps310_os_t os)
 {
     dps310_status_t err_code = DPS310_SUCCESS;
+    *reg &= ~DPS310_OS_MASK;
 
     switch (os)
     {
         case DPS310_OS_1:
-            *reg = 0U;
+            *reg |= DPS310_OS_VAL_1;
             break;
 
         case DPS310_OS_2:
-            *reg = 1U;
+            *reg |= DPS310_OS_VAL_2;
             break;
 
         case DPS310_OS_4:
-            *reg = 2U;
+            *reg |= DPS310_OS_VAL_4;
             break;
 
         case DPS310_OS_8:
-            *reg = 3U;
+            *reg |= DPS310_OS_VAL_8;
             break;
 
         case DPS310_OS_16:
-            *reg = 4U;
+            *reg |= DPS310_OS_VAL_16;
             break;
 
         case DPS310_OS_32:
-            *reg = 5U;
+            *reg |= DPS310_OS_VAL_32;
             break;
 
         case DPS310_OS_64:
-            *reg = 6U;
+            *reg |= DPS310_OS_VAL_64;
             break;
 
         case DPS310_OS_128:
-            *reg = 7U;
+            *reg |= DPS310_OS_VAL_128;
             break;
 
         default:
@@ -427,6 +429,7 @@ temp_coef_src_setup (dps310_ctx_t * const ctx, uint8_t * const cmd)
     dps310_status_t err_code = DPS310_SUCCESS;
     uint8_t coef_src = 0U;
     err_code |= ctx->read (ctx->comm_ctx, DPS310_COEF_SRC_REG, &coef_src, 1U);
+    *cmd &= ~DPS310_COEF_SRC_MASK;
     *cmd |= coef_src & DPS310_COEF_SRC_MASK;
     return err_code;
 }

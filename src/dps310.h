@@ -251,9 +251,11 @@ dps310_status_t dps310_measure_continuous_async (dps310_ctx_t * const ctx);
  *
  * @param[in,out] ctx Input: State of sensor. Output: Updated state of sensor.
  * @param[out] temp A pointer to buffer where temperature results will be placed to, in C.
- * @param[in,out] temp_count Input: Number of elements in buffer. Output: number of read elements, 0 if no elements were read.
+ * @param[in,out] temp_count Input: Number of elements in buffer.
+ *                           Output: number of read elements, 0 if no elements were read.
  * @param[out] pres A pointer to buffer where pressure results will be placed to, in Pa.
- * @param[in,out] pres_count Input: Number of elements in buffer. Output: number of read elements, 0 if no elements were read.
+ * @param[in,out] pres_count Input: Number of elements in buffer.
+ *                           Output: number of read elements, 0 if no elements were read.
  * @return status code, 0 on success.
  *
  * @note If temperature and pressure have different measurement rates, the output values will not be even.
