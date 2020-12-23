@@ -1,6 +1,7 @@
 language: c
 
 os: linux
+dist: bionic
 # Use full depth for SonarCLoud
 git:
   depth: false 
