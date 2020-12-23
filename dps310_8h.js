@@ -33,7 +33,8 @@ var dps310_8h =
       [ "DPS310_MR_16", "group___d_p_s310.html#gga206153705c76aefe0254bc4e81d3380ba819bb46502478d16f395a624a6d2e20f", null ],
       [ "DPS310_MR_32", "group___d_p_s310.html#gga206153705c76aefe0254bc4e81d3380bafef130e5ef69ea4a90df15c56aaa9a51", null ],
       [ "DPS310_MR_64", "group___d_p_s310.html#gga206153705c76aefe0254bc4e81d3380ba17a268792802fb3c66c4bc656eec4643", null ],
-      [ "DPS310_MR_128", "group___d_p_s310.html#gga206153705c76aefe0254bc4e81d3380bae5b6a368f117285c261f1b6abf9487dc", null ]
+      [ "DPS310_MR_128", "group___d_p_s310.html#gga206153705c76aefe0254bc4e81d3380bae5b6a368f117285c261f1b6abf9487dc", null ],
+      [ "DPS310_MR_NONE", "group___d_p_s310.html#gga206153705c76aefe0254bc4e81d3380ba0bc3cf55586e84e149eb7400a1d79563", null ]
     ] ],
     [ "dps310_os_t", "group___d_p_s310.html#gaa61a2290d5a19052c63cbcaf364a3861", [
       [ "DPS310_OS_INVALID", "group___d_p_s310.html#ggaa61a2290d5a19052c63cbcaf364a3861ab25299f1b5ffc1247a615080b993985c", null ],
