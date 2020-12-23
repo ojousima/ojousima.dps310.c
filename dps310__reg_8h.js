@@ -26,6 +26,7 @@ var dps310__reg_8h =
     [ "DPS310_COEF_C30_LEN_BITS", "group___d_p_s310.html#ga3b44229eb861d5ccb7d7c700b5686d53", null ],
     [ "DPS310_COEF_C30_OFFSET", "group___d_p_s310.html#ga14e354689f954d72579efb4a988f7053", null ],
     [ "DPS310_COEF_REG_LEN", "group___d_p_s310.html#ga0a499ecb34c59ba866d4d311850da8e5", null ],
+    [ "DPS310_COEF_SRC_MASK", "group___d_p_s310.html#ga83ed6a3cb4de5b37f007f8c58da22c1d", null ],
     [ "DPS310_COEF_SRC_REG", "group___d_p_s310.html#gacce4fb7cbe2efd1aca6d362b2d1b681b", null ],
     [ "DPS310_COEF_START_REG", "group___d_p_s310.html#ga88680ff38d0db17534c2c73b11ae06da", null ],
     [ "DPS310_EFUSE_0_REG", "group___d_p_s310.html#ga83210db1576edc14042d173d11f7db6b", null ],

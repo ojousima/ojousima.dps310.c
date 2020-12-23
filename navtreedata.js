@@ -25,6 +25,7 @@
 var NAVTREE =
 [
   [ "ojousima.DPS310.c", "index.html", [
+    [ "ruuvi.dps310.c", "index.html", null ],
     [ "Modules", "modules.html", "modules" ],
     [ "Data Structures", "annotated.html", [
       [ "Data Structures", "annotated.html", "annotated_dup" ],
@@ -51,7 +52,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"group___d_p_s310.html#gga206153705c76aefe0254bc4e81d3380ba0bc3cf55586e84e149eb7400a1d79563"
+"group___d_p_s310.html#gafb2fb7e47a9bc9b84f70e8fb8b904c6c"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

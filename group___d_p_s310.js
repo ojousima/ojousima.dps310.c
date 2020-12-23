@@ -2,7 +2,7 @@ var group___d_p_s310 =
 [
     [ "dps310.c", "dps310_8c.html", null ],
     [ "dps310.h", "dps310_8h.html", null ],
-    [ "dps310.h", "dps310_8h.html", null ],
+    [ "dps310_reg.h", "dps310__reg_8h.html", null ],
     [ "dps310_ctx_t", "structdps310__ctx__t.html", [
       [ "c0", "structdps310__ctx__t.html#a13b7d3080c01bd723ab1a6fe17b7e840", null ],
       [ "c00", "structdps310__ctx__t.html#a913266c7212fc488cf960c7f0f8f1065", null ],
@@ -54,6 +54,7 @@ var group___d_p_s310 =
     [ "DPS310_COEF_C30_OFFSET", "group___d_p_s310.html#ga14e354689f954d72579efb4a988f7053", null ],
     [ "DPS310_COEF_DELAY_MS", "group___d_p_s310.html#ga49257728ac274afd6b7359539a9c664a", null ],
     [ "DPS310_COEF_REG_LEN", "group___d_p_s310.html#ga0a499ecb34c59ba866d4d311850da8e5", null ],
+    [ "DPS310_COEF_SRC_MASK", "group___d_p_s310.html#ga83ed6a3cb4de5b37f007f8c58da22c1d", null ],
     [ "DPS310_COEF_SRC_REG", "group___d_p_s310.html#gacce4fb7cbe2efd1aca6d362b2d1b681b", null ],
     [ "DPS310_COEF_START_REG", "group___d_p_s310.html#ga88680ff38d0db17534c2c73b11ae06da", null ],
     [ "DPS310_CONTINUOUS", "group___d_p_s310.html#ga293ef3828752c99af529cc1bb39e7e6a", null ],

@@ -1,6 +1,6 @@
 var indexSectionsWithContent =
 {
-  0: "cdilmoprstw",
+  0: "cdilmprstw",
   1: "d",
   2: "drt",
   3: "dst",
@@ -10,7 +10,7 @@ var indexSectionsWithContent =
   7: "d",
   8: "dim",
   9: "d",
-  10: "o"
+  10: "r"
 };
 
 var indexSectionNames =

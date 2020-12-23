@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.20"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ojousima.DPS310.c: ojousima.dps310.c</title>
+<title>ojousima.DPS310.c: ruuvi.dps310.c</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -83,12 +83,55 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">ojousima.dps310.c </div>  </div>
+<div class="title">ruuvi.dps310.c </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md_README"></a>MIT-licensed portable driver for Infineon DPS310 pressure and temperature sensor <a href="https://travis-ci.org/ojousima/ojousima.dps310.c"><img src="https://travis-ci.org/ojousima/ojousima.dps310.c.svg?branch=master" alt="Build Status" style="pointer-events: none;" class="inline"/></a> <a href="https://sonarcloud.io/dashboard?id=ojousima.dps310.c"><img src="https://sonarcloud.io/api/project_badges/measure?project=ojousima.dps310.c&amp;metric=alert_status" alt="Quality Gate Status" class="inline"/></a> <a href="https://sonarcloud.io/dashboard?id=ojousima.dps310.c"><img src="https://sonarcloud.io/api/project_badges/measure?project=ojousima.dps310.c&amp;metric=bugs" alt="Bugs" class="inline"/></a> <a href="https://sonarcloud.io/dashboard?id=ojousima.dps310.c"><img src="https://sonarcloud.io/api/project_badges/measure?project=ojousima.dps310.c&amp;metric=code_smells" alt="Code Smells" class="inline"/></a> <a href="https://sonarcloud.io/dashboard?id=ojousima.dps310.c"><img src="https://sonarcloud.io/api/project_badges/measure?project=ojousima.dps310.c&amp;metric=coverage" alt="Coverage" class="inline"/></a> <a href="https://sonarcloud.io/dashboard?id=ojousima.dps310.c"><img src="https://sonarcloud.io/api/project_badges/measure?project=ojousima.dps310.c&amp;metric=duplicated_lines_density" alt="Duplicated Lines (%)" class="inline"/></a> <a href="https://sonarcloud.io/dashboard?id=ojousima.dps310.c"><img src="https://sonarcloud.io/api/project_badges/measure?project=ojousima.dps310.c&amp;metric=ncloc" alt="Lines of Code" class="inline"/></a> <a href="https://sonarcloud.io/dashboard?id=ojousima.dps310.c"><img src="https://sonarcloud.io/api/project_badges/measure?project=ojousima.dps310.c&amp;metric=sqale_rating" alt="Maintainability Rating" class="inline"/></a> <a href="https://sonarcloud.io/dashboard?id=ojousima.dps310.c"><img src="https://sonarcloud.io/api/project_badges/measure?project=ojousima.dps310.c&amp;metric=reliability_rating" alt="Reliability Rating" class="inline"/></a> <a href="https://sonarcloud.io/dashboard?id=ojousima.dps310.c"><img src="https://sonarcloud.io/api/project_badges/measure?project=ojousima.dps310.c&amp;metric=sqale_index" alt="Technical Debt" class="inline"/></a></p>
+<div class="textblock"><p><a class="anchor" id="md_README"></a>MIT-licensed portable driver for Infineon DPS310 pressure and temperature sensor <a href="https://travis-ci.org/ruuvi/ruuvi.dps310.c"><img src="https://travis-ci.org/ruuvi/ruuvi.dps310.c.svg?branch=master" alt="Build Status" style="pointer-events: none;" class="inline"/></a> <a href="https://sonarcloud.io/dashboard?id=ruuvi.dps310.c"><img src="https://sonarcloud.io/api/project_badges/measure?project=ruuvi.dps310.c&amp;metric=alert_status" alt="Quality Gate Status" class="inline"/></a> <a href="https://sonarcloud.io/dashboard?id=ruuvi.dps310.c"><img src="https://sonarcloud.io/api/project_badges/measure?project=ruuvi.dps310.c&amp;metric=bugs" alt="Bugs" class="inline"/></a> <a href="https://sonarcloud.io/dashboard?id=ruuvi.dps310.c"><img src="https://sonarcloud.io/api/project_badges/measure?project=ruuvi.dps310.c&amp;metric=code_smells" alt="Code Smells" class="inline"/></a> <a href="https://sonarcloud.io/dashboard?id=ruuvi.dps310.c"><img src="https://sonarcloud.io/api/project_badges/measure?project=ruuvi.dps310.c&amp;metric=coverage" alt="Coverage" class="inline"/></a> <a href="https://sonarcloud.io/dashboard?id=ruuvi.dps310.c"><img src="https://sonarcloud.io/api/project_badges/measure?project=ruuvi.dps310.c&amp;metric=duplicated_lines_density" alt="Duplicated Lines (%)" class="inline"/></a> <a href="https://sonarcloud.io/dashboard?id=ruuvi.dps310.c"><img src="https://sonarcloud.io/api/project_badges/measure?project=ruuvi.dps310.c&amp;metric=ncloc" alt="Lines of Code" class="inline"/></a> <a href="https://sonarcloud.io/dashboard?id=ruuvi.dps310.c"><img src="https://sonarcloud.io/api/project_badges/measure?project=ruuvi.dps310.c&amp;metric=sqale_rating" alt="Maintainability Rating" class="inline"/></a> <a href="https://sonarcloud.io/dashboard?id=ruuvi.dps310.c"><img src="https://sonarcloud.io/api/project_badges/measure?project=ruuvi.dps310.c&amp;metric=reliability_rating" alt="Reliability Rating" class="inline"/></a> <a href="https://sonarcloud.io/dashboard?id=ruuvi.dps310.c"><img src="https://sonarcloud.io/api/project_badges/measure?project=ruuvi.dps310.c&amp;metric=sqale_index" alt="Technical Debt" class="inline"/></a></p>
 <h1>Using the driver</h1>
+<p>The driver provides abstraction to register access in driver. You need to include <a class="el" href="dps310_8h.html">dps310.h</a> in your application, the header has functions for interacting with the sensor.</p>
 <p>Driver requires the user application to provide functions for reading and writing data on the bus as well as sleeping. The functions are provided through function pointers.</p>
+<h2>Interface functions</h2>
+<div class="fragment"><div class="line">/**</div>
+<div class="line"> * @brief Sleep at least this many milliseconds.</div>
+<div class="line"> *</div>
+<div class="line"> * Function is allowed to sleep for longer, but not shorter time.</div>
+<div class="line"> */</div>
+<div class="line">typedef void (*dps310_sleep) (const uint32_t ms);</div>
+<div class="line"> </div>
+<div class="line">/**</div>
+<div class="line"> * @brief Read data from bus.</div>
+<div class="line"> *</div>
+<div class="line"> * If the read function returns non-zero value, it will get returned to caller in application.</div>
+<div class="line"> * Comm_ctx is given by application at dps310 initialization. Data is guaranteed to be non-NULL</div>
+<div class="line"> * and data_len is guaranteed to be non-zero.</div>
+<div class="line"> *</div>
+<div class="line"> * @param[in] comm_ctx A pointer to context for platform. E.g. I2C address or SPI SS pin. May be NULL.</div>
+<div class="line"> * @param[in] reg_addr Address of register to read.</div>
+<div class="line"> * @param[out] data Pointer to which data will be written. Must be data_len bytes long.</div>
+<div class="line"> * @param[in] data_len Length of data.</div>
+<div class="line"> * @retval 0 on success.</div>
+<div class="line"> * @return application error code on error. Bit DPS310_BUS_ERROR should be 0.</div>
+<div class="line"> */</div>
+<div class="line">typedef uint32_t (*dps310_read) (const void * const comm_ctx, const uint8_t reg_addr,</div>
+<div class="line">                                 uint8_t * const data, const uint8_t data_len);</div>
+<div class="line"> </div>
+<div class="line">/**</div>
+<div class="line"> * @brief Write data from bus.</div>
+<div class="line"> *</div>
+<div class="line"> * If the write function returns non-zero value, it will get returned to caller in application.</div>
+<div class="line"> * Comm_ctx is given by application at dps310 initialization. Data is guaranteed to be non-NULL</div>
+<div class="line"> * and data_len is guaranteed to be non-zero.</div>
+<div class="line"> *</div>
+<div class="line"> * @param[in] comm_ctx A pointer to context for platform. E.g. I2C address or SPI SS pin.</div>
+<div class="line"> * @param[in] reg_addr Address of register to write.</div>
+<div class="line"> * @param[in] data Pointer to which data will be written. Must be data_len bytes long.</div>
+<div class="line"> * @param[in] data_len Length of data.</div>
+<div class="line"> * @return 0 on success.</div>
+<div class="line"> * @return application error code on error. Bit DPS310_BUS_ERROR should be 0.</div>
+<div class="line"> */</div>
+<div class="line">typedef uint32_t (*dps310_write) (const void * const comm_ctx, const uint8_t reg_addr,</div>
+<div class="line">                                  const uint8_t * const data, const uint8_t data_len);</div>
+</div><!-- fragment --><h2>Sample usage</h2>
 <div class="fragment"><div class="line">int main(void)</div>
 <div class="line">{</div>
 <div class="line">  static platform_gpio_t spi_ss_pin = DPS310_SS;</div>
@@ -138,19 +181,27 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">  dps310_uninit(&amp;dps); // Try to uninit sensor after error.</div>
 <div class="line">  return dps_error;</div>
 <div class="line">}</div>
-</div><!-- fragment --><h1>Running unit tests</h1>
+</div><!-- fragment --><h2>Features</h2>
+<ul>
+<li>[X] Single temperature and pressure measurement with and without oversampling.</li>
+<li>[X] Synchronous (get result on return) and asynchronous (measure now, get result later) operation.</li>
+<li>[X] Continuous temperature and pressure measurement to FIFO, with independent measurement rates</li>
+<li>[] Interrupts</li>
+</ul>
+<h1>Running unit tests</h1>
 <h2>Ceedling</h2>
 <p>Unit tests are implemented with Ceedling. Run the tests with <code>ceedling test:all</code></p>
 <h3>Gcov</h3>
 <p>Ceedling can also generate Gcov reports with <code>ceedling gcov:all utils:gcov</code>. The report can be foun under <em>build/artifacts/gcov</em>.</p>
 <h1>Code style</h1>
-<p>Code shall be formatted with Artistic Style using .astylerc in project root as the ruleset. </p><div class="fragment"><div class="line">astyle --project=.astylerc --recursive &quot;./src/*.c&quot; &quot;./src/*.h&quot;</div>
+<p>Code shall be formatted with Artistic Style using .astylerc in project root as the ruleset. </p><div class="fragment"><div class="line">astyle --project=.astylerc --recursive &quot;./src/*.c&quot; &quot;./src/*.h&quot; &quot;./test/*.c&quot;</div>
 </div><!-- fragment --><h1>Static code analysis</h1>
 <p>Run <code>make</code> to run PVS Studio on project. Report can be found at <em>doxygen/pvs/fullhtml/index.html</em>. <a href="./fullhtml/index.html">Here</a> is a link to documentation through Doxygen-generated documentation.</p>
 <h1>Documentation</h1>
 <p>Run <code>make</code> to generate Doxygen docs with git version information.</p>
 <h1>Continuous integration pipeline</h1>
 <p>The project is built on Travis and build status is reflected on a badge on top of the header. SonarCloud generates additional analytics and badges for the project.</p>
+<p>GitHub actions run Artistic Style and PVS Studio as well as publishes the Doxygen to <a href="https://ruuvi.github.io/ruuvi.dps310.c/">GitHub Pages</a>. PVS Studio HTML-report can be found <a href="https://ruuvi.github.io/ruuvi.dps310.c/fullhtml">under documentation</a>.</p>
 <h1>Using the project as a template.</h1>
 <p>If you wish to use this project as a template for your own project, checkout tag v0.1.0 and change the project name and file names and setup the continuous integration pipeline for the project. </p>
 </div></div><!-- PageDoc -->
