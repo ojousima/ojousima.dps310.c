@@ -77,6 +77,7 @@
 #define DPS310_COEF_C30_LEN_BITS  (16U)
 
 #define DPS310_COEF_SRC_REG       (0x28U)
+#define DPS310_COEF_SRC_MASK      (0x80U)
 
 
 #define DPS310_RESERVED_START          (0x22U)
