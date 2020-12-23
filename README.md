@@ -1,15 +1,15 @@
-# ojousima.dps310.c
+# ruuvi.dps310.c
 MIT-licensed portable driver for Infineon DPS310 pressure and temperature sensor
-[![Build Status](https://travis-ci.org/ojousima/ojousima.dps310.c.svg?branch=master)](https://travis-ci.org/ojousima/ojousima.dps310.c)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ojousima.dps310.c&metric=alert_status)](https://sonarcloud.io/dashboard?id=ojousima.dps310.c)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=ojousima.dps310.c&metric=bugs)](https://sonarcloud.io/dashboard?id=ojousima.dps310.c)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=ojousima.dps310.c&metric=code_smells)](https://sonarcloud.io/dashboard?id=ojousima.dps310.c)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ojousima.dps310.c&metric=coverage)](https://sonarcloud.io/dashboard?id=ojousima.dps310.c)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=ojousima.dps310.c&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=ojousima.dps310.c)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=ojousima.dps310.c&metric=ncloc)](https://sonarcloud.io/dashboard?id=ojousima.dps310.c)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ojousima.dps310.c&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=ojousima.dps310.c)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=ojousima.dps310.c&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=ojousima.dps310.c)
-[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=ojousima.dps310.c&metric=sqale_index)](https://sonarcloud.io/dashboard?id=ojousima.dps310.c)
+[![Build Status](https://travis-ci.org/ruuvi/ruuvi.dps310.c.svg?branch=master)](https://travis-ci.org/ruuvi/ruuvi.dps310.c)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ruuvi.dps310.c&metric=alert_status)](https://sonarcloud.io/dashboard?id=ruuvi.dps310.c)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=ruuvi.dps310.c&metric=bugs)](https://sonarcloud.io/dashboard?id=ruuvi.dps310.c)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=ruuvi.dps310.c&metric=code_smells)](https://sonarcloud.io/dashboard?id=ruuvi.dps310.c)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ruuvi.dps310.c&metric=coverage)](https://sonarcloud.io/dashboard?id=ruuvi.dps310.c)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=ruuvi.dps310.c&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=ruuvi.dps310.c)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=ruuvi.dps310.c&metric=ncloc)](https://sonarcloud.io/dashboard?id=ruuvi.dps310.c)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ruuvi.dps310.c&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=ruuvi.dps310.c)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=ruuvi.dps310.c&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=ruuvi.dps310.c)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=ruuvi.dps310.c&metric=sqale_index)](https://sonarcloud.io/dashboard?id=ruuvi.dps310.c)
 
 # Using the driver
 
@@ -152,8 +152,8 @@ Run `make` to generate Doxygen docs with git version information.
 The project is built on Travis and build status is reflected on a badge on top of the 
 header. SonarCloud generates additional analytics and badges for the project.
 
-GitHub actions run Artistic Style and PVS Studio as well as publishes the Doxygen to [GitHub Pages](https://ojousima.github.io/ojousima.dps310.c/).
-PVS Studio HTML-report can be found [under documentation](https://ojousima.github.io/ojousima.dps310.c/fullhtml).
+GitHub actions run Artistic Style and PVS Studio as well as publishes the Doxygen to [GitHub Pages](https://ruuvi.github.io/ruuvi.dps310.c/).
+PVS Studio HTML-report can be found [under documentation](https://ruuvi.github.io/ruuvi.dps310.c/fullhtml).
 
 # Using the project as a template. 
 If you wish to use this project as a template for your own project, checkout tag v0.1.0
