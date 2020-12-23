@@ -5,16 +5,16 @@
 #include <stdbool.h>
 #include <string.h>
 
-#define INIT_TIME_MS (DPS310_POR_DELAY_MS + DPS310_COEF_DELAY_MS)
-#define MEASURE_1_TIME_MS (4U) // 3.6F to be exact, one sensor, one sample.
-#define MEASURE_2_TIME_MS (6U) // 5.2F to be exact, one sensor, oversample 2.
-#define MEASURE_4_TIME_MS (9U) // 8.24F to be exact, one sensor, oversample 4.
-#define MEASURE_8_TIME_MS (15U) // 14.8F to be exact, one sensor, oversample 8.
-#define MEASURE_16_TIME_MS (28U) // 27.6F to be exact, one sensor, oversample 16.
-#define MEASURE_32_TIME_MS (54U) // 53.2F to be exact, one sensor, oversample 32.
-#define MEASURE_64_TIME_MS (105U) // 104.4F to be exact, one sensor, oversample 64.
-#define MEASURE_128_TIME_MS (207U) // 206.8F to be exact, one sensor, oversample 128.
-#define DPS310_SIM_TABLE_SIZE      (0x63U)
+#define INIT_TIME_MS          (DPS310_POR_DELAY_MS + DPS310_COEF_DELAY_MS)
+#define MEASURE_1_TIME_MS     (4U) // 3.6F to be exact, one sensor, one sample.
+#define MEASURE_2_TIME_MS     (6U) // 5.2F to be exact, one sensor, oversample 2.
+#define MEASURE_4_TIME_MS     (9U) // 8.24F to be exact, one sensor, oversample 4.
+#define MEASURE_8_TIME_MS     (15U) // 14.8F to be exact, one sensor, oversample 8.
+#define MEASURE_16_TIME_MS    (28U) // 27.6F to be exact, one sensor, oversample 16.
+#define MEASURE_32_TIME_MS    (54U) // 53.2F to be exact, one sensor, oversample 32.
+#define MEASURE_64_TIME_MS    (105U) // 104.4F to be exact, one sensor, oversample 64.
+#define MEASURE_128_TIME_MS   (207U) // 206.8F to be exact, one sensor, oversample 128.
+#define DPS310_SIM_TABLE_SIZE (0x63U)
 
 static uint8_t dps310_registers[DPS310_SIM_TABLE_SIZE];
 // FIFO registers, 32 measurements, 4 pressure measurements for one temperature measurement. 
@@ -751,6 +751,51 @@ void test_dps310_measure_pres_once_sync_os_128 (void)
     TEST_ASSERT (dps310_registers[DPS310_CFG_REG] & DPS310_CFG_PRESSH_MASK);
 }
 
+void test_dps310_measure_continuous_async_both_ok (void)
+{
+    dps310_init(&dps);
+    dps310_status_t status  = dps310_measure_continuous_async (&dps);
+    TEST_ASSERT (DPS310_MODE_CONT_BOTH_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT (DPS310_CONTINUOUS == dps.device_status);
+}
+
+void test_dps310_measure_continuous_async_temp_ok (void)
+{
+    dps310_init(&dps);
+    dps310_config_temp (&dps, DPS310_MR_1, DPS310_OS_1);
+    dps310_config_pres (&dps, DPS310_MR_NONE, DPS310_OS_1);
+    dps310_status_t status  = dps310_measure_continuous_async (&dps);
+    TEST_ASSERT (DPS310_MODE_CONT_TEMP_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT (DPS310_CONTINUOUS == dps.device_status);
+}
+
+void test_dps310_measure_continuous_async_pres_ok (void)
+{
+    dps310_init(&dps);
+    dps310_config_temp (&dps, DPS310_MR_NONE, DPS310_OS_1);
+    dps310_config_pres (&dps, DPS310_MR_1, DPS310_OS_1);
+    dps310_status_t status  = dps310_measure_continuous_async (&dps);
+    TEST_ASSERT (DPS310_MODE_CONT_PRES_VAL 
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT (DPS310_CONTINUOUS == dps.device_status);
+}
+
+void test_dps310_measure_continuous_async_none_configured (void)
+{
+    dps310_init(&dps);
+    dps310_config_temp (&dps, DPS310_MR_NONE, DPS310_OS_1);
+    dps310_config_pres (&dps, DPS310_MR_NONE, DPS310_OS_1);
+    dps310_status_t status  = dps310_measure_continuous_async (&dps);
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (DPS310_INVALID_STATE == status);
+    TEST_ASSERT (DPS310_READY == dps.device_status);
+}
 
 void test_dps310_get_continuous_results_ok (void)
 {

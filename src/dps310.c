@@ -314,6 +314,8 @@ static dps310_status_t set_mr_reg (uint8_t * const reg, const dps310_mr_t mr)
 
     switch (mr)
     {
+    // Switching sensor to off is controlled by a separate register, NONE has no effect.
+    case DPS310_MR_NONE:
     case DPS310_MR_1:
         *reg = 0U << DPS310_MR_SHIFT;
         break;
@@ -401,12 +403,13 @@ static dps310_status_t set_os_reg (uint8_t * const reg, const dps310_os_t os)
 }
 
 static dps310_status_t
-mask_set (const dps310_ctx_t * const ctx, const uint8_t reg_addr, const uint8_t mask)
+mask_set (const dps310_ctx_t * const ctx, const uint8_t reg_addr,
+          const uint8_t value, const uint8_t mask)
 {
     dps310_status_t err_code = DPS310_SUCCESS;
     uint8_t reg_val = 0;
     err_code |= ctx->read (ctx->comm_ctx, reg_addr, &reg_val, 1U);
-    reg_val |= mask;
+    reg_val |= (value & mask);
     err_code |= ctx->write (ctx->comm_ctx, reg_addr, &reg_val, 1U);
     return err_code;
 }
@@ -429,8 +432,10 @@ dps310_status_t dps310_config_temp (dps310_ctx_t * const ctx, const dps310_mr_t 
 
             if (temp_osr >= DPS310_OS_16)
             {
+                const uint8_t temp_shift_enable = DPS310_CFG_TEMPSH_MASK;
                 err_code |=  mask_set (ctx,
                                        DPS310_CFG_REG,
+                                       temp_shift_enable,
                                        DPS310_CFG_TEMPSH_MASK);
             }
 
@@ -467,8 +472,10 @@ dps310_status_t dps310_config_pres (dps310_ctx_t * const ctx, const dps310_mr_t 
 
             if (pres_osr >= DPS310_OS_16)
             {
+                const uint8_t pres_shift_enable = DPS310_CFG_PRESSH_MASK;
                 err_code |=  mask_set (ctx,
                                        DPS310_CFG_REG,
+                                       pres_shift_enable,
                                        DPS310_CFG_PRESSH_MASK);
             }
 
@@ -814,23 +821,34 @@ dps310_measure_pres_once_sync (dps310_ctx_t * const ctx, float * const result)
 dps310_status_t dps310_measure_continuous_async (dps310_ctx_t * const ctx)
 {
     dps310_status_t err_code = ctx_ready_check (ctx);
+    uint8_t cmd = 0U;
 
     if (DPS310_SUCCESS == err_code)
     {
-        uint8_t reg_value[1U] = {DPS310_MODE_CONT_BOTH_VAL};
-        err_code |= ctx->write (ctx->comm_ctx,
-                                DPS310_MEAS_CFG_REG,
-                                reg_value,
-                                1U);
+        if (ctx->temp_mr != DPS310_MR_NONE)
+        {
+            cmd |= DPS310_MODE_CONT_TEMP_VAL;
+        }
 
-        if (DPS310_SUCCESS == err_code)
+        if (ctx->pres_mr != DPS310_MR_NONE)
+        {
+            cmd |= DPS310_MODE_CONT_PRES_VAL;
+        }
+
+        err_code |= ctx->write (ctx->comm_ctx, DPS310_MEAS_CFG_REG, &cmd, 1U);
+
+        if(DPS310_SUCCESS != err_code)
+        {
+            err_code |= DPS310_BUS_ERROR;
+            ctx->device_status = DPS310_BUS_ERROR;
+        }
+        else if(0 != cmd)
         {
             ctx->device_status = DPS310_CONTINUOUS;
         }
         else
         {
-            err_code |= DPS310_BUS_ERROR;
-            ctx->device_status = DPS310_BUS_ERROR;
+            err_code |= DPS310_INVALID_STATE; 
         }
     }
 
