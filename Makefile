@@ -258,4 +258,4 @@ doxygen:
 	doxygen
 
 astyle:
-	astyle --project=.astylerc --recursive "./src/*.c" "./src/*.h"
+	astyle --project=.astylerc --recursive "./src/*.c" "./src/*.h" "./test/*.c"

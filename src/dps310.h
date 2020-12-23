@@ -90,7 +90,8 @@ typedef enum
     DPS310_MR_16,
     DPS310_MR_32,
     DPS310_MR_64,
-    DPS310_MR_128
+    DPS310_MR_128,
+    DPS310_MR_NONE
 } dps310_mr_t; // Measurement rate, Hz.
 
 typedef enum
@@ -227,15 +228,21 @@ dps310_status_t dps310_get_single_result (dps310_ctx_t * const ctx, float * cons
  * @brief Starts a continuous temperature and pressure measurement.
  *
  * Measurement rate and oversampling rate for temperature and pressure measurement are read from the context.
- * Thw sensor must be in DPS310_READY mode when this function is called.
+ * The sensor must be in DPS310_READY mode when this function is called. It is ok to configure
+ * DPS310_MR_NONE into temperature or pressure to turn measurements off entirely.
+ * However, accurate pressure measurements require recent temperature measurements for
+ * compensation.
+ *
  *
  * After this function has been called, only @ref dps310_get_cont_results, @ref dps310_standby
- * and @ref dps310_uninit are allowed.
+ * and @ref dps310_uninit are allowed and context device_status is @ref DPS310_CONTINUOUS.
  *
  * @param[in,out] ctx Input: State of sensor. Output: Updated state of sensor.
  * @retval DPS310_SUCCESS on success.
  * @retval DPS310_ERROR_NULL if ctx or Function pointers are NULL.
- * @retval DPS310_INVALID_STATE if ctx is not initialized, is busy or has internal error.
+ * @retval DPS310_INVALID_STATE if ctx is not initialized, is busy,
+ *                              measurement rate on both temperature and pressure is NONE
+ *                              or context has internal error.
  */
 dps310_status_t dps310_measure_continuous_async (dps310_ctx_t * const ctx);
 

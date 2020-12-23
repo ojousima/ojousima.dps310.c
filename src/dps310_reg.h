@@ -14,7 +14,6 @@
  *
  */
 
-
 #define DPS310_PRES_VAL_REG       (0x00U)
 #define DPS310_PRES_VAL_LEN       (0x03U)
 #define DPS310_FIFO_VAL_REG       (DPS310_PRES_VAL_REG)
@@ -80,19 +79,19 @@
 #define DPS310_COEF_SRC_REG       (0x28U)
 
 
-#define DPS310_RESERVED_START      (0x22U)
-#define DPS310_RESERVED_END        (0x27U)
+#define DPS310_RESERVED_START          (0x22U)
+#define DPS310_RESERVED_END            (0x27U)
 
-#define DPS310_REGISTER_TABLE_SIZE (0x29U)
+#define DPS310_REGISTER_TABLE_SIZE     (0x29U)
 
-#define DPS310_EFUSE_0_REG         (0x0EU)
-#define DPS310_EFUSE_0_VAL         (0xA5U)
-#define DPS310_EFUSE_1_REG         (0x0FU)
-#define DPS310_EFUSE_1_VAL         (0x96U)
-#define DPS310_EFUSE_2_REG         (0x62U)
-#define DPS310_EFUSE_2_VAL         (0x02U)
+#define DPS310_EFUSE_0_REG             (0x0EU)
+#define DPS310_EFUSE_0_VAL             (0xA5U)
+#define DPS310_EFUSE_1_REG             (0x0FU)
+#define DPS310_EFUSE_1_VAL             (0x96U)
+#define DPS310_EFUSE_2_REG             (0x62U)
+#define DPS310_EFUSE_2_VAL             (0x02U)
 
-#define DPS310_C0_WEIGHT           (0.5F)
+#define DPS310_C0_WEIGHT               (0.5F)
 
 /** @} */
 
