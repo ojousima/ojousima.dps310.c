@@ -1,7 +1,6 @@
 language: c
 
 os: linux
-dist: trusty
 # Use full depth for SonarCLoud
 git:
   depth: false 
