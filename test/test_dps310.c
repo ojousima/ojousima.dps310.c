@@ -781,6 +781,22 @@ void test_dps310_measure_pres_once_sync_os_128 (void)
     TEST_ASSERT (dps310_registers[DPS310_CFG_REG] & DPS310_CFG_PRESSH_MASK);
 }
 
+void test_dps310_config_pres_temp_os_m_16 (void)
+{
+    dps310_init (&dps);
+    dps310_status_t status = dps310_config_pres (&dps, DPS310_MR_16, DPS310_OS_16);
+    status = dps310_config_temp (&dps, DPS310_MR_16, DPS310_OS_16);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT (DPS310_MR_VAL_16 == (dps310_registers[DPS310_PRES_CFG_REG] &
+                                      DPS310_MR_MASK));
+    TEST_ASSERT (DPS310_OS_VAL_16 == (dps310_registers[DPS310_PRES_CFG_REG] &
+                                      DPS310_OS_MASK));
+    TEST_ASSERT (DPS310_MR_VAL_16 == (dps310_registers[DPS310_TEMP_CFG_REG] &
+                                      DPS310_MR_MASK));
+    TEST_ASSERT (DPS310_OS_VAL_16 == (dps310_registers[DPS310_TEMP_CFG_REG] &
+                                      DPS310_OS_MASK));
+}
+
 void test_dps310_measure_continuous_async_both_ok (void)
 {
     dps310_init (&dps);
@@ -813,6 +829,118 @@ void test_dps310_measure_continuous_async_pres_ok (void)
                  == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
     TEST_ASSERT (DPS310_SUCCESS == status);
     TEST_ASSERT (DPS310_CONTINUOUS == dps.device_status);
+}
+
+void test_dps310_measure_continuous_async_pres_mr_2 (void)
+{
+    dps310_init (&dps);
+    dps310_status_t status = dps310_config_temp (&dps, DPS310_MR_1, DPS310_OS_1);
+    status |= dps310_config_pres (&dps, DPS310_MR_2, DPS310_OS_2);
+    status |= dps310_measure_continuous_async (&dps);
+    TEST_ASSERT (DPS310_MODE_CONT_BOTH_VAL
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT (DPS310_CONTINUOUS == dps.device_status);
+    TEST_ASSERT (DPS310_MR_VAL_2 == (dps310_registers[DPS310_PRES_CFG_REG] &
+                                     DPS310_MR_MASK));
+    TEST_ASSERT (DPS310_OS_VAL_2 == (dps310_registers[DPS310_PRES_CFG_REG] &
+                                     DPS310_OS_MASK));
+}
+
+void test_dps310_measure_continuous_async_pres_mr_4 (void)
+{
+    dps310_init (&dps);
+    dps310_status_t status = dps310_config_temp (&dps, DPS310_MR_1, DPS310_OS_1);
+    status |= dps310_config_pres (&dps, DPS310_MR_4, DPS310_OS_2);
+    status |= dps310_measure_continuous_async (&dps);
+    TEST_ASSERT (DPS310_MODE_CONT_BOTH_VAL
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT (DPS310_CONTINUOUS == dps.device_status);
+    TEST_ASSERT (DPS310_MR_VAL_4 == (dps310_registers[DPS310_PRES_CFG_REG] &
+                                     DPS310_MR_MASK));
+    TEST_ASSERT (DPS310_OS_VAL_2 == (dps310_registers[DPS310_PRES_CFG_REG] &
+                                     DPS310_OS_MASK));
+}
+
+void test_dps310_measure_continuous_async_pres_mr_8 (void)
+{
+    dps310_init (&dps);
+    dps310_status_t status = dps310_config_temp (&dps, DPS310_MR_1, DPS310_OS_1);
+    status |= dps310_config_pres (&dps, DPS310_MR_8, DPS310_OS_2);
+    status |= dps310_measure_continuous_async (&dps);
+    TEST_ASSERT (DPS310_MODE_CONT_BOTH_VAL
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT (DPS310_CONTINUOUS == dps.device_status);
+    TEST_ASSERT (DPS310_MR_VAL_8 == (dps310_registers[DPS310_PRES_CFG_REG] &
+                                     DPS310_MR_MASK));
+    TEST_ASSERT (DPS310_OS_VAL_2 == (dps310_registers[DPS310_PRES_CFG_REG] &
+                                     DPS310_OS_MASK));
+}
+
+void test_dps310_measure_continuous_async_pres_mr_16 (void)
+{
+    dps310_init (&dps);
+    dps310_status_t status = dps310_config_temp (&dps, DPS310_MR_1, DPS310_OS_1);
+    status |= dps310_config_pres (&dps, DPS310_MR_16, DPS310_OS_2);
+    status |= dps310_measure_continuous_async (&dps);
+    TEST_ASSERT (DPS310_MODE_CONT_BOTH_VAL
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT (DPS310_CONTINUOUS == dps.device_status);
+    TEST_ASSERT (DPS310_MR_VAL_16 == (dps310_registers[DPS310_PRES_CFG_REG] &
+                                      DPS310_MR_MASK));
+    TEST_ASSERT (DPS310_OS_VAL_2 == (dps310_registers[DPS310_PRES_CFG_REG] &
+                                     DPS310_OS_MASK));
+}
+
+void test_dps310_measure_continuous_async_pres_mr_32 (void)
+{
+    dps310_init (&dps);
+    dps310_status_t status = dps310_config_temp (&dps, DPS310_MR_1, DPS310_OS_1);
+    status |= dps310_config_pres (&dps, DPS310_MR_32, DPS310_OS_2);
+    status |= dps310_measure_continuous_async (&dps);
+    TEST_ASSERT (DPS310_MODE_CONT_BOTH_VAL
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT (DPS310_CONTINUOUS == dps.device_status);
+    TEST_ASSERT (DPS310_MR_VAL_32 == (dps310_registers[DPS310_PRES_CFG_REG] &
+                                      DPS310_MR_MASK));
+    TEST_ASSERT (DPS310_OS_VAL_2 == (dps310_registers[DPS310_PRES_CFG_REG] &
+                                     DPS310_OS_MASK));
+}
+
+void test_dps310_measure_continuous_async_pres_mr_64 (void)
+{
+    dps310_init (&dps);
+    dps310_status_t status = dps310_config_temp (&dps, DPS310_MR_1, DPS310_OS_1);
+    status |= dps310_config_pres (&dps, DPS310_MR_64, DPS310_OS_2);
+    status |= dps310_measure_continuous_async (&dps);
+    TEST_ASSERT (DPS310_MODE_CONT_BOTH_VAL
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT (DPS310_CONTINUOUS == dps.device_status);
+    TEST_ASSERT (DPS310_MR_VAL_64 == (dps310_registers[DPS310_PRES_CFG_REG] &
+                                      DPS310_MR_MASK));
+    TEST_ASSERT (DPS310_OS_VAL_2 == (dps310_registers[DPS310_PRES_CFG_REG] &
+                                     DPS310_OS_MASK));
+}
+
+void test_dps310_measure_continuous_async_pres_mr_128 (void)
+{
+    dps310_init (&dps);
+    dps310_status_t status = dps310_config_temp (&dps, DPS310_MR_1, DPS310_OS_1);
+    status |= dps310_config_pres (&dps, DPS310_MR_128, DPS310_OS_2);
+    status |= dps310_measure_continuous_async (&dps);
+    TEST_ASSERT (DPS310_MODE_CONT_BOTH_VAL
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT (DPS310_CONTINUOUS == dps.device_status);
+    TEST_ASSERT (DPS310_MR_VAL_128 == (dps310_registers[DPS310_PRES_CFG_REG] &
+                                       DPS310_MR_MASK));
+    TEST_ASSERT (DPS310_OS_VAL_2 == (dps310_registers[DPS310_PRES_CFG_REG] &
+                                     DPS310_OS_MASK));
 }
 
 void test_dps310_measure_continuous_async_none_configured (void)

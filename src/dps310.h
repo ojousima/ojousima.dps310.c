@@ -251,9 +251,11 @@ dps310_status_t dps310_measure_continuous_async (dps310_ctx_t * const ctx);
  *
  * @param[in,out] ctx Input: State of sensor. Output: Updated state of sensor.
  * @param[out] temp A pointer to buffer where temperature results will be placed to, in C.
- * @param[in,out] temp_count Input: Number of elements in buffer. Output: number of read elements, 0 if no elements were read.
+ * @param[in,out] temp_count Input: Number of elements in buffer.
+ *                           Output: number of read elements, 0 if no elements were read.
  * @param[out] pres A pointer to buffer where pressure results will be placed to, in Pa.
- * @param[in,out] pres_count Input: Number of elements in buffer. Output: number of read elements, 0 if no elements were read.
+ * @param[in,out] pres_count Input: Number of elements in buffer.
+ *                           Output: number of read elements, 0 if no elements were read.
  * @return status code, 0 on success.
  *
  * @note If temperature and pressure have different measurement rates, the output values will not be even.
@@ -295,7 +297,7 @@ dps310_status_t dps310_uninit (dps310_ctx_t * const ctx);
  * @note (Pressure + temperature) * (oversampling * rate) must be lower than 620,
  * e.g. temperature OS 1 mr 4 and pressure OS 128 and MR 4
  * => temperature 4 OSMR + pressure 512 OSMR => 516 => ok.
- * Full rationale is that sensor must be able to finish measurements in one second,
+ * Rationale is that sensor must be able to finish measurements in one second,
  * and 128 measurements (per value) take 206.8 ms.
  *
  * @param[in,out] ctx Input: State of sensor. Output: Updated state of sensor.
@@ -311,7 +313,7 @@ dps310_status_t dps310_config_temp (dps310_ctx_t * const ctx, const dps310_mr_t 
  * @note (Pressure + temperature) * (oversampling * rate) must be lower than 620,
  * e.g. temperature OS 1 mr 4 and pressure OS 128 and MR 4
  * => temperature 4 OSMR + pressure 512 OSMR => 516 => ok.
- * Full rationale is that sensor must be able to finish measurements in one second,
+ * Rationale is that sensor must be able to finish measurements in one second,
  * and 128 measurements (per value) take 206.8 ms.
  *
  * @param[in,out] ctx Input: State of sensor. Output: Updated state of sensor.
