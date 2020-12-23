@@ -732,9 +732,9 @@ float calculate_pressure (const dps310_ctx_t * const ctx, const int32_t raw)
 static inline __attribute__ ((nonnull)) int32_t
 regs_to_i32 (const uint8_t * const regs)
 {
-    uint32_t b24_value = (uint32_t) (regs[0U] << 16U)
-                         + (uint32_t) (regs[1U] << 8U)
-                         + (uint32_t)regs[2U];
+    uint32_t b24_value = ((uint32_t)regs[0U] << 16U)
+                         + ((uint32_t)regs[1U] << 8U)
+                         + ((uint32_t)regs[2U]);
     return twos_complement (b24_value, 24U);
 }
 
