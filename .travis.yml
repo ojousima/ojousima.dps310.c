@@ -13,15 +13,12 @@ before_install:
 install:
   - sudo pip install gcovr
   - sudo apt-get update -qq && sudo apt-get install --assume-yes --quiet gcc-multilib && sudo apt-get install -qq
-  - sudo apt-get -q -y install astyle
   - sudo apt-get install -qq pvs-studio 
   - sudo apt-get install -qq doxygen 
   - gem install ceedling
   - pvs-studio-analyzer credentials $PVS_USERNAME $PVS_KEY
 
 script:
-  - make astyle
-  - git diff --exit-code --diff-filter=d --color
   - build-wrapper-linux-x86-64 --out-dir bw-output make all
   - ceedling test:all
   - ceedling gcov:all utils:gcov
