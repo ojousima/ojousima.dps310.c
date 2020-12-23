@@ -585,24 +585,14 @@ static uint8_t os_to_num (const dps310_os_t os)
     return num;
 }
 
-static __attribute__ ((nonnull)) uint32_t
-temp_measurement_time_get (const dps310_ctx_t * const ctx)
+static uint32_t measurement_time_get (const dps310_os_t os)
 {
     // Actually 2 + 1.6 * OSR, but rounding up.
-    return 3U + (uint32_t) (1.6F * (float) os_to_num (ctx->temp_osr));
+    return 3U + (uint32_t) (1.6F * (float) os_to_num (os));
 }
 
-static __attribute__ ((nonnull)) uint32_t
-pres_measurement_time_get (const dps310_ctx_t * const ctx)
-{
-    // Actually 2 + 1.6 * OSR, but rounding up.
-    return 3U + (uint32_t) (1.6F * (float) os_to_num (ctx->pres_osr));
-}
-
-
-
-dps310_status_t dps310_measure_temp_once_sync (dps310_ctx_t * const ctx,
-        float * const result)
+dps310_status_t
+dps310_measure_temp_once_sync (dps310_ctx_t * const ctx, float * const result)
 {
     dps310_status_t err_code = ctx_ready_check (ctx);
 
@@ -613,7 +603,7 @@ dps310_status_t dps310_measure_temp_once_sync (dps310_ctx_t * const ctx,
     else if (DPS310_SUCCESS == err_code)
     {
         err_code |= dps310_measure_temp_once_async (ctx);
-        ctx->sleep (temp_measurement_time_get (ctx));
+        ctx->sleep (measurement_time_get (ctx->temp_osr));
         err_code |= dps310_get_single_result (ctx, result);
     }
     else
@@ -832,7 +822,7 @@ dps310_measure_pres_once_sync (dps310_ctx_t * const ctx, float * const result)
     else if (DPS310_SUCCESS == err_code)
     {
         err_code |= dps310_measure_pres_once_async (ctx);
-        ctx->sleep (pres_measurement_time_get (ctx));
+        ctx->sleep (measurement_time_get (ctx->pres_osr));
         err_code |= dps310_get_single_result (ctx, result);
     }
     else
