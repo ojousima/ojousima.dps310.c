@@ -110,7 +110,14 @@
 #define DPS310_EFUSE_2_VAL             (0x02U)
 
 #define DPS310_C0_WEIGHT               (0.5F)
-
+#define DPS310_OS_1_SF                 (524288U)
+#define DPS310_OS_2_SF                 (1572864U)
+#define DPS310_OS_4_SF                 (3670016U)
+#define DPS310_OS_8_SF                 (7864320U)
+#define DPS310_OS_16_SF                (253952U)
+#define DPS310_OS_32_SF                (516096U)
+#define DPS310_OS_64_SF                (1040384U)
+#define DPS310_OS_128_SF               (2088960U)
 /** @} */
 
 #endif

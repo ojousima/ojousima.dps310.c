@@ -424,7 +424,7 @@ mask_set (const dps310_ctx_t * const ctx, const uint8_t reg_addr,
 }
 
 static __attribute__ ((nonnull)) dps310_status_t
-temp_coef_src_setup (dps310_ctx_t * const ctx, uint8_t * const cmd)
+temp_coef_src_setup (const dps310_ctx_t * const ctx, uint8_t * const cmd)
 {
     dps310_status_t err_code = DPS310_SUCCESS;
     uint8_t coef_src = 0U;
@@ -668,35 +668,35 @@ static uint32_t os_to_scale_factor (const dps310_os_t os)
     switch (os)
     {
         case DPS310_OS_1:
-            sf = 524288U;
+            sf = DPS310_OS_1_SF;
             break;
 
         case DPS310_OS_2:
-            sf = 1572864U;
+            sf = DPS310_OS_2_SF;
             break;
 
         case DPS310_OS_4:
-            sf = 3670016U;
+            sf = DPS310_OS_4_SF;
             break;
 
         case DPS310_OS_8:
-            sf = 7864320U;
+            sf = DPS310_OS_8_SF;
             break;
 
         case DPS310_OS_16:
-            sf = 253952U;
+            sf = DPS310_OS_16_SF;
             break;
 
         case DPS310_OS_32:
-            sf = 516096U;
+            sf = DPS310_OS_32_SF;
             break;
 
         case DPS310_OS_64:
-            sf = 1040384U;
+            sf = DPS310_OS_64_SF;
             break;
 
         case DPS310_OS_128:
-            sf = 2088960U;
+            sf = DPS310_OS_128_SF;
             break;
 
         default:
@@ -732,9 +732,9 @@ float calculate_pressure (const dps310_ctx_t * const ctx, const int32_t raw)
 static inline __attribute__ ((nonnull)) int32_t
 regs_to_i32 (const uint8_t * const regs)
 {
-    uint32_t b24_value = (regs[0U] << 16U)
-                         + (regs[1U] << 8U)
-                         + regs[2U];
+    uint32_t b24_value = (uint32_t) (regs[0U] << 16U)
+                         + (uint32_t) (regs[1U] << 8U)
+                         + (uint32_t)regs[2U];
     return twos_complement (b24_value, 24U);
 }
 
