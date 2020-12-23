@@ -18,7 +18,8 @@
 #include <stddef.h>
 
 // Valid up to 31 bits
-static int32_t twos_complement (const uint32_t value, const uint8_t bits)
+static inline int32_t
+twos_complement (const uint32_t value, const uint8_t bits)
 {
     const int32_t max_signed_value_exclusive = (int32_t) (1U << (bits - 1U));
     int32_t complement = (int32_t) value;
@@ -146,7 +147,8 @@ static dps310_status_t ctx_done_check (const dps310_ctx_t * const ctx)
     return status;
 }
 
-static dps310_status_t read_coefs (dps310_ctx_t * const ctx)
+static __attribute__ ((nonnull)) dps310_status_t
+read_coefs (dps310_ctx_t * const ctx)
 {
     uint8_t coefs[DPS310_COEF_REG_LEN] = {0};
     dps310_status_t reg_read_ret = ctx->read (ctx->comm_ctx, DPS310_COEF_START_REG,
@@ -187,7 +189,8 @@ static dps310_status_t read_coefs (dps310_ctx_t * const ctx)
     return reg_read_ret;
 }
 
-static dps310_status_t soft_reset (dps310_ctx_t * const ctx)
+static __attribute__ ((nonnull)) dps310_status_t
+soft_reset (dps310_ctx_t * const ctx)
 {
     dps310_status_t status = DPS310_SUCCESS;
     uint8_t cmd = DPS310_SOFT_RST_VAL;
@@ -206,7 +209,8 @@ static dps310_status_t soft_reset (dps310_ctx_t * const ctx)
     return status;
 }
 
-static dps310_status_t read_revision (dps310_ctx_t * const ctx)
+static __attribute__ ((nonnull)) dps310_status_t
+read_revision (dps310_ctx_t * const ctx)
 {
     dps310_status_t status = ctx_ready_check (ctx);
     uint8_t revision[1U] = {0xFFU};
@@ -241,7 +245,8 @@ static dps310_status_t read_revision (dps310_ctx_t * const ctx)
 // Undocumented workaround for undocumented feature of DPS310, lifted from
 // DPS310 Arduino driver.
 // https://github.com/Infineon/DPS310-Pressure-Sensor/blob/888200c7efd8edb19ce69a2144e28ba31cdad449/src/DpsClass.cpp#L448
-static const dps310_status_t efuse_write (dps310_ctx_t * const ctx)
+static __attribute__ ((nonnull))
+dps310_status_t efuse_write (dps310_ctx_t * const ctx)
 {
     dps310_status_t ret_code = ctx_ready_check (ctx);
 
@@ -357,7 +362,8 @@ dps310_status_t set_mr_reg (uint8_t * const reg, const dps310_mr_t mr)
     return err_code;
 }
 
-static dps310_status_t set_os_reg (uint8_t * const reg, const dps310_os_t os)
+static __attribute__ ((nonnull)) dps310_status_t
+set_os_reg (uint8_t * const reg, const dps310_os_t os)
 {
     dps310_status_t err_code = DPS310_SUCCESS;
 
@@ -403,7 +409,7 @@ static dps310_status_t set_os_reg (uint8_t * const reg, const dps310_os_t os)
     return err_code;
 }
 
-static dps310_status_t
+static __attribute__ ((nonnull)) dps310_status_t
 mask_set (const dps310_ctx_t * const ctx, const uint8_t reg_addr,
           const uint8_t value, const uint8_t mask)
 {
@@ -415,8 +421,19 @@ mask_set (const dps310_ctx_t * const ctx, const uint8_t reg_addr,
     return err_code;
 }
 
-dps310_status_t dps310_config_temp (dps310_ctx_t * const ctx, const dps310_mr_t temp_mr,
-                                    const dps310_os_t temp_osr)
+static __attribute__ ((nonnull)) dps310_status_t
+temp_coef_src_setup (dps310_ctx_t * const ctx, uint8_t * const cmd)
+{
+    dps310_status_t err_code = DPS310_SUCCESS;
+    uint8_t coef_src = 0U;
+    err_code |= ctx->read (ctx->comm_ctx, DPS310_COEF_SRC_REG, &coef_src, 1U);
+    *cmd |= coef_src & DPS310_COEF_SRC_MASK;
+    return err_code;
+}
+
+dps310_status_t
+dps310_config_temp (dps310_ctx_t * const ctx, const dps310_mr_t temp_mr,
+                    const dps310_os_t temp_osr)
 {
     dps310_status_t err_code = ctx_ready_check (ctx);
     uint8_t cmd = 0U;
@@ -426,9 +443,9 @@ dps310_status_t dps310_config_temp (dps310_ctx_t * const ctx, const dps310_mr_t 
         err_code |= set_mr_reg (&cmd, temp_mr);
         err_code |= set_os_reg (&cmd, temp_osr);
 
-        // TODO: SET coef_src
         if (DPS310_SUCCESS == err_code)
         {
+            err_code |= temp_coef_src_setup (ctx, &cmd);
             err_code |= ctx->write (ctx->comm_ctx, DPS310_TEMP_CFG_REG, &cmd, 1U);
 
             if (temp_osr >= DPS310_OS_16)
@@ -565,13 +582,15 @@ static uint8_t os_to_num (const dps310_os_t os)
     return num;
 }
 
-static uint32_t temp_measurement_time_get (const dps310_ctx_t * const ctx)
+static __attribute__ ((nonnull)) uint32_t
+temp_measurement_time_get (const dps310_ctx_t * const ctx)
 {
     // Actually 2 + 1.6 * OSR, but rounding up.
     return 3U + (uint32_t) (1.6F * (float) os_to_num (ctx->temp_osr));
 }
 
-static uint32_t pres_measurement_time_get (const dps310_ctx_t * const ctx)
+static __attribute__ ((nonnull)) uint32_t
+pres_measurement_time_get (const dps310_ctx_t * const ctx)
 {
     // Actually 2 + 1.6 * OSR, but rounding up.
     return 3U + (uint32_t) (1.6F * (float) os_to_num (ctx->pres_osr));
@@ -695,7 +714,8 @@ static uint32_t os_to_scale_factor (const dps310_os_t os)
     return sf;
 }
 
-static float calculate_temperature (dps310_ctx_t * const ctx, const int32_t raw)
+static __attribute__ ((nonnull)) float
+calculate_temperature (dps310_ctx_t * const ctx, const int32_t raw)
 {
     uint32_t sf = os_to_scale_factor (ctx->temp_osr);
     float raw_scaled = ((float) raw) / ((float) sf);
@@ -703,12 +723,13 @@ static float calculate_temperature (dps310_ctx_t * const ctx, const int32_t raw)
     return ((float) ctx->c0 * DPS310_C0_WEIGHT) + ((float) ctx->c1 * raw_scaled);
 }
 
-static float calculate_pressure (const dps310_ctx_t * const ctx, const int32_t raw)
+static __attribute__ ((nonnull))
+float calculate_pressure (const dps310_ctx_t * const ctx, const int32_t raw)
 {
     uint32_t sf = os_to_scale_factor (ctx->pres_osr);
     float Praw_sc = ((float) raw) / ((float) sf);
     float Traw_sc = ctx->last_temp_scal;
-    return ctx->c00
+    return (float)ctx->c00
            + Praw_sc * ((float) ctx->c10 + Praw_sc * ((float) ctx->c20 + Praw_sc *
                         (float) ctx->c30))
            + Traw_sc * (float) ctx->c01 + Traw_sc * Praw_sc * ((float) ctx->c11 + Praw_sc *
@@ -724,8 +745,8 @@ regs_to_i32 (const uint8_t * const regs)
     return twos_complement (b24_value, 24U);
 }
 
-static dps310_status_t dps310_get_single_temp (dps310_ctx_t * const ctx,
-        float * const result)
+static __attribute__ ((nonnull)) dps310_status_t
+dps310_get_single_temp (dps310_ctx_t * const ctx, float * const result)
 {
     dps310_status_t err_code = DPS310_SUCCESS;
     uint8_t reg_value[DPS310_TEMP_VAL_LEN] = {0};
@@ -748,8 +769,8 @@ static dps310_status_t dps310_get_single_temp (dps310_ctx_t * const ctx,
     return err_code;
 }
 
-static dps310_status_t dps310_get_single_pres (dps310_ctx_t * const ctx,
-        float * const result)
+static __attribute__ ((nonnull)) dps310_status_t
+dps310_get_single_pres (dps310_ctx_t * const ctx, float * const result)
 {
     dps310_status_t err_code = DPS310_SUCCESS;
     uint8_t reg_value[DPS310_PRES_VAL_LEN] = {0};

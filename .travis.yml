@@ -27,8 +27,8 @@ script:
 
 addons:
   sonarcloud:
-    organization: "ojousima" # the key of the org you chose at step #3
-    projectKey: "ojousima.dps310.c"
+    organization: "ruuvi" # the key of the org you chose at step #3
+    projectKey: "ruuvi.dps310.c"
 
 before_deploy:
   - sed -i '/doxygen/d' .gitignore

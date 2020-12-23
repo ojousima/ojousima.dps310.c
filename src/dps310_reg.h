@@ -7,7 +7,7 @@
  */
 /** @{ */
 /**
- * @file dps310.h
+ * @file dps310_reg.h
  * @author Otso Jousimaa <otso@ojousima.net>
  * @date 2020-11-25
  * @copyright Ruuvi Innovations, License MIT
@@ -77,6 +77,7 @@
 #define DPS310_COEF_C30_LEN_BITS  (16U)
 
 #define DPS310_COEF_SRC_REG       (0x28U)
+#define DPS310_COEF_SRC_MASK      (0x80U)
 
 
 #define DPS310_RESERVED_START          (0x22U)

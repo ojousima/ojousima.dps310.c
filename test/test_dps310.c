@@ -620,6 +620,24 @@ void test_dps310_measure_temp_once_sync_null (void)
     TEST_ASSERT (DPS310_ERROR_NULL == status);
 }
 
+void test_dps310_temp_coef_src_internal (void)
+{
+    dps310_init (&dps);
+    dps310_status_t status = dps310_config_temp (&dps, DPS310_MR_1, DPS310_OS_1);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT (0U == (dps310_registers[DPS310_TEMP_CFG_REG] & DPS310_COEF_SRC_MASK));
+}
+
+void test_dps310_temp_coef_src_external (void)
+{
+    dps310_init (&dps);
+    dps310_registers[DPS310_COEF_SRC_REG] = DPS310_COEF_SRC_MASK;
+    dps310_status_t status = dps310_config_temp (&dps, DPS310_MR_1, DPS310_OS_1);
+    TEST_ASSERT (DPS310_SUCCESS == status);
+    TEST_ASSERT (DPS310_COEF_SRC_MASK
+                 == (dps310_registers[DPS310_TEMP_CFG_REG] & DPS310_COEF_SRC_MASK));
+}
+
 void test_dps310_measure_pres_once_sync_ok (void)
 {
     float result = 0;
