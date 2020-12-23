@@ -437,7 +437,7 @@
 <a name="ln424">}</a>
 <a name="ln425"> </a>
 <a name="ln426">static __attribute__ ((nonnull)) dps310_status_t</a>
-<a name="ln427">temp_coef_src_setup (dps310_ctx_t * const ctx, uint8_t * const cmd)</a>
+<a name="ln427">temp_coef_src_setup (const dps310_ctx_t * const ctx, uint8_t * const cmd)</a>
 <a name="ln428">{</a>
 <a name="ln429">    dps310_status_t err_code = DPS310_SUCCESS;</a>
 <a name="ln430">    uint8_t coef_src = 0U;</a>
@@ -681,35 +681,35 @@
 <a name="ln668">    switch (os)</a>
 <a name="ln669">    {</a>
 <a name="ln670">        case DPS310_OS_1:</a>
-<a name="ln671">            sf = 524288U;</a>
+<a name="ln671">            sf = DPS310_OS_1_SF;</a>
 <a name="ln672">            break;</a>
 <a name="ln673"> </a>
 <a name="ln674">        case DPS310_OS_2:</a>
-<a name="ln675">            sf = 1572864U;</a>
+<a name="ln675">            sf = DPS310_OS_2_SF;</a>
 <a name="ln676">            break;</a>
 <a name="ln677"> </a>
 <a name="ln678">        case DPS310_OS_4:</a>
-<a name="ln679">            sf = 3670016U;</a>
+<a name="ln679">            sf = DPS310_OS_4_SF;</a>
 <a name="ln680">            break;</a>
 <a name="ln681"> </a>
 <a name="ln682">        case DPS310_OS_8:</a>
-<a name="ln683">            sf = 7864320U;</a>
+<a name="ln683">            sf = DPS310_OS_8_SF;</a>
 <a name="ln684">            break;</a>
 <a name="ln685"> </a>
 <a name="ln686">        case DPS310_OS_16:</a>
-<a name="ln687">            sf = 253952U;</a>
+<a name="ln687">            sf = DPS310_OS_16_SF;</a>
 <a name="ln688">            break;</a>
 <a name="ln689"> </a>
 <a name="ln690">        case DPS310_OS_32:</a>
-<a name="ln691">            sf = 516096U;</a>
+<a name="ln691">            sf = DPS310_OS_32_SF;</a>
 <a name="ln692">            break;</a>
 <a name="ln693"> </a>
 <a name="ln694">        case DPS310_OS_64:</a>
-<a name="ln695">            sf = 1040384U;</a>
+<a name="ln695">            sf = DPS310_OS_64_SF;</a>
 <a name="ln696">            break;</a>
 <a name="ln697"> </a>
 <a name="ln698">        case DPS310_OS_128:</a>
-<a name="ln699">            sf = 2088960U;</a>
+<a name="ln699">            sf = DPS310_OS_128_SF;</a>
 <a name="ln700">            break;</a>
 <a name="ln701"> </a>
 <a name="ln702">        default:</a>
@@ -745,9 +745,9 @@
 <a name="ln732">static inline __attribute__ ((nonnull)) int32_t</a>
 <a name="ln733">regs_to_i32 (const uint8_t * const regs)</a>
 <a name="ln734">{</a>
-<a name="ln735">    uint32_t b24_value = (regs[0U] &lt;&lt; 16U)</a>
-<a name="ln736">                         + (regs[1U] &lt;&lt; 8U)</a>
-<a name="ln737">                         + regs[2U];</a>
+<a name="ln735">    uint32_t b24_value = (uint32_t) (regs[0U] &lt;&lt; 16U)</a>
+<a name="ln736">                         + (uint32_t) (regs[1U] &lt;&lt; 8U)</a>
+<a name="ln737">                         + (uint32_t)regs[2U];</a>
 <a name="ln738">    return twos_complement (b24_value, 24U);</a>
 <a name="ln739">}</a>
 <a name="ln740"> </a>
@@ -974,7 +974,6 @@
 <div class="balloon" rel="421"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2568/" target="_blank">V2568</a> Both operands of the '|=' operator should have the same essential type. The current types are: 'unsigned' and 'signed'.</p></div>
 <div class="balloon" rel="432"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '~(0x80U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
 <div class="balloon" rel="433"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the 'coef_src & (0x80U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="427"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2009/" target="_blank">V2009</a> Consider rendering the 'ctx' pointer as a pointer to const.</p></div>
 <div class="balloon" rel="456"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x08U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
 <div class="balloon" rel="496"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x04U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
 <div class="balloon" rel="549"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '1U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
@@ -990,8 +989,6 @@
 <div class="balloon" rel="623"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x02U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
 <div class="balloon" rel="646"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x01U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
 <div class="balloon" rel="703"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2568/" target="_blank">V2568</a> Both operands of the '=' operator should have the same essential type. The current types are: 'unsigned' and 'signed'.</p></div>
-<div class="balloon" rel="735"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2568/" target="_blank">V2568</a> Both operands of the '+' operator should have the same essential type. The current types are: 'signed' and 'unsigned'.</p></div>
-<div class="balloon" rel="735"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> Value of the expression should not be converted from the essential 'signed' type to the essential 'unsigned' type.</p></div>
 <div class="balloon" rel="845"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x06U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
 <div class="balloon" rel="850"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x05U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
 <div class="balloon" rel="860"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2568/" target="_blank">V2568</a> Both operands of the '!=' operator should have the same essential type. The current types are: 'signed' and 'unsigned'.</p></div>
