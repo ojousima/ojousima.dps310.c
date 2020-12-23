@@ -837,18 +837,18 @@ dps310_status_t dps310_measure_continuous_async (dps310_ctx_t * const ctx)
 
         err_code |= ctx->write (ctx->comm_ctx, DPS310_MEAS_CFG_REG, &cmd, 1U);
 
-        if(DPS310_SUCCESS != err_code)
+        if (DPS310_SUCCESS != err_code)
         {
             err_code |= DPS310_BUS_ERROR;
             ctx->device_status = DPS310_BUS_ERROR;
         }
-        else if(0 != cmd)
+        else if (0 != cmd)
         {
             ctx->device_status = DPS310_CONTINUOUS;
         }
         else
         {
-            err_code |= DPS310_INVALID_STATE; 
+            err_code |= DPS310_INVALID_STATE;
         }
     }
 

@@ -240,8 +240,8 @@ dps310_status_t dps310_get_single_result (dps310_ctx_t * const ctx, float * cons
  * @param[in,out] ctx Input: State of sensor. Output: Updated state of sensor.
  * @retval DPS310_SUCCESS on success.
  * @retval DPS310_ERROR_NULL if ctx or Function pointers are NULL.
- * @retval DPS310_INVALID_STATE if ctx is not initialized, is busy, 
- *                              measurement rate on both temperature and pressure is NONE 
+ * @retval DPS310_INVALID_STATE if ctx is not initialized, is busy,
+ *                              measurement rate on both temperature and pressure is NONE
  *                              or context has internal error.
  */
 dps310_status_t dps310_measure_continuous_async (dps310_ctx_t * const ctx);
