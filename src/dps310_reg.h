@@ -7,7 +7,7 @@
  */
 /** @{ */
 /**
- * @file dps310.h
+ * @file dps310_reg.h
  * @author Otso Jousimaa <otso@ojousima.net>
  * @date 2020-11-25
  * @copyright Ruuvi Innovations, License MIT

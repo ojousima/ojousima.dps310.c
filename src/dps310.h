@@ -58,7 +58,7 @@ typedef void (*dps310_sleep) (const uint32_t ms);
  * @param[out] data Pointer to which data will be written. Must be data_len bytes long.
  * @param[in] data_len Length of data.
  * @retval 0 on success.
- * @return application error code on error. Bit DPS310_BUS_ERROR should be 0.
+ * @return Application error code on error. Bit DPS310_BUS_ERROR should be 0.
  */
 typedef uint32_t (*dps310_read) (const void * const comm_ctx, const uint8_t reg_addr,
                                  uint8_t * const data, const uint8_t data_len);
@@ -75,7 +75,7 @@ typedef uint32_t (*dps310_read) (const void * const comm_ctx, const uint8_t reg_
  * @param[in] data Pointer to which data will be written. Must be data_len bytes long.
  * @param[in] data_len Length of data.
  * @return 0 on success.
- * @return application error code on error. Bit DPS310_BUS_ERROR should be 0.
+ * @return Application error code on error. Bit DPS310_BUS_ERROR should be 0.
  */
 typedef uint32_t (*dps310_write) (const void * const comm_ctx, const uint8_t reg_addr,
                                   const uint8_t * const data, const uint8_t data_len);
@@ -121,14 +121,14 @@ typedef struct
     dps310_os_t pres_osr; //!< Pressure OS, configured by @ref dps310_config_pres.
 
     // compensation coefficients, read from device.
-    int32_t c0;  //!< Temperature offset
-    int32_t c1;  //!< Temperature 1st degree
-    int32_t c00; //!< Pressure offset
-    int32_t c10; //!< Pressure 1st degree rel to pressure
-    int32_t c01; //!< Pressure 1st degree rel to temperature
-    int32_t c11; //!< Pressure 1st degree rel to temperature + pressure
-    int32_t c20; //!< Pressure 2nd degree rel to pressure
-    int32_t c21; //!< Pressure 2nd degree rel to pressure + 1st to temperature
+    int32_t c0;  //!< Temperature offset.
+    int32_t c1;  //!< Temperature 1st degree.
+    int32_t c00; //!< Pressure offset.
+    int32_t c10; //!< Pressure 1st degree rel to pressure.
+    int32_t c01; //!< Pressure 1st degree rel to temperature.
+    int32_t c11; //!< Pressure 1st degree rel to temperature + pressure.
+    int32_t c20; //!< Pressure 2nd degree rel to pressure.
+    int32_t c21; //!< Pressure 2nd degree rel to pressure + 1st to temperature.
     int32_t c30; //!< Pressure 3rd degree rel to pressure.
 
 
