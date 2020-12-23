@@ -27,7 +27,7 @@ script:
 
 addons:
   sonarcloud:
-    organization: "ruuvi" # the key of the org you chose at step #3
+    organization: "ruuvi"
     projectKey: "ruuvi.dps310.c"
 
 before_deploy:
