@@ -330,675 +330,671 @@
 <a name="ln317">dps310_status_t set_mr_reg (uint8_t * const reg, const dps310_mr_t mr)</a>
 <a name="ln318">{</a>
 <a name="ln319">    dps310_status_t err_code = DPS310_SUCCESS;</a>
-<a name="ln320"> </a>
-<a name="ln321">    switch (mr)</a>
-<a name="ln322">    {</a>
-<a name="ln323">        // Switching sensor to off is controlled by a separate register, NONE has no effect.</a>
-<a name="ln324">        case DPS310_MR_NONE:</a>
-<a name="ln325">        case DPS310_MR_1:</a>
-<a name="ln326">            *reg = 0U &lt;&lt; DPS310_MR_SHIFT;</a>
-<a name="ln327">            break;</a>
-<a name="ln328"> </a>
-<a name="ln329">        case DPS310_MR_2:</a>
-<a name="ln330">            *reg = 1U &lt;&lt; DPS310_MR_SHIFT;</a>
-<a name="ln331">            break;</a>
-<a name="ln332"> </a>
-<a name="ln333">        case DPS310_MR_4:</a>
-<a name="ln334">            *reg = 2U &lt;&lt; DPS310_MR_SHIFT;</a>
-<a name="ln335">            break;</a>
-<a name="ln336"> </a>
-<a name="ln337">        case DPS310_MR_8:</a>
-<a name="ln338">            *reg = 3U &lt;&lt; DPS310_MR_SHIFT;</a>
-<a name="ln339">            break;</a>
-<a name="ln340"> </a>
-<a name="ln341">        case DPS310_MR_16:</a>
-<a name="ln342">            *reg = 4U &lt;&lt; DPS310_MR_SHIFT;</a>
-<a name="ln343">            break;</a>
-<a name="ln344"> </a>
-<a name="ln345">        case DPS310_MR_32:</a>
-<a name="ln346">            *reg = 5U &lt;&lt; DPS310_MR_SHIFT;</a>
-<a name="ln347">            break;</a>
-<a name="ln348"> </a>
-<a name="ln349">        case DPS310_MR_64:</a>
-<a name="ln350">            *reg = 6U &lt;&lt; DPS310_MR_SHIFT;</a>
-<a name="ln351">            break;</a>
-<a name="ln352"> </a>
-<a name="ln353">        case DPS310_MR_128:</a>
-<a name="ln354">            *reg = 7U &lt;&lt; DPS310_MR_SHIFT;</a>
-<a name="ln355">            break;</a>
-<a name="ln356"> </a>
-<a name="ln357">        default:</a>
-<a name="ln358">            err_code = DPS310_INVALID_PARAM;</a>
-<a name="ln359">            break;</a>
-<a name="ln360">    }</a>
-<a name="ln361"> </a>
-<a name="ln362">    return err_code;</a>
-<a name="ln363">}</a>
-<a name="ln364"> </a>
-<a name="ln365">static __attribute__ ((nonnull)) dps310_status_t</a>
-<a name="ln366">set_os_reg (uint8_t * const reg, const dps310_os_t os)</a>
-<a name="ln367">{</a>
-<a name="ln368">    dps310_status_t err_code = DPS310_SUCCESS;</a>
-<a name="ln369"> </a>
-<a name="ln370">    switch (os)</a>
-<a name="ln371">    {</a>
-<a name="ln372">        case DPS310_OS_1:</a>
-<a name="ln373">            *reg = 0U;</a>
-<a name="ln374">            break;</a>
-<a name="ln375"> </a>
-<a name="ln376">        case DPS310_OS_2:</a>
-<a name="ln377">            *reg = 1U;</a>
-<a name="ln378">            break;</a>
-<a name="ln379"> </a>
-<a name="ln380">        case DPS310_OS_4:</a>
-<a name="ln381">            *reg = 2U;</a>
-<a name="ln382">            break;</a>
-<a name="ln383"> </a>
-<a name="ln384">        case DPS310_OS_8:</a>
-<a name="ln385">            *reg = 3U;</a>
-<a name="ln386">            break;</a>
-<a name="ln387"> </a>
-<a name="ln388">        case DPS310_OS_16:</a>
-<a name="ln389">            *reg = 4U;</a>
-<a name="ln390">            break;</a>
-<a name="ln391"> </a>
-<a name="ln392">        case DPS310_OS_32:</a>
-<a name="ln393">            *reg = 5U;</a>
-<a name="ln394">            break;</a>
-<a name="ln395"> </a>
-<a name="ln396">        case DPS310_OS_64:</a>
-<a name="ln397">            *reg = 6U;</a>
-<a name="ln398">            break;</a>
-<a name="ln399"> </a>
-<a name="ln400">        case DPS310_OS_128:</a>
-<a name="ln401">            *reg = 7U;</a>
-<a name="ln402">            break;</a>
-<a name="ln403"> </a>
-<a name="ln404">        default:</a>
-<a name="ln405">            err_code = DPS310_INVALID_PARAM;</a>
-<a name="ln406">            break;</a>
-<a name="ln407">    }</a>
-<a name="ln408"> </a>
-<a name="ln409">    return err_code;</a>
-<a name="ln410">}</a>
-<a name="ln411"> </a>
-<a name="ln412">static __attribute__ ((nonnull)) dps310_status_t</a>
-<a name="ln413">mask_set (const dps310_ctx_t * const ctx, const uint8_t reg_addr,</a>
-<a name="ln414">          const uint8_t value, const uint8_t mask)</a>
-<a name="ln415">{</a>
-<a name="ln416">    dps310_status_t err_code = DPS310_SUCCESS;</a>
-<a name="ln417">    uint8_t reg_val = 0;</a>
-<a name="ln418">    err_code |= ctx-&gt;read (ctx-&gt;comm_ctx, reg_addr, &amp;reg_val, 1U);</a>
-<a name="ln419">    reg_val |= (value &amp; mask);</a>
-<a name="ln420">    err_code |= ctx-&gt;write (ctx-&gt;comm_ctx, reg_addr, &amp;reg_val, 1U);</a>
-<a name="ln421">    return err_code;</a>
-<a name="ln422">}</a>
-<a name="ln423"> </a>
-<a name="ln424">static __attribute__ ((nonnull)) dps310_status_t</a>
-<a name="ln425">temp_coef_src_setup (dps310_ctx_t * const ctx, uint8_t * const cmd)</a>
-<a name="ln426">{</a>
-<a name="ln427">    dps310_status_t err_code = DPS310_SUCCESS;</a>
-<a name="ln428">    uint8_t coef_src = 0U;</a>
-<a name="ln429">    err_code |= ctx-&gt;read (ctx-&gt;comm_ctx, DPS310_COEF_SRC_REG, &amp;coef_src, 1U);</a>
-<a name="ln430">    *cmd |= coef_src &amp; DPS310_COEF_SRC_MASK;</a>
-<a name="ln431">    return err_code;</a>
-<a name="ln432">}</a>
-<a name="ln433"> </a>
-<a name="ln434">dps310_status_t</a>
-<a name="ln435">dps310_config_temp (dps310_ctx_t * const ctx, const dps310_mr_t temp_mr,</a>
-<a name="ln436">                    const dps310_os_t temp_osr)</a>
-<a name="ln437">{</a>
-<a name="ln438">    dps310_status_t err_code = ctx_ready_check (ctx);</a>
-<a name="ln439">    uint8_t cmd = 0U;</a>
-<a name="ln440"> </a>
-<a name="ln441">    if (DPS310_SUCCESS == err_code)</a>
-<a name="ln442">    {</a>
-<a name="ln443">        err_code |= set_mr_reg (&amp;cmd, temp_mr);</a>
-<a name="ln444">        err_code |= set_os_reg (&amp;cmd, temp_osr);</a>
-<a name="ln445"> </a>
-<a name="ln446">        if (DPS310_SUCCESS == err_code)</a>
-<a name="ln447">        {</a>
-<a name="ln448">            err_code |= temp_coef_src_setup (ctx, &amp;cmd);</a>
-<a name="ln449">            err_code |= ctx-&gt;write (ctx-&gt;comm_ctx, DPS310_TEMP_CFG_REG, &amp;cmd, 1U);</a>
-<a name="ln450"> </a>
-<a name="ln451">            if (temp_osr &gt;= DPS310_OS_16)</a>
-<a name="ln452">            {</a>
-<a name="ln453">                const uint8_t temp_shift_enable = DPS310_CFG_TEMPSH_MASK;</a>
-<a name="ln454">                err_code |=  mask_set (ctx,</a>
-<a name="ln455">                                       DPS310_CFG_REG,</a>
-<a name="ln456">                                       temp_shift_enable,</a>
-<a name="ln457">                                       DPS310_CFG_TEMPSH_MASK);</a>
-<a name="ln458">            }</a>
-<a name="ln459"> </a>
-<a name="ln460">            if (DPS310_SUCCESS == err_code)</a>
-<a name="ln461">            {</a>
-<a name="ln462">                ctx-&gt;temp_mr = temp_mr;</a>
-<a name="ln463">                ctx-&gt;temp_osr = temp_osr;</a>
-<a name="ln464">            }</a>
-<a name="ln465">            else</a>
-<a name="ln466">            {</a>
-<a name="ln467">                err_code |= DPS310_BUS_ERROR;</a>
-<a name="ln468">                ctx-&gt;device_status = DPS310_BUS_ERROR;</a>
-<a name="ln469">            }</a>
-<a name="ln470">        }</a>
-<a name="ln471">    }</a>
-<a name="ln472"> </a>
-<a name="ln473">    return err_code;</a>
-<a name="ln474">}</a>
+<a name="ln320">    *reg &amp;= ~DPS310_MR_MASK;</a>
+<a name="ln321"> </a>
+<a name="ln322">    switch (mr)</a>
+<a name="ln323">    {</a>
+<a name="ln324">        // Switching sensor to off is controlled by a separate register, NONE has no effect.</a>
+<a name="ln325">        case DPS310_MR_NONE:</a>
+<a name="ln326">        case DPS310_MR_1:</a>
+<a name="ln327">            *reg |= DPS310_MR_VAL_1;</a>
+<a name="ln328">            break;</a>
+<a name="ln329"> </a>
+<a name="ln330">        case DPS310_MR_2:</a>
+<a name="ln331">            *reg |= DPS310_MR_VAL_2;</a>
+<a name="ln332">            break;</a>
+<a name="ln333"> </a>
+<a name="ln334">        case DPS310_MR_4:</a>
+<a name="ln335">            *reg |= DPS310_MR_VAL_4;</a>
+<a name="ln336">            break;</a>
+<a name="ln337"> </a>
+<a name="ln338">        case DPS310_MR_8:</a>
+<a name="ln339">            *reg |= DPS310_MR_VAL_8;</a>
+<a name="ln340">            break;</a>
+<a name="ln341"> </a>
+<a name="ln342">        case DPS310_MR_16:</a>
+<a name="ln343">            *reg |= DPS310_MR_VAL_16;</a>
+<a name="ln344">            break;</a>
+<a name="ln345"> </a>
+<a name="ln346">        case DPS310_MR_32:</a>
+<a name="ln347">            *reg |= DPS310_MR_VAL_32;</a>
+<a name="ln348">            break;</a>
+<a name="ln349"> </a>
+<a name="ln350">        case DPS310_MR_64:</a>
+<a name="ln351">            *reg |= DPS310_MR_VAL_64;</a>
+<a name="ln352">            break;</a>
+<a name="ln353"> </a>
+<a name="ln354">        case DPS310_MR_128:</a>
+<a name="ln355">            *reg |= DPS310_MR_VAL_128;</a>
+<a name="ln356">            break;</a>
+<a name="ln357"> </a>
+<a name="ln358">        default:</a>
+<a name="ln359">            err_code = DPS310_INVALID_PARAM;</a>
+<a name="ln360">            break;</a>
+<a name="ln361">    }</a>
+<a name="ln362"> </a>
+<a name="ln363">    return err_code;</a>
+<a name="ln364">}</a>
+<a name="ln365"> </a>
+<a name="ln366">static __attribute__ ((nonnull)) dps310_status_t</a>
+<a name="ln367">set_os_reg (uint8_t * const reg, const dps310_os_t os)</a>
+<a name="ln368">{</a>
+<a name="ln369">    dps310_status_t err_code = DPS310_SUCCESS;</a>
+<a name="ln370">    *reg &amp;= ~DPS310_OS_MASK;</a>
+<a name="ln371"> </a>
+<a name="ln372">    switch (os)</a>
+<a name="ln373">    {</a>
+<a name="ln374">        case DPS310_OS_1:</a>
+<a name="ln375">            *reg |= DPS310_OS_VAL_1;</a>
+<a name="ln376">            break;</a>
+<a name="ln377"> </a>
+<a name="ln378">        case DPS310_OS_2:</a>
+<a name="ln379">            *reg |= DPS310_OS_VAL_2;</a>
+<a name="ln380">            break;</a>
+<a name="ln381"> </a>
+<a name="ln382">        case DPS310_OS_4:</a>
+<a name="ln383">            *reg |= DPS310_OS_VAL_4;</a>
+<a name="ln384">            break;</a>
+<a name="ln385"> </a>
+<a name="ln386">        case DPS310_OS_8:</a>
+<a name="ln387">            *reg |= DPS310_OS_VAL_8;</a>
+<a name="ln388">            break;</a>
+<a name="ln389"> </a>
+<a name="ln390">        case DPS310_OS_16:</a>
+<a name="ln391">            *reg |= DPS310_OS_VAL_16;</a>
+<a name="ln392">            break;</a>
+<a name="ln393"> </a>
+<a name="ln394">        case DPS310_OS_32:</a>
+<a name="ln395">            *reg |= DPS310_OS_VAL_32;</a>
+<a name="ln396">            break;</a>
+<a name="ln397"> </a>
+<a name="ln398">        case DPS310_OS_64:</a>
+<a name="ln399">            *reg |= DPS310_OS_VAL_64;</a>
+<a name="ln400">            break;</a>
+<a name="ln401"> </a>
+<a name="ln402">        case DPS310_OS_128:</a>
+<a name="ln403">            *reg |= DPS310_OS_VAL_128;</a>
+<a name="ln404">            break;</a>
+<a name="ln405"> </a>
+<a name="ln406">        default:</a>
+<a name="ln407">            err_code = DPS310_INVALID_PARAM;</a>
+<a name="ln408">            break;</a>
+<a name="ln409">    }</a>
+<a name="ln410"> </a>
+<a name="ln411">    return err_code;</a>
+<a name="ln412">}</a>
+<a name="ln413"> </a>
+<a name="ln414">static __attribute__ ((nonnull)) dps310_status_t</a>
+<a name="ln415">mask_set (const dps310_ctx_t * const ctx, const uint8_t reg_addr,</a>
+<a name="ln416">          const uint8_t value, const uint8_t mask)</a>
+<a name="ln417">{</a>
+<a name="ln418">    dps310_status_t err_code = DPS310_SUCCESS;</a>
+<a name="ln419">    uint8_t reg_val = 0;</a>
+<a name="ln420">    err_code |= ctx-&gt;read (ctx-&gt;comm_ctx, reg_addr, &amp;reg_val, 1U);</a>
+<a name="ln421">    reg_val |= (value &amp; mask);</a>
+<a name="ln422">    err_code |= ctx-&gt;write (ctx-&gt;comm_ctx, reg_addr, &amp;reg_val, 1U);</a>
+<a name="ln423">    return err_code;</a>
+<a name="ln424">}</a>
+<a name="ln425"> </a>
+<a name="ln426">static __attribute__ ((nonnull)) dps310_status_t</a>
+<a name="ln427">temp_coef_src_setup (dps310_ctx_t * const ctx, uint8_t * const cmd)</a>
+<a name="ln428">{</a>
+<a name="ln429">    dps310_status_t err_code = DPS310_SUCCESS;</a>
+<a name="ln430">    uint8_t coef_src = 0U;</a>
+<a name="ln431">    err_code |= ctx-&gt;read (ctx-&gt;comm_ctx, DPS310_COEF_SRC_REG, &amp;coef_src, 1U);</a>
+<a name="ln432">    *cmd &amp;= ~DPS310_COEF_SRC_MASK;</a>
+<a name="ln433">    *cmd |= coef_src &amp; DPS310_COEF_SRC_MASK;</a>
+<a name="ln434">    return err_code;</a>
+<a name="ln435">}</a>
+<a name="ln436"> </a>
+<a name="ln437">dps310_status_t</a>
+<a name="ln438">dps310_config_temp (dps310_ctx_t * const ctx, const dps310_mr_t temp_mr,</a>
+<a name="ln439">                    const dps310_os_t temp_osr)</a>
+<a name="ln440">{</a>
+<a name="ln441">    dps310_status_t err_code = ctx_ready_check (ctx);</a>
+<a name="ln442">    uint8_t cmd = 0U;</a>
+<a name="ln443"> </a>
+<a name="ln444">    if (DPS310_SUCCESS == err_code)</a>
+<a name="ln445">    {</a>
+<a name="ln446">        err_code |= set_mr_reg (&amp;cmd, temp_mr);</a>
+<a name="ln447">        err_code |= set_os_reg (&amp;cmd, temp_osr);</a>
+<a name="ln448"> </a>
+<a name="ln449">        if (DPS310_SUCCESS == err_code)</a>
+<a name="ln450">        {</a>
+<a name="ln451">            err_code |= temp_coef_src_setup (ctx, &amp;cmd);</a>
+<a name="ln452">            err_code |= ctx-&gt;write (ctx-&gt;comm_ctx, DPS310_TEMP_CFG_REG, &amp;cmd, 1U);</a>
+<a name="ln453"> </a>
+<a name="ln454">            if (temp_osr &gt;= DPS310_OS_16)</a>
+<a name="ln455">            {</a>
+<a name="ln456">                const uint8_t temp_shift_enable = DPS310_CFG_TEMPSH_MASK;</a>
+<a name="ln457">                err_code |=  mask_set (ctx,</a>
+<a name="ln458">                                       DPS310_CFG_REG,</a>
+<a name="ln459">                                       temp_shift_enable,</a>
+<a name="ln460">                                       DPS310_CFG_TEMPSH_MASK);</a>
+<a name="ln461">            }</a>
+<a name="ln462"> </a>
+<a name="ln463">            if (DPS310_SUCCESS == err_code)</a>
+<a name="ln464">            {</a>
+<a name="ln465">                ctx-&gt;temp_mr = temp_mr;</a>
+<a name="ln466">                ctx-&gt;temp_osr = temp_osr;</a>
+<a name="ln467">            }</a>
+<a name="ln468">            else</a>
+<a name="ln469">            {</a>
+<a name="ln470">                err_code |= DPS310_BUS_ERROR;</a>
+<a name="ln471">                ctx-&gt;device_status = DPS310_BUS_ERROR;</a>
+<a name="ln472">            }</a>
+<a name="ln473">        }</a>
+<a name="ln474">    }</a>
 <a name="ln475"> </a>
-<a name="ln476">dps310_status_t dps310_config_pres (dps310_ctx_t * const ctx, const dps310_mr_t pres_mr,</a>
-<a name="ln477">                                    const dps310_os_t pres_osr)</a>
-<a name="ln478">{</a>
-<a name="ln479">    dps310_status_t err_code = ctx_ready_check (ctx);</a>
-<a name="ln480">    uint8_t cmd = 0U;</a>
-<a name="ln481"> </a>
-<a name="ln482">    if (DPS310_SUCCESS == err_code)</a>
-<a name="ln483">    {</a>
-<a name="ln484">        err_code |= set_mr_reg (&amp;cmd, pres_mr);</a>
-<a name="ln485">        err_code |= set_os_reg (&amp;cmd, pres_osr);</a>
-<a name="ln486"> </a>
-<a name="ln487">        if (DPS310_SUCCESS == err_code)</a>
-<a name="ln488">        {</a>
-<a name="ln489">            err_code |= ctx-&gt;write (ctx-&gt;comm_ctx, DPS310_PRES_CFG_REG, &amp;cmd, 1U);</a>
-<a name="ln490"> </a>
-<a name="ln491">            if (pres_osr &gt;= DPS310_OS_16)</a>
-<a name="ln492">            {</a>
-<a name="ln493">                const uint8_t pres_shift_enable = DPS310_CFG_PRESSH_MASK;</a>
-<a name="ln494">                err_code |=  mask_set (ctx,</a>
-<a name="ln495">                                       DPS310_CFG_REG,</a>
-<a name="ln496">                                       pres_shift_enable,</a>
-<a name="ln497">                                       DPS310_CFG_PRESSH_MASK);</a>
-<a name="ln498">            }</a>
-<a name="ln499"> </a>
-<a name="ln500">            if (DPS310_SUCCESS == err_code)</a>
-<a name="ln501">            {</a>
-<a name="ln502">                ctx-&gt;pres_mr = pres_mr;</a>
-<a name="ln503">                ctx-&gt;pres_osr = pres_osr;</a>
-<a name="ln504">            }</a>
-<a name="ln505">            else</a>
-<a name="ln506">            {</a>
-<a name="ln507">                err_code |= DPS310_BUS_ERROR;</a>
-<a name="ln508">                ctx-&gt;device_status = DPS310_BUS_ERROR;</a>
-<a name="ln509">            }</a>
-<a name="ln510">        }</a>
-<a name="ln511">    }</a>
-<a name="ln512"> </a>
-<a name="ln513">    return err_code;</a>
-<a name="ln514">}</a>
+<a name="ln476">    return err_code;</a>
+<a name="ln477">}</a>
+<a name="ln478"> </a>
+<a name="ln479">dps310_status_t dps310_config_pres (dps310_ctx_t * const ctx, const dps310_mr_t pres_mr,</a>
+<a name="ln480">                                    const dps310_os_t pres_osr)</a>
+<a name="ln481">{</a>
+<a name="ln482">    dps310_status_t err_code = ctx_ready_check (ctx);</a>
+<a name="ln483">    uint8_t cmd = 0U;</a>
+<a name="ln484"> </a>
+<a name="ln485">    if (DPS310_SUCCESS == err_code)</a>
+<a name="ln486">    {</a>
+<a name="ln487">        err_code |= set_mr_reg (&amp;cmd, pres_mr);</a>
+<a name="ln488">        err_code |= set_os_reg (&amp;cmd, pres_osr);</a>
+<a name="ln489"> </a>
+<a name="ln490">        if (DPS310_SUCCESS == err_code)</a>
+<a name="ln491">        {</a>
+<a name="ln492">            err_code |= ctx-&gt;write (ctx-&gt;comm_ctx, DPS310_PRES_CFG_REG, &amp;cmd, 1U);</a>
+<a name="ln493"> </a>
+<a name="ln494">            if (pres_osr &gt;= DPS310_OS_16)</a>
+<a name="ln495">            {</a>
+<a name="ln496">                const uint8_t pres_shift_enable = DPS310_CFG_PRESSH_MASK;</a>
+<a name="ln497">                err_code |=  mask_set (ctx,</a>
+<a name="ln498">                                       DPS310_CFG_REG,</a>
+<a name="ln499">                                       pres_shift_enable,</a>
+<a name="ln500">                                       DPS310_CFG_PRESSH_MASK);</a>
+<a name="ln501">            }</a>
+<a name="ln502"> </a>
+<a name="ln503">            if (DPS310_SUCCESS == err_code)</a>
+<a name="ln504">            {</a>
+<a name="ln505">                ctx-&gt;pres_mr = pres_mr;</a>
+<a name="ln506">                ctx-&gt;pres_osr = pres_osr;</a>
+<a name="ln507">            }</a>
+<a name="ln508">            else</a>
+<a name="ln509">            {</a>
+<a name="ln510">                err_code |= DPS310_BUS_ERROR;</a>
+<a name="ln511">                ctx-&gt;device_status = DPS310_BUS_ERROR;</a>
+<a name="ln512">            }</a>
+<a name="ln513">        }</a>
+<a name="ln514">    }</a>
 <a name="ln515"> </a>
-<a name="ln516">dps310_status_t dps310_standby (dps310_ctx_t * const ctx)</a>
-<a name="ln517">{</a>
-<a name="ln518">    dps310_status_t err_code = ctx_status_check (ctx);</a>
-<a name="ln519"> </a>
-<a name="ln520">    if (DPS310_SUCCESS == err_code)</a>
-<a name="ln521">    {</a>
-<a name="ln522">        uint8_t cmd = DPS310_MODE_STANDBY_VAL;</a>
-<a name="ln523">        err_code |= ctx-&gt;write (ctx-&gt;comm_ctx, DPS310_MEAS_CFG_REG, &amp;cmd, 1U);</a>
-<a name="ln524"> </a>
-<a name="ln525">        if (DPS310_SUCCESS == err_code)</a>
-<a name="ln526">        {</a>
-<a name="ln527">            ctx-&gt;device_status = DPS310_READY;</a>
-<a name="ln528">        }</a>
-<a name="ln529">        else</a>
-<a name="ln530">        {</a>
-<a name="ln531">            err_code |= DPS310_BUS_ERROR;</a>
-<a name="ln532">            ctx-&gt;device_status = DPS310_BUS_ERROR;</a>
-<a name="ln533">        }</a>
-<a name="ln534">    }</a>
-<a name="ln535"> </a>
-<a name="ln536">    return err_code;</a>
-<a name="ln537">}</a>
+<a name="ln516">    return err_code;</a>
+<a name="ln517">}</a>
+<a name="ln518"> </a>
+<a name="ln519">dps310_status_t dps310_standby (dps310_ctx_t * const ctx)</a>
+<a name="ln520">{</a>
+<a name="ln521">    dps310_status_t err_code = ctx_status_check (ctx);</a>
+<a name="ln522"> </a>
+<a name="ln523">    if (DPS310_SUCCESS == err_code)</a>
+<a name="ln524">    {</a>
+<a name="ln525">        uint8_t cmd = DPS310_MODE_STANDBY_VAL;</a>
+<a name="ln526">        err_code |= ctx-&gt;write (ctx-&gt;comm_ctx, DPS310_MEAS_CFG_REG, &amp;cmd, 1U);</a>
+<a name="ln527"> </a>
+<a name="ln528">        if (DPS310_SUCCESS == err_code)</a>
+<a name="ln529">        {</a>
+<a name="ln530">            ctx-&gt;device_status = DPS310_READY;</a>
+<a name="ln531">        }</a>
+<a name="ln532">        else</a>
+<a name="ln533">        {</a>
+<a name="ln534">            err_code |= DPS310_BUS_ERROR;</a>
+<a name="ln535">            ctx-&gt;device_status = DPS310_BUS_ERROR;</a>
+<a name="ln536">        }</a>
+<a name="ln537">    }</a>
 <a name="ln538"> </a>
-<a name="ln539">static uint8_t os_to_num (const dps310_os_t os)</a>
-<a name="ln540">{</a>
-<a name="ln541">    uint8_t num = 0;</a>
-<a name="ln542"> </a>
-<a name="ln543">    switch (os)</a>
-<a name="ln544">    {</a>
-<a name="ln545">        case DPS310_OS_1:</a>
-<a name="ln546">            num = 1U;</a>
-<a name="ln547">            break;</a>
-<a name="ln548"> </a>
-<a name="ln549">        case DPS310_OS_2:</a>
-<a name="ln550">            num = 2U;</a>
-<a name="ln551">            break;</a>
-<a name="ln552"> </a>
-<a name="ln553">        case DPS310_OS_4:</a>
-<a name="ln554">            num = 4U;</a>
-<a name="ln555">            break;</a>
-<a name="ln556"> </a>
-<a name="ln557">        case DPS310_OS_8:</a>
-<a name="ln558">            num = 8U;</a>
-<a name="ln559">            break;</a>
-<a name="ln560"> </a>
-<a name="ln561">        case DPS310_OS_16:</a>
-<a name="ln562">            num = 16U;</a>
-<a name="ln563">            break;</a>
-<a name="ln564"> </a>
-<a name="ln565">        case DPS310_OS_32:</a>
-<a name="ln566">            num = 32U;</a>
-<a name="ln567">            break;</a>
-<a name="ln568"> </a>
-<a name="ln569">        case DPS310_OS_64:</a>
-<a name="ln570">            num = 64U;</a>
-<a name="ln571">            break;</a>
-<a name="ln572"> </a>
-<a name="ln573">        case DPS310_OS_128:</a>
-<a name="ln574">            num = 128U;</a>
-<a name="ln575">            break;</a>
-<a name="ln576"> </a>
-<a name="ln577">        default:</a>
-<a name="ln578">            num = 0;</a>
-<a name="ln579">            break;</a>
-<a name="ln580">    }</a>
-<a name="ln581"> </a>
-<a name="ln582">    return num;</a>
-<a name="ln583">}</a>
+<a name="ln539">    return err_code;</a>
+<a name="ln540">}</a>
+<a name="ln541"> </a>
+<a name="ln542">static uint8_t os_to_num (const dps310_os_t os)</a>
+<a name="ln543">{</a>
+<a name="ln544">    uint8_t num = 0;</a>
+<a name="ln545"> </a>
+<a name="ln546">    switch (os)</a>
+<a name="ln547">    {</a>
+<a name="ln548">        case DPS310_OS_1:</a>
+<a name="ln549">            num = 1U;</a>
+<a name="ln550">            break;</a>
+<a name="ln551"> </a>
+<a name="ln552">        case DPS310_OS_2:</a>
+<a name="ln553">            num = 2U;</a>
+<a name="ln554">            break;</a>
+<a name="ln555"> </a>
+<a name="ln556">        case DPS310_OS_4:</a>
+<a name="ln557">            num = 4U;</a>
+<a name="ln558">            break;</a>
+<a name="ln559"> </a>
+<a name="ln560">        case DPS310_OS_8:</a>
+<a name="ln561">            num = 8U;</a>
+<a name="ln562">            break;</a>
+<a name="ln563"> </a>
+<a name="ln564">        case DPS310_OS_16:</a>
+<a name="ln565">            num = 16U;</a>
+<a name="ln566">            break;</a>
+<a name="ln567"> </a>
+<a name="ln568">        case DPS310_OS_32:</a>
+<a name="ln569">            num = 32U;</a>
+<a name="ln570">            break;</a>
+<a name="ln571"> </a>
+<a name="ln572">        case DPS310_OS_64:</a>
+<a name="ln573">            num = 64U;</a>
+<a name="ln574">            break;</a>
+<a name="ln575"> </a>
+<a name="ln576">        case DPS310_OS_128:</a>
+<a name="ln577">            num = 128U;</a>
+<a name="ln578">            break;</a>
+<a name="ln579"> </a>
+<a name="ln580">        default:</a>
+<a name="ln581">            num = 0;</a>
+<a name="ln582">            break;</a>
+<a name="ln583">    }</a>
 <a name="ln584"> </a>
-<a name="ln585">static __attribute__ ((nonnull)) uint32_t</a>
-<a name="ln586">temp_measurement_time_get (const dps310_ctx_t * const ctx)</a>
-<a name="ln587">{</a>
-<a name="ln588">    // Actually 2 + 1.6 * OSR, but rounding up.</a>
-<a name="ln589">    return 3U + (uint32_t) (1.6F * (float) os_to_num (ctx-&gt;temp_osr));</a>
-<a name="ln590">}</a>
-<a name="ln591"> </a>
-<a name="ln592">static __attribute__ ((nonnull)) uint32_t</a>
-<a name="ln593">pres_measurement_time_get (const dps310_ctx_t * const ctx)</a>
-<a name="ln594">{</a>
-<a name="ln595">    // Actually 2 + 1.6 * OSR, but rounding up.</a>
-<a name="ln596">    return 3U + (uint32_t) (1.6F * (float) os_to_num (ctx-&gt;pres_osr));</a>
-<a name="ln597">}</a>
+<a name="ln585">    return num;</a>
+<a name="ln586">}</a>
+<a name="ln587"> </a>
+<a name="ln588">static uint32_t measurement_time_get (const dps310_os_t os)</a>
+<a name="ln589">{</a>
+<a name="ln590">    // Actually 2 + 1.6 * OSR, but rounding up.</a>
+<a name="ln591">    return 3U + (uint32_t) (1.6F * (float) os_to_num (os));</a>
+<a name="ln592">}</a>
+<a name="ln593"> </a>
+<a name="ln594">dps310_status_t</a>
+<a name="ln595">dps310_measure_temp_once_sync (dps310_ctx_t * const ctx, float * const result)</a>
+<a name="ln596">{</a>
+<a name="ln597">    dps310_status_t err_code = ctx_ready_check (ctx);</a>
 <a name="ln598"> </a>
-<a name="ln599"> </a>
-<a name="ln600"> </a>
-<a name="ln601">dps310_status_t dps310_measure_temp_once_sync (dps310_ctx_t * const ctx,</a>
-<a name="ln602">        float * const result)</a>
-<a name="ln603">{</a>
-<a name="ln604">    dps310_status_t err_code = ctx_ready_check (ctx);</a>
-<a name="ln605"> </a>
-<a name="ln606">    if (NULL == result)</a>
-<a name="ln607">    {</a>
-<a name="ln608">        err_code = DPS310_ERROR_NULL;</a>
-<a name="ln609">    }</a>
-<a name="ln610">    else if (DPS310_SUCCESS == err_code)</a>
-<a name="ln611">    {</a>
-<a name="ln612">        err_code |= dps310_measure_temp_once_async (ctx);</a>
-<a name="ln613">        ctx-&gt;sleep (temp_measurement_time_get (ctx));</a>
-<a name="ln614">        err_code |= dps310_get_single_result (ctx, result);</a>
-<a name="ln615">    }</a>
-<a name="ln616">    else</a>
-<a name="ln617">    {</a>
-<a name="ln618">        // No action needed.</a>
-<a name="ln619">    }</a>
+<a name="ln599">    if (NULL == result)</a>
+<a name="ln600">    {</a>
+<a name="ln601">        err_code = DPS310_ERROR_NULL;</a>
+<a name="ln602">    }</a>
+<a name="ln603">    else if (DPS310_SUCCESS == err_code)</a>
+<a name="ln604">    {</a>
+<a name="ln605">        err_code |= dps310_measure_temp_once_async (ctx);</a>
+<a name="ln606">        ctx-&gt;sleep (measurement_time_get (ctx-&gt;temp_osr));</a>
+<a name="ln607">        err_code |= dps310_get_single_result (ctx, result);</a>
+<a name="ln608">    }</a>
+<a name="ln609">    else</a>
+<a name="ln610">    {</a>
+<a name="ln611">        // No action needed.</a>
+<a name="ln612">    }</a>
+<a name="ln613"> </a>
+<a name="ln614">    return err_code;</a>
+<a name="ln615">}</a>
+<a name="ln616"> </a>
+<a name="ln617">dps310_status_t dps310_measure_temp_once_async (dps310_ctx_t * const ctx)</a>
+<a name="ln618">{</a>
+<a name="ln619">    dps310_status_t err_code = ctx_ready_check (ctx);</a>
 <a name="ln620"> </a>
-<a name="ln621">    return err_code;</a>
-<a name="ln622">}</a>
-<a name="ln623"> </a>
-<a name="ln624">dps310_status_t dps310_measure_temp_once_async (dps310_ctx_t * const ctx)</a>
-<a name="ln625">{</a>
-<a name="ln626">    dps310_status_t err_code = ctx_ready_check (ctx);</a>
-<a name="ln627"> </a>
-<a name="ln628">    if (DPS310_SUCCESS == err_code)</a>
-<a name="ln629">    {</a>
-<a name="ln630">        uint8_t cmd = DPS310_MODE_ONE_TEMP_VAL;</a>
-<a name="ln631">        err_code |= ctx-&gt;write (ctx-&gt;comm_ctx, DPS310_MEAS_CFG_REG, &amp;cmd, 1U);</a>
-<a name="ln632"> </a>
-<a name="ln633">        if (DPS310_SUCCESS != err_code)</a>
-<a name="ln634">        {</a>
-<a name="ln635">            err_code |= DPS310_BUS_ERROR;</a>
-<a name="ln636">            ctx-&gt;device_status = DPS310_BUS_ERROR;</a>
-<a name="ln637">        }</a>
-<a name="ln638">        else</a>
-<a name="ln639">        {</a>
-<a name="ln640">            ctx-&gt;device_status = DPS310_TEMP_RDY;</a>
-<a name="ln641">        }</a>
-<a name="ln642">    }</a>
+<a name="ln621">    if (DPS310_SUCCESS == err_code)</a>
+<a name="ln622">    {</a>
+<a name="ln623">        uint8_t cmd = DPS310_MODE_ONE_TEMP_VAL;</a>
+<a name="ln624">        err_code |= ctx-&gt;write (ctx-&gt;comm_ctx, DPS310_MEAS_CFG_REG, &amp;cmd, 1U);</a>
+<a name="ln625"> </a>
+<a name="ln626">        if (DPS310_SUCCESS != err_code)</a>
+<a name="ln627">        {</a>
+<a name="ln628">            err_code |= DPS310_BUS_ERROR;</a>
+<a name="ln629">            ctx-&gt;device_status = DPS310_BUS_ERROR;</a>
+<a name="ln630">        }</a>
+<a name="ln631">        else</a>
+<a name="ln632">        {</a>
+<a name="ln633">            ctx-&gt;device_status = DPS310_TEMP_RDY;</a>
+<a name="ln634">        }</a>
+<a name="ln635">    }</a>
+<a name="ln636"> </a>
+<a name="ln637">    return err_code;</a>
+<a name="ln638">}</a>
+<a name="ln639"> </a>
+<a name="ln640">dps310_status_t dps310_measure_pres_once_async (dps310_ctx_t * const ctx)</a>
+<a name="ln641">{</a>
+<a name="ln642">    dps310_status_t err_code = ctx_ready_check (ctx);</a>
 <a name="ln643"> </a>
-<a name="ln644">    return err_code;</a>
-<a name="ln645">}</a>
-<a name="ln646"> </a>
-<a name="ln647">dps310_status_t dps310_measure_pres_once_async (dps310_ctx_t * const ctx)</a>
-<a name="ln648">{</a>
-<a name="ln649">    dps310_status_t err_code = ctx_ready_check (ctx);</a>
-<a name="ln650"> </a>
-<a name="ln651">    if (DPS310_SUCCESS == err_code)</a>
-<a name="ln652">    {</a>
-<a name="ln653">        uint8_t cmd = DPS310_MODE_ONE_PRES_VAL;</a>
-<a name="ln654">        err_code |= ctx-&gt;write (ctx-&gt;comm_ctx, DPS310_MEAS_CFG_REG, &amp;cmd, 1U);</a>
-<a name="ln655"> </a>
-<a name="ln656">        if (DPS310_SUCCESS != err_code)</a>
-<a name="ln657">        {</a>
-<a name="ln658">            err_code |= DPS310_BUS_ERROR;</a>
-<a name="ln659">            ctx-&gt;device_status = DPS310_BUS_ERROR;</a>
-<a name="ln660">        }</a>
-<a name="ln661">        else</a>
-<a name="ln662">        {</a>
-<a name="ln663">            ctx-&gt;device_status = DPS310_PRES_RDY;</a>
-<a name="ln664">        }</a>
-<a name="ln665">    }</a>
-<a name="ln666"> </a>
-<a name="ln667">    return err_code;</a>
-<a name="ln668">}</a>
-<a name="ln669"> </a>
-<a name="ln670">// Datasheet 4.9.3</a>
-<a name="ln671">static uint32_t os_to_scale_factor (const dps310_os_t os)</a>
-<a name="ln672">{</a>
-<a name="ln673">    uint32_t sf = 0;</a>
-<a name="ln674"> </a>
-<a name="ln675">    switch (os)</a>
-<a name="ln676">    {</a>
-<a name="ln677">        case DPS310_OS_1:</a>
-<a name="ln678">            sf = 524288U;</a>
-<a name="ln679">            break;</a>
-<a name="ln680"> </a>
-<a name="ln681">        case DPS310_OS_2:</a>
-<a name="ln682">            sf = 1572864U;</a>
-<a name="ln683">            break;</a>
-<a name="ln684"> </a>
-<a name="ln685">        case DPS310_OS_4:</a>
-<a name="ln686">            sf = 3670016U;</a>
-<a name="ln687">            break;</a>
-<a name="ln688"> </a>
-<a name="ln689">        case DPS310_OS_8:</a>
-<a name="ln690">            sf = 7864320U;</a>
-<a name="ln691">            break;</a>
-<a name="ln692"> </a>
-<a name="ln693">        case DPS310_OS_16:</a>
-<a name="ln694">            sf = 253952U;</a>
-<a name="ln695">            break;</a>
-<a name="ln696"> </a>
-<a name="ln697">        case DPS310_OS_32:</a>
-<a name="ln698">            sf = 516096U;</a>
-<a name="ln699">            break;</a>
-<a name="ln700"> </a>
-<a name="ln701">        case DPS310_OS_64:</a>
-<a name="ln702">            sf = 1040384U;</a>
-<a name="ln703">            break;</a>
-<a name="ln704"> </a>
-<a name="ln705">        case DPS310_OS_128:</a>
-<a name="ln706">            sf = 2088960U;</a>
-<a name="ln707">            break;</a>
-<a name="ln708"> </a>
-<a name="ln709">        default:</a>
-<a name="ln710">            sf = 1;</a>
-<a name="ln711">            break;</a>
-<a name="ln712">    }</a>
-<a name="ln713"> </a>
-<a name="ln714">    return sf;</a>
-<a name="ln715">}</a>
-<a name="ln716"> </a>
-<a name="ln717">static __attribute__ ((nonnull)) float</a>
-<a name="ln718">calculate_temperature (dps310_ctx_t * const ctx, const int32_t raw)</a>
-<a name="ln719">{</a>
-<a name="ln720">    uint32_t sf = os_to_scale_factor (ctx-&gt;temp_osr);</a>
-<a name="ln721">    float raw_scaled = ((float) raw) / ((float) sf);</a>
-<a name="ln722">    ctx-&gt;last_temp_scal = raw_scaled;</a>
-<a name="ln723">    return ((float) ctx-&gt;c0 * DPS310_C0_WEIGHT) + ((float) ctx-&gt;c1 * raw_scaled);</a>
-<a name="ln724">}</a>
-<a name="ln725"> </a>
-<a name="ln726">static __attribute__ ((nonnull))</a>
-<a name="ln727">float calculate_pressure (const dps310_ctx_t * const ctx, const int32_t raw)</a>
-<a name="ln728">{</a>
-<a name="ln729">    uint32_t sf = os_to_scale_factor (ctx-&gt;pres_osr);</a>
-<a name="ln730">    float Praw_sc = ((float) raw) / ((float) sf);</a>
-<a name="ln731">    float Traw_sc = ctx-&gt;last_temp_scal;</a>
-<a name="ln732">    return (float)ctx-&gt;c00</a>
-<a name="ln733">           + Praw_sc * ((float) ctx-&gt;c10 + Praw_sc * ((float) ctx-&gt;c20 + Praw_sc *</a>
-<a name="ln734">                        (float) ctx-&gt;c30))</a>
-<a name="ln735">           + Traw_sc * (float) ctx-&gt;c01 + Traw_sc * Praw_sc * ((float) ctx-&gt;c11 + Praw_sc *</a>
-<a name="ln736">                   (float) ctx-&gt;c21);</a>
-<a name="ln737">}</a>
-<a name="ln738"> </a>
-<a name="ln739">static inline __attribute__ ((nonnull)) int32_t</a>
-<a name="ln740">regs_to_i32 (const uint8_t * const regs)</a>
-<a name="ln741">{</a>
-<a name="ln742">    uint32_t b24_value = (regs[0U] &lt;&lt; 16U)</a>
-<a name="ln743">                         + (regs[1U] &lt;&lt; 8U)</a>
-<a name="ln744">                         + regs[2U];</a>
-<a name="ln745">    return twos_complement (b24_value, 24U);</a>
-<a name="ln746">}</a>
-<a name="ln747"> </a>
-<a name="ln748">static __attribute__ ((nonnull)) dps310_status_t</a>
-<a name="ln749">dps310_get_single_temp (dps310_ctx_t * const ctx, float * const result)</a>
-<a name="ln750">{</a>
-<a name="ln751">    dps310_status_t err_code = DPS310_SUCCESS;</a>
-<a name="ln752">    uint8_t reg_value[DPS310_TEMP_VAL_LEN] = {0};</a>
-<a name="ln753">    err_code |= ctx-&gt;read (ctx-&gt;comm_ctx,</a>
-<a name="ln754">                           DPS310_TEMP_VAL_REG,</a>
-<a name="ln755">                           reg_value,</a>
-<a name="ln756">                           DPS310_TEMP_VAL_LEN);</a>
-<a name="ln757"> </a>
-<a name="ln758">    if (DPS310_SUCCESS == err_code)</a>
-<a name="ln759">    {</a>
-<a name="ln760">        *result = calculate_temperature (ctx, regs_to_i32 (reg_value));</a>
-<a name="ln761">        ctx-&gt;device_status = DPS310_READY;</a>
-<a name="ln762">    }</a>
-<a name="ln763">    else</a>
-<a name="ln764">    {</a>
-<a name="ln765">        err_code |= DPS310_BUS_ERROR;</a>
-<a name="ln766">        ctx-&gt;device_status = DPS310_BUS_ERROR;</a>
-<a name="ln767">    }</a>
-<a name="ln768"> </a>
-<a name="ln769">    return err_code;</a>
-<a name="ln770">}</a>
-<a name="ln771"> </a>
-<a name="ln772">static __attribute__ ((nonnull)) dps310_status_t</a>
-<a name="ln773">dps310_get_single_pres (dps310_ctx_t * const ctx, float * const result)</a>
-<a name="ln774">{</a>
-<a name="ln775">    dps310_status_t err_code = DPS310_SUCCESS;</a>
-<a name="ln776">    uint8_t reg_value[DPS310_PRES_VAL_LEN] = {0};</a>
-<a name="ln777">    err_code |= ctx-&gt;read (ctx-&gt;comm_ctx,</a>
-<a name="ln778">                           DPS310_PRES_VAL_REG,</a>
-<a name="ln779">                           reg_value,</a>
-<a name="ln780">                           DPS310_PRES_VAL_LEN);</a>
-<a name="ln781"> </a>
-<a name="ln782">    if (DPS310_SUCCESS == err_code)</a>
-<a name="ln783">    {</a>
-<a name="ln784">        *result = calculate_pressure (ctx, regs_to_i32 (reg_value));</a>
-<a name="ln785">        ctx-&gt;device_status = DPS310_READY;</a>
-<a name="ln786">    }</a>
-<a name="ln787">    else</a>
-<a name="ln788">    {</a>
-<a name="ln789">        err_code |= DPS310_BUS_ERROR;</a>
-<a name="ln790">        ctx-&gt;device_status = DPS310_BUS_ERROR;</a>
-<a name="ln791">    }</a>
+<a name="ln644">    if (DPS310_SUCCESS == err_code)</a>
+<a name="ln645">    {</a>
+<a name="ln646">        uint8_t cmd = DPS310_MODE_ONE_PRES_VAL;</a>
+<a name="ln647">        err_code |= ctx-&gt;write (ctx-&gt;comm_ctx, DPS310_MEAS_CFG_REG, &amp;cmd, 1U);</a>
+<a name="ln648"> </a>
+<a name="ln649">        if (DPS310_SUCCESS != err_code)</a>
+<a name="ln650">        {</a>
+<a name="ln651">            err_code |= DPS310_BUS_ERROR;</a>
+<a name="ln652">            ctx-&gt;device_status = DPS310_BUS_ERROR;</a>
+<a name="ln653">        }</a>
+<a name="ln654">        else</a>
+<a name="ln655">        {</a>
+<a name="ln656">            ctx-&gt;device_status = DPS310_PRES_RDY;</a>
+<a name="ln657">        }</a>
+<a name="ln658">    }</a>
+<a name="ln659"> </a>
+<a name="ln660">    return err_code;</a>
+<a name="ln661">}</a>
+<a name="ln662"> </a>
+<a name="ln663">// Datasheet 4.9.3</a>
+<a name="ln664">static uint32_t os_to_scale_factor (const dps310_os_t os)</a>
+<a name="ln665">{</a>
+<a name="ln666">    uint32_t sf = 0;</a>
+<a name="ln667"> </a>
+<a name="ln668">    switch (os)</a>
+<a name="ln669">    {</a>
+<a name="ln670">        case DPS310_OS_1:</a>
+<a name="ln671">            sf = 524288U;</a>
+<a name="ln672">            break;</a>
+<a name="ln673"> </a>
+<a name="ln674">        case DPS310_OS_2:</a>
+<a name="ln675">            sf = 1572864U;</a>
+<a name="ln676">            break;</a>
+<a name="ln677"> </a>
+<a name="ln678">        case DPS310_OS_4:</a>
+<a name="ln679">            sf = 3670016U;</a>
+<a name="ln680">            break;</a>
+<a name="ln681"> </a>
+<a name="ln682">        case DPS310_OS_8:</a>
+<a name="ln683">            sf = 7864320U;</a>
+<a name="ln684">            break;</a>
+<a name="ln685"> </a>
+<a name="ln686">        case DPS310_OS_16:</a>
+<a name="ln687">            sf = 253952U;</a>
+<a name="ln688">            break;</a>
+<a name="ln689"> </a>
+<a name="ln690">        case DPS310_OS_32:</a>
+<a name="ln691">            sf = 516096U;</a>
+<a name="ln692">            break;</a>
+<a name="ln693"> </a>
+<a name="ln694">        case DPS310_OS_64:</a>
+<a name="ln695">            sf = 1040384U;</a>
+<a name="ln696">            break;</a>
+<a name="ln697"> </a>
+<a name="ln698">        case DPS310_OS_128:</a>
+<a name="ln699">            sf = 2088960U;</a>
+<a name="ln700">            break;</a>
+<a name="ln701"> </a>
+<a name="ln702">        default:</a>
+<a name="ln703">            sf = 1;</a>
+<a name="ln704">            break;</a>
+<a name="ln705">    }</a>
+<a name="ln706"> </a>
+<a name="ln707">    return sf;</a>
+<a name="ln708">}</a>
+<a name="ln709"> </a>
+<a name="ln710">static __attribute__ ((nonnull)) float</a>
+<a name="ln711">calculate_temperature (dps310_ctx_t * const ctx, const int32_t raw)</a>
+<a name="ln712">{</a>
+<a name="ln713">    uint32_t sf = os_to_scale_factor (ctx-&gt;temp_osr);</a>
+<a name="ln714">    float raw_scaled = ((float) raw) / ((float) sf);</a>
+<a name="ln715">    ctx-&gt;last_temp_scal = raw_scaled;</a>
+<a name="ln716">    return ((float) ctx-&gt;c0 * DPS310_C0_WEIGHT) + ((float) ctx-&gt;c1 * raw_scaled);</a>
+<a name="ln717">}</a>
+<a name="ln718"> </a>
+<a name="ln719">static __attribute__ ((nonnull))</a>
+<a name="ln720">float calculate_pressure (const dps310_ctx_t * const ctx, const int32_t raw)</a>
+<a name="ln721">{</a>
+<a name="ln722">    uint32_t sf = os_to_scale_factor (ctx-&gt;pres_osr);</a>
+<a name="ln723">    float Praw_sc = ((float) raw) / ((float) sf);</a>
+<a name="ln724">    float Traw_sc = ctx-&gt;last_temp_scal;</a>
+<a name="ln725">    return (float)ctx-&gt;c00</a>
+<a name="ln726">           + Praw_sc * ((float) ctx-&gt;c10 + Praw_sc * ((float) ctx-&gt;c20 + Praw_sc *</a>
+<a name="ln727">                        (float) ctx-&gt;c30))</a>
+<a name="ln728">           + Traw_sc * (float) ctx-&gt;c01 + Traw_sc * Praw_sc * ((float) ctx-&gt;c11 + Praw_sc *</a>
+<a name="ln729">                   (float) ctx-&gt;c21);</a>
+<a name="ln730">}</a>
+<a name="ln731"> </a>
+<a name="ln732">static inline __attribute__ ((nonnull)) int32_t</a>
+<a name="ln733">regs_to_i32 (const uint8_t * const regs)</a>
+<a name="ln734">{</a>
+<a name="ln735">    uint32_t b24_value = (regs[0U] &lt;&lt; 16U)</a>
+<a name="ln736">                         + (regs[1U] &lt;&lt; 8U)</a>
+<a name="ln737">                         + regs[2U];</a>
+<a name="ln738">    return twos_complement (b24_value, 24U);</a>
+<a name="ln739">}</a>
+<a name="ln740"> </a>
+<a name="ln741">static __attribute__ ((nonnull)) dps310_status_t</a>
+<a name="ln742">dps310_get_single_temp (dps310_ctx_t * const ctx, float * const result)</a>
+<a name="ln743">{</a>
+<a name="ln744">    dps310_status_t err_code = DPS310_SUCCESS;</a>
+<a name="ln745">    uint8_t reg_value[DPS310_TEMP_VAL_LEN] = {0};</a>
+<a name="ln746">    err_code |= ctx-&gt;read (ctx-&gt;comm_ctx,</a>
+<a name="ln747">                           DPS310_TEMP_VAL_REG,</a>
+<a name="ln748">                           reg_value,</a>
+<a name="ln749">                           DPS310_TEMP_VAL_LEN);</a>
+<a name="ln750"> </a>
+<a name="ln751">    if (DPS310_SUCCESS == err_code)</a>
+<a name="ln752">    {</a>
+<a name="ln753">        *result = calculate_temperature (ctx, regs_to_i32 (reg_value));</a>
+<a name="ln754">        ctx-&gt;device_status = DPS310_READY;</a>
+<a name="ln755">    }</a>
+<a name="ln756">    else</a>
+<a name="ln757">    {</a>
+<a name="ln758">        err_code |= DPS310_BUS_ERROR;</a>
+<a name="ln759">        ctx-&gt;device_status = DPS310_BUS_ERROR;</a>
+<a name="ln760">    }</a>
+<a name="ln761"> </a>
+<a name="ln762">    return err_code;</a>
+<a name="ln763">}</a>
+<a name="ln764"> </a>
+<a name="ln765">static __attribute__ ((nonnull)) dps310_status_t</a>
+<a name="ln766">dps310_get_single_pres (dps310_ctx_t * const ctx, float * const result)</a>
+<a name="ln767">{</a>
+<a name="ln768">    dps310_status_t err_code = DPS310_SUCCESS;</a>
+<a name="ln769">    uint8_t reg_value[DPS310_PRES_VAL_LEN] = {0};</a>
+<a name="ln770">    err_code |= ctx-&gt;read (ctx-&gt;comm_ctx,</a>
+<a name="ln771">                           DPS310_PRES_VAL_REG,</a>
+<a name="ln772">                           reg_value,</a>
+<a name="ln773">                           DPS310_PRES_VAL_LEN);</a>
+<a name="ln774"> </a>
+<a name="ln775">    if (DPS310_SUCCESS == err_code)</a>
+<a name="ln776">    {</a>
+<a name="ln777">        *result = calculate_pressure (ctx, regs_to_i32 (reg_value));</a>
+<a name="ln778">        ctx-&gt;device_status = DPS310_READY;</a>
+<a name="ln779">    }</a>
+<a name="ln780">    else</a>
+<a name="ln781">    {</a>
+<a name="ln782">        err_code |= DPS310_BUS_ERROR;</a>
+<a name="ln783">        ctx-&gt;device_status = DPS310_BUS_ERROR;</a>
+<a name="ln784">    }</a>
+<a name="ln785"> </a>
+<a name="ln786">    return err_code;</a>
+<a name="ln787">}</a>
+<a name="ln788"> </a>
+<a name="ln789">dps310_status_t dps310_get_single_result (dps310_ctx_t * const ctx, float * const result)</a>
+<a name="ln790">{</a>
+<a name="ln791">    dps310_status_t err_code = ctx_done_check (ctx);</a>
 <a name="ln792"> </a>
-<a name="ln793">    return err_code;</a>
-<a name="ln794">}</a>
-<a name="ln795"> </a>
-<a name="ln796">dps310_status_t dps310_get_single_result (dps310_ctx_t * const ctx, float * const result)</a>
-<a name="ln797">{</a>
-<a name="ln798">    dps310_status_t err_code = ctx_done_check (ctx);</a>
-<a name="ln799"> </a>
-<a name="ln800">    if (DPS310_SUCCESS == err_code)</a>
-<a name="ln801">    {</a>
-<a name="ln802">        if (DPS310_TEMP_RDY == ctx-&gt;device_status)</a>
-<a name="ln803">        {</a>
-<a name="ln804">            err_code |= dps310_get_single_temp (ctx, result);</a>
-<a name="ln805">        }</a>
-<a name="ln806">        else if (DPS310_PRES_RDY == ctx-&gt;device_status)</a>
-<a name="ln807">        {</a>
-<a name="ln808">            err_code |= dps310_get_single_pres (ctx, result);</a>
-<a name="ln809">        }</a>
-<a name="ln810">        else</a>
-<a name="ln811">        {</a>
-<a name="ln812">            // This branch should never run, tested in ctx_done_check</a>
-<a name="ln813">            err_code |= DPS310_INVALID_STATE;</a>
-<a name="ln814">        }</a>
-<a name="ln815">    }</a>
-<a name="ln816"> </a>
-<a name="ln817">    return err_code;</a>
-<a name="ln818">}</a>
-<a name="ln819"> </a>
-<a name="ln820">dps310_status_t</a>
-<a name="ln821">dps310_measure_pres_once_sync (dps310_ctx_t * const ctx, float * const result)</a>
-<a name="ln822">{</a>
-<a name="ln823">    dps310_status_t err_code = ctx_ready_check (ctx);</a>
-<a name="ln824"> </a>
-<a name="ln825">    if (NULL == result)</a>
-<a name="ln826">    {</a>
-<a name="ln827">        err_code = DPS310_ERROR_NULL;</a>
-<a name="ln828">    }</a>
-<a name="ln829">    else if (DPS310_SUCCESS == err_code)</a>
-<a name="ln830">    {</a>
-<a name="ln831">        err_code |= dps310_measure_pres_once_async (ctx);</a>
-<a name="ln832">        ctx-&gt;sleep (pres_measurement_time_get (ctx));</a>
-<a name="ln833">        err_code |= dps310_get_single_result (ctx, result);</a>
-<a name="ln834">    }</a>
-<a name="ln835">    else</a>
-<a name="ln836">    {</a>
-<a name="ln837">        // No action needed.</a>
-<a name="ln838">    }</a>
-<a name="ln839"> </a>
-<a name="ln840">    return err_code;</a>
-<a name="ln841">}</a>
-<a name="ln842"> </a>
-<a name="ln843">dps310_status_t dps310_measure_continuous_async (dps310_ctx_t * const ctx)</a>
-<a name="ln844">{</a>
-<a name="ln845">    dps310_status_t err_code = ctx_ready_check (ctx);</a>
-<a name="ln846">    uint8_t cmd = 0U;</a>
+<a name="ln793">    if (DPS310_SUCCESS == err_code)</a>
+<a name="ln794">    {</a>
+<a name="ln795">        if (DPS310_TEMP_RDY == ctx-&gt;device_status)</a>
+<a name="ln796">        {</a>
+<a name="ln797">            err_code |= dps310_get_single_temp (ctx, result);</a>
+<a name="ln798">        }</a>
+<a name="ln799">        else if (DPS310_PRES_RDY == ctx-&gt;device_status)</a>
+<a name="ln800">        {</a>
+<a name="ln801">            err_code |= dps310_get_single_pres (ctx, result);</a>
+<a name="ln802">        }</a>
+<a name="ln803">        else</a>
+<a name="ln804">        {</a>
+<a name="ln805">            // This branch should never run, tested in ctx_done_check</a>
+<a name="ln806">            err_code |= DPS310_INVALID_STATE;</a>
+<a name="ln807">        }</a>
+<a name="ln808">    }</a>
+<a name="ln809"> </a>
+<a name="ln810">    return err_code;</a>
+<a name="ln811">}</a>
+<a name="ln812"> </a>
+<a name="ln813">dps310_status_t</a>
+<a name="ln814">dps310_measure_pres_once_sync (dps310_ctx_t * const ctx, float * const result)</a>
+<a name="ln815">{</a>
+<a name="ln816">    dps310_status_t err_code = ctx_ready_check (ctx);</a>
+<a name="ln817"> </a>
+<a name="ln818">    if (NULL == result)</a>
+<a name="ln819">    {</a>
+<a name="ln820">        err_code = DPS310_ERROR_NULL;</a>
+<a name="ln821">    }</a>
+<a name="ln822">    else if (DPS310_SUCCESS == err_code)</a>
+<a name="ln823">    {</a>
+<a name="ln824">        err_code |= dps310_measure_pres_once_async (ctx);</a>
+<a name="ln825">        ctx-&gt;sleep (measurement_time_get (ctx-&gt;pres_osr));</a>
+<a name="ln826">        err_code |= dps310_get_single_result (ctx, result);</a>
+<a name="ln827">    }</a>
+<a name="ln828">    else</a>
+<a name="ln829">    {</a>
+<a name="ln830">        // No action needed.</a>
+<a name="ln831">    }</a>
+<a name="ln832"> </a>
+<a name="ln833">    return err_code;</a>
+<a name="ln834">}</a>
+<a name="ln835"> </a>
+<a name="ln836">dps310_status_t dps310_measure_continuous_async (dps310_ctx_t * const ctx)</a>
+<a name="ln837">{</a>
+<a name="ln838">    dps310_status_t err_code = ctx_ready_check (ctx);</a>
+<a name="ln839">    uint8_t cmd = 0U;</a>
+<a name="ln840"> </a>
+<a name="ln841">    if (DPS310_SUCCESS == err_code)</a>
+<a name="ln842">    {</a>
+<a name="ln843">        if (ctx-&gt;temp_mr != DPS310_MR_NONE)</a>
+<a name="ln844">        {</a>
+<a name="ln845">            cmd |= DPS310_MODE_CONT_TEMP_VAL;</a>
+<a name="ln846">        }</a>
 <a name="ln847"> </a>
-<a name="ln848">    if (DPS310_SUCCESS == err_code)</a>
-<a name="ln849">    {</a>
-<a name="ln850">        if (ctx-&gt;temp_mr != DPS310_MR_NONE)</a>
-<a name="ln851">        {</a>
-<a name="ln852">            cmd |= DPS310_MODE_CONT_TEMP_VAL;</a>
-<a name="ln853">        }</a>
+<a name="ln848">        if (ctx-&gt;pres_mr != DPS310_MR_NONE)</a>
+<a name="ln849">        {</a>
+<a name="ln850">            cmd |= DPS310_MODE_CONT_PRES_VAL;</a>
+<a name="ln851">        }</a>
+<a name="ln852"> </a>
+<a name="ln853">        err_code |= ctx-&gt;write (ctx-&gt;comm_ctx, DPS310_MEAS_CFG_REG, &amp;cmd, 1U);</a>
 <a name="ln854"> </a>
-<a name="ln855">        if (ctx-&gt;pres_mr != DPS310_MR_NONE)</a>
+<a name="ln855">        if (DPS310_SUCCESS != err_code)</a>
 <a name="ln856">        {</a>
-<a name="ln857">            cmd |= DPS310_MODE_CONT_PRES_VAL;</a>
-<a name="ln858">        }</a>
-<a name="ln859"> </a>
-<a name="ln860">        err_code |= ctx-&gt;write (ctx-&gt;comm_ctx, DPS310_MEAS_CFG_REG, &amp;cmd, 1U);</a>
-<a name="ln861"> </a>
-<a name="ln862">        if (DPS310_SUCCESS != err_code)</a>
-<a name="ln863">        {</a>
-<a name="ln864">            err_code |= DPS310_BUS_ERROR;</a>
-<a name="ln865">            ctx-&gt;device_status = DPS310_BUS_ERROR;</a>
-<a name="ln866">        }</a>
-<a name="ln867">        else if (0 != cmd)</a>
-<a name="ln868">        {</a>
-<a name="ln869">            ctx-&gt;device_status = DPS310_CONTINUOUS;</a>
-<a name="ln870">        }</a>
-<a name="ln871">        else</a>
-<a name="ln872">        {</a>
-<a name="ln873">            err_code |= DPS310_INVALID_STATE;</a>
-<a name="ln874">        }</a>
-<a name="ln875">    }</a>
-<a name="ln876"> </a>
-<a name="ln877">    return err_code;</a>
-<a name="ln878">}</a>
-<a name="ln879"> </a>
-<a name="ln880">static inline __attribute__ ((nonnull)) bool</a>
-<a name="ln881">fifo_entry_is_eof (const uint8_t * const entry)</a>
-<a name="ln882">{</a>
-<a name="ln883">    return ((DPS310_FIFO_VAL_EOF_B0 ==  entry[0])</a>
-<a name="ln884">            &amp;&amp; (DPS310_FIFO_VAL_EOF_B1 ==  entry[1])</a>
-<a name="ln885">            &amp;&amp; (DPS310_FIFO_VAL_EOF_B2 ==  entry[2]));</a>
+<a name="ln857">            err_code |= DPS310_BUS_ERROR;</a>
+<a name="ln858">            ctx-&gt;device_status = DPS310_BUS_ERROR;</a>
+<a name="ln859">        }</a>
+<a name="ln860">        else if (0 != cmd)</a>
+<a name="ln861">        {</a>
+<a name="ln862">            ctx-&gt;device_status = DPS310_CONTINUOUS;</a>
+<a name="ln863">        }</a>
+<a name="ln864">        else</a>
+<a name="ln865">        {</a>
+<a name="ln866">            err_code |= DPS310_INVALID_STATE;</a>
+<a name="ln867">        }</a>
+<a name="ln868">    }</a>
+<a name="ln869"> </a>
+<a name="ln870">    return err_code;</a>
+<a name="ln871">}</a>
+<a name="ln872"> </a>
+<a name="ln873">static inline __attribute__ ((nonnull)) bool</a>
+<a name="ln874">fifo_entry_is_eof (const uint8_t * const entry)</a>
+<a name="ln875">{</a>
+<a name="ln876">    return ((DPS310_FIFO_VAL_EOF_B0 ==  entry[0])</a>
+<a name="ln877">            &amp;&amp; (DPS310_FIFO_VAL_EOF_B1 ==  entry[1])</a>
+<a name="ln878">            &amp;&amp; (DPS310_FIFO_VAL_EOF_B2 ==  entry[2]));</a>
+<a name="ln879">}</a>
+<a name="ln880"> </a>
+<a name="ln881">static inline __attribute__ ((nonnull)) bool</a>
+<a name="ln882">fifo_entry_is_pres (const uint8_t * const entry)</a>
+<a name="ln883">{</a>
+<a name="ln884">    // FIFO entry type is identified by the least significant bit.</a>
+<a name="ln885">    return (entry[2] &amp; 0x01U);</a>
 <a name="ln886">}</a>
 <a name="ln887"> </a>
-<a name="ln888">static inline __attribute__ ((nonnull)) bool</a>
-<a name="ln889">fifo_entry_is_pres (const uint8_t * const entry)</a>
+<a name="ln888">dps310_status_t dps310_get_cont_results (dps310_ctx_t * const ctx, float * const temp,</a>
+<a name="ln889">        uint8_t * const temp_count, float * const pres, uint8_t * const pres_count)</a>
 <a name="ln890">{</a>
-<a name="ln891">    // FIFO entry type is identified by the least significant bit.</a>
-<a name="ln892">    return (entry[2] &amp; 0x01U);</a>
-<a name="ln893">}</a>
+<a name="ln891">    dps310_status_t err_code = ctx_cont_check (ctx);</a>
+<a name="ln892">    uint8_t temp_entries = 0U;</a>
+<a name="ln893">    uint8_t pres_entries = 0U;</a>
 <a name="ln894"> </a>
-<a name="ln895">dps310_status_t dps310_get_cont_results (dps310_ctx_t * const ctx, float * const temp,</a>
-<a name="ln896">        uint8_t * const temp_count, float * const pres, uint8_t * const pres_count)</a>
-<a name="ln897">{</a>
-<a name="ln898">    dps310_status_t err_code = ctx_cont_check (ctx);</a>
-<a name="ln899">    uint8_t temp_entries = 0U;</a>
-<a name="ln900">    uint8_t pres_entries = 0U;</a>
-<a name="ln901"> </a>
-<a name="ln902">    if (DPS310_SUCCESS == err_code)</a>
-<a name="ln903">    {</a>
-<a name="ln904">        uint8_t fifo_entry[3U] = {0};</a>
-<a name="ln905">        bool output_full = false;</a>
-<a name="ln906"> </a>
-<a name="ln907">        while ((!fifo_entry_is_eof (fifo_entry)) &amp;&amp; (!output_full)</a>
-<a name="ln908">                &amp;&amp; (DPS310_SUCCESS == err_code))</a>
-<a name="ln909">        {</a>
-<a name="ln910">            err_code |= ctx-&gt;read (ctx-&gt;comm_ctx, DPS310_FIFO_VAL_REG, fifo_entry,</a>
-<a name="ln911">                                   DPS310_FIFO_VAL_LEN);</a>
-<a name="ln912"> </a>
-<a name="ln913">            if (fifo_entry_is_pres (fifo_entry))</a>
-<a name="ln914">            {</a>
-<a name="ln915">                float result = calculate_pressure (ctx, regs_to_i32 (fifo_entry));</a>
-<a name="ln916">                pres[pres_entries++] = result;</a>
-<a name="ln917">                output_full = (pres_entries == *pres_count);</a>
-<a name="ln918">            }</a>
-<a name="ln919">            else if (!fifo_entry_is_eof (fifo_entry))</a>
-<a name="ln920">            {</a>
-<a name="ln921">                float result = calculate_temperature (ctx, regs_to_i32 (fifo_entry));</a>
-<a name="ln922">                temp[temp_entries++] = result;</a>
-<a name="ln923">                output_full = (temp_entries == *temp_count);</a>
-<a name="ln924">            }</a>
-<a name="ln925">            else</a>
+<a name="ln895">    if (DPS310_SUCCESS == err_code)</a>
+<a name="ln896">    {</a>
+<a name="ln897">        uint8_t fifo_entry[3U] = {0};</a>
+<a name="ln898">        bool output_full = false;</a>
+<a name="ln899"> </a>
+<a name="ln900">        while ((!fifo_entry_is_eof (fifo_entry)) &amp;&amp; (!output_full)</a>
+<a name="ln901">                &amp;&amp; (DPS310_SUCCESS == err_code))</a>
+<a name="ln902">        {</a>
+<a name="ln903">            err_code |= ctx-&gt;read (ctx-&gt;comm_ctx, DPS310_FIFO_VAL_REG, fifo_entry,</a>
+<a name="ln904">                                   DPS310_FIFO_VAL_LEN);</a>
+<a name="ln905"> </a>
+<a name="ln906">            if (fifo_entry_is_pres (fifo_entry))</a>
+<a name="ln907">            {</a>
+<a name="ln908">                float result = calculate_pressure (ctx, regs_to_i32 (fifo_entry));</a>
+<a name="ln909">                pres[pres_entries++] = result;</a>
+<a name="ln910">                output_full = (pres_entries == *pres_count);</a>
+<a name="ln911">            }</a>
+<a name="ln912">            else if (!fifo_entry_is_eof (fifo_entry))</a>
+<a name="ln913">            {</a>
+<a name="ln914">                float result = calculate_temperature (ctx, regs_to_i32 (fifo_entry));</a>
+<a name="ln915">                temp[temp_entries++] = result;</a>
+<a name="ln916">                output_full = (temp_entries == *temp_count);</a>
+<a name="ln917">            }</a>
+<a name="ln918">            else</a>
+<a name="ln919">            {</a>
+<a name="ln920">                // EOF</a>
+<a name="ln921">                *temp_count = temp_entries;</a>
+<a name="ln922">                *pres_count = pres_entries;</a>
+<a name="ln923">            }</a>
+<a name="ln924"> </a>
+<a name="ln925">            if (DPS310_SUCCESS != err_code)</a>
 <a name="ln926">            {</a>
-<a name="ln927">                // EOF</a>
-<a name="ln928">                *temp_count = temp_entries;</a>
-<a name="ln929">                *pres_count = pres_entries;</a>
-<a name="ln930">            }</a>
-<a name="ln931"> </a>
-<a name="ln932">            if (DPS310_SUCCESS != err_code)</a>
-<a name="ln933">            {</a>
-<a name="ln934">                err_code |= DPS310_BUS_ERROR;</a>
-<a name="ln935">                ctx-&gt;device_status = DPS310_BUS_ERROR;</a>
-<a name="ln936">            }</a>
-<a name="ln937">        }</a>
-<a name="ln938">    }</a>
-<a name="ln939"> </a>
-<a name="ln940">    return err_code;</a>
-<a name="ln941">}</a>
-<a name="ln942"> </a>
-<a name="ln943">/** @} */</a>
+<a name="ln927">                err_code |= DPS310_BUS_ERROR;</a>
+<a name="ln928">                ctx-&gt;device_status = DPS310_BUS_ERROR;</a>
+<a name="ln929">            }</a>
+<a name="ln930">        }</a>
+<a name="ln931">    }</a>
+<a name="ln932"> </a>
+<a name="ln933">    return err_code;</a>
+<a name="ln934">}</a>
+<a name="ln935"> </a>
+<a name="ln936">/** @} */</a>
 
 </code></pre>
 <div class="balloon" rel="196"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x09U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
 <div class="balloon" rel="224"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the 'revision[0U] & (0x0FU)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
 <div class="balloon" rel="225"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(revision[0U] & (0xF0U)) >> (4U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="330"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '1U << (4U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="334"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '2U << (4U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="338"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '3U << (4U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="342"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '4U << (4U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="346"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '5U << (4U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="350"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '6U << (4U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="354"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '7U << (4U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="377"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '1U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="381"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '2U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="385"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '3U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="389"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '4U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="393"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '5U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="397"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '6U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="401"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '7U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="419"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(value & mask)' expression should not be converted from the essential 'signed' type to the essential 'unsigned' type.</p></div>
-<div class="balloon" rel="419"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2544/" target="_blank">V2544</a> The right operand '(value & mask)' of the '|=' operator should not have the essential 'signed' type.</p></div>
-<div class="balloon" rel="419"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2568/" target="_blank">V2568</a> Both operands of the '|=' operator should have the same essential type. The current types are: 'unsigned' and 'signed'.</p></div>
-<div class="balloon" rel="430"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the 'coef_src & (0x80U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="425"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2009/" target="_blank">V2009</a> Consider rendering the 'ctx' pointer as a pointer to const.</p></div>
-<div class="balloon" rel="453"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x08U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="493"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x04U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="546"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '1U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="550"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '2U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="554"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '4U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="558"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '8U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="562"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '16U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="566"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '32U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="570"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '64U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="574"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '128U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="578"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2568/" target="_blank">V2568</a> Both operands of the '=' operator should have the same essential type. The current types are: 'unsigned' and 'signed'.</p></div>
-<div class="balloon" rel="589"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2004/" target="_blank">V2004</a> Explicit conversion from 'float' type to unsigned integer type.</p></div>
-<div class="balloon" rel="596"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2004/" target="_blank">V2004</a> Explicit conversion from 'float' type to unsigned integer type.</p></div>
-<div class="balloon" rel="630"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x02U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="653"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x01U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="710"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2568/" target="_blank">V2568</a> Both operands of the '=' operator should have the same essential type. The current types are: 'unsigned' and 'signed'.</p></div>
-<div class="balloon" rel="742"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2568/" target="_blank">V2568</a> Both operands of the '+' operator should have the same essential type. The current types are: 'signed' and 'unsigned'.</p></div>
-<div class="balloon" rel="742"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> Value of the expression should not be converted from the essential 'signed' type to the essential 'unsigned' type.</p></div>
-<div class="balloon" rel="852"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x06U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="857"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x05U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
-<div class="balloon" rel="867"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2568/" target="_blank">V2568</a> Both operands of the '!=' operator should have the same essential type. The current types are: 'signed' and 'unsigned'.</p></div>
+<div class="balloon" rel="320"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '~(0x07U << (4U))' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="327"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v684/" target="_blank">V684</a> A value of the variable '* reg' is not modified. Consider inspecting the expression. It is possible that '1' should be present instead of '0'.</p></div>
+<div class="balloon" rel="331"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x01U << (4U))' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="335"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x02U << (4U))' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="339"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x03U << (4U))' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="343"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x04U << (4U))' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="347"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x05U << (4U))' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="351"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x06U << (4U))' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="355"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x07U << (4U))' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="370"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '~(0x07U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="379"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x01U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="383"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x02U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="387"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x03U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="391"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x04U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="395"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x05U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="399"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x06U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="403"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x07U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="421"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(value & mask)' expression should not be converted from the essential 'signed' type to the essential 'unsigned' type.</p></div>
+<div class="balloon" rel="421"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2544/" target="_blank">V2544</a> The right operand '(value & mask)' of the '|=' operator should not have the essential 'signed' type.</p></div>
+<div class="balloon" rel="421"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2568/" target="_blank">V2568</a> Both operands of the '|=' operator should have the same essential type. The current types are: 'unsigned' and 'signed'.</p></div>
+<div class="balloon" rel="432"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '~(0x80U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="433"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the 'coef_src & (0x80U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="427"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2009/" target="_blank">V2009</a> Consider rendering the 'ctx' pointer as a pointer to const.</p></div>
+<div class="balloon" rel="456"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x08U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="496"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x04U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="549"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '1U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="553"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '2U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="557"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '4U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="561"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '8U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="565"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '16U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="569"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '32U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="573"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '64U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="577"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '128U' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="581"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2568/" target="_blank">V2568</a> Both operands of the '=' operator should have the same essential type. The current types are: 'unsigned' and 'signed'.</p></div>
+<div class="balloon" rel="591"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2004/" target="_blank">V2004</a> Explicit conversion from 'float' type to unsigned integer type: (uint32_t)(1.6F * (float) os_to_num(os))</p></div>
+<div class="balloon" rel="623"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x02U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="646"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x01U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="703"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2568/" target="_blank">V2568</a> Both operands of the '=' operator should have the same essential type. The current types are: 'unsigned' and 'signed'.</p></div>
+<div class="balloon" rel="735"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2568/" target="_blank">V2568</a> Both operands of the '+' operator should have the same essential type. The current types are: 'signed' and 'unsigned'.</p></div>
+<div class="balloon" rel="735"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> Value of the expression should not be converted from the essential 'signed' type to the essential 'unsigned' type.</p></div>
+<div class="balloon" rel="845"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x06U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="850"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2572/" target="_blank">V2572</a> The value of the '(0x05U)' expression should not be converted to the narrower essential 'unsigned' type.</p></div>
+<div class="balloon" rel="860"><p><span style="font-size:18px">&uarr;</span> <a href="https://www.viva64.com/en/w/v2568/" target="_blank">V2568</a> Both operands of the '!=' operator should have the same essential type. The current types are: 'signed' and 'unsigned'.</p></div>
 
 <link rel="stylesheet" href="highlight.css">
 <script src="highlight.pack.js"></script>

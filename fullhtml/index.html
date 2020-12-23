@@ -36,11 +36,12 @@
   </div>
 
   <table cellpadding="0" cellspacing="0" border="0" class="infotopic">
-     <tr><th id="col_info">Date:</th><td>Wed Dec 23 15:15:24 2020</td></tr>
+     <tr><th id="col_info">Date:</th><td>Wed Dec 23 17:07:27 2020</td></tr>
      <tr><th id="col_info">PVS-Studio Version:</th><td>7.11.44138.98</td></tr>
      <tr><th id="col_info">Command Line:</th><td>plog-converter -a GA\:1,2,3\;OP\:1,2,3\;CS\:1,2,3\;MISRA\:1,2,3 -t fullhtml src/dps310.o.PVS-Studio.log -o ./doxygen/html </td></tr>
-     <tr><th id="col_info">Total Warnings (CS):</th><td>3</td></tr>
-     <tr><th id="col_info">Total Warnings (MISRA):</th><td>40</td></tr>
+     <tr><th id="col_info">Total Warnings (GA):</th><td>1</td></tr>
+     <tr><th id="col_info">Total Warnings (CS):</th><td>2</td></tr>
+     <tr><th id="col_info">Total Warnings (MISRA):</th><td>43</td></tr>
   </table>
   <table cellpadding="0" cellspacing="0" border="0" class="sortable" id="sorter">
     <tr>
@@ -73,280 +74,301 @@
     </tr>
     <tr>
       <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln330">dps310.c:330</a></td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln320">dps310.c:320</a></td>
       <td id="col_level" style="color:#CACA00"><b>Low</b></td>
       <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '1U &lt;&lt; (4U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
+      <td id="col_message">The value of the '~(0x07U &lt;&lt; (4U))' expression should not be converted to the narrower essential 'unsigned' type.</td>
     </tr>
     <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln334">dps310.c:334</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '2U &lt;&lt; (4U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln338">dps310.c:338</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '3U &lt;&lt; (4U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln342">dps310.c:342</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '4U &lt;&lt; (4U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln346">dps310.c:346</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '5U &lt;&lt; (4U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln350">dps310.c:350</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '6U &lt;&lt; (4U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln354">dps310.c:354</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '7U &lt;&lt; (4U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln377">dps310.c:377</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '1U' expression should not be converted to the narrower essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln381">dps310.c:381</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '2U' expression should not be converted to the narrower essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln385">dps310.c:385</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '3U' expression should not be converted to the narrower essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln389">dps310.c:389</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '4U' expression should not be converted to the narrower essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln393">dps310.c:393</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '5U' expression should not be converted to the narrower essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln397">dps310.c:397</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '6U' expression should not be converted to the narrower essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln401">dps310.c:401</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '7U' expression should not be converted to the narrower essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln419">dps310.c:419</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '(value &amp; mask)' expression should not be converted from the essential 'signed' type to the essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln419">dps310.c:419</a></td>
+      <td id="col_group">General Analysis</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln327">dps310.c:327</a></td>
       <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2544/">V2544</td>
-      <td id="col_message">The right operand '(value &amp; mask)' of the '|=' operator should not have the essential 'signed' type.</td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v684/">V684</td>
+      <td id="col_message">A value of the variable '* reg' is not modified. Consider inspecting the expression. It is possible that '1' should be present instead of '0'.</td>
     </tr>
     <tr>
       <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln419">dps310.c:419</a></td>
-      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2568/">V2568</td>
-      <td id="col_message">Both operands of the '|=' operator should have the same essential type. The current types are: 'unsigned' and 'signed'.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln430">dps310.c:430</a></td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln331">dps310.c:331</a></td>
       <td id="col_level" style="color:#CACA00"><b>Low</b></td>
       <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the 'coef_src &amp; (0x80U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">Customers Specific</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln425">dps310.c:425</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2009/">V2009</td>
-      <td id="col_message">Consider rendering the 'ctx' pointer as a pointer to const.</td>
+      <td id="col_message">The value of the '(0x01U &lt;&lt; (4U))' expression should not be converted to the narrower essential 'unsigned' type.</td>
     </tr>
     <tr>
       <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln453">dps310.c:453</a></td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln335">dps310.c:335</a></td>
       <td id="col_level" style="color:#CACA00"><b>Low</b></td>
       <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '(0x08U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
+      <td id="col_message">The value of the '(0x02U &lt;&lt; (4U))' expression should not be converted to the narrower essential 'unsigned' type.</td>
     </tr>
     <tr>
       <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln493">dps310.c:493</a></td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln339">dps310.c:339</a></td>
       <td id="col_level" style="color:#CACA00"><b>Low</b></td>
       <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '(0x04U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
+      <td id="col_message">The value of the '(0x03U &lt;&lt; (4U))' expression should not be converted to the narrower essential 'unsigned' type.</td>
     </tr>
     <tr>
       <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln546">dps310.c:546</a></td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln343">dps310.c:343</a></td>
       <td id="col_level" style="color:#CACA00"><b>Low</b></td>
       <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '1U' expression should not be converted to the narrower essential 'unsigned' type.</td>
+      <td id="col_message">The value of the '(0x04U &lt;&lt; (4U))' expression should not be converted to the narrower essential 'unsigned' type.</td>
     </tr>
     <tr>
       <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln550">dps310.c:550</a></td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln347">dps310.c:347</a></td>
       <td id="col_level" style="color:#CACA00"><b>Low</b></td>
       <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '2U' expression should not be converted to the narrower essential 'unsigned' type.</td>
+      <td id="col_message">The value of the '(0x05U &lt;&lt; (4U))' expression should not be converted to the narrower essential 'unsigned' type.</td>
     </tr>
     <tr>
       <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln554">dps310.c:554</a></td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln351">dps310.c:351</a></td>
       <td id="col_level" style="color:#CACA00"><b>Low</b></td>
       <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '4U' expression should not be converted to the narrower essential 'unsigned' type.</td>
+      <td id="col_message">The value of the '(0x06U &lt;&lt; (4U))' expression should not be converted to the narrower essential 'unsigned' type.</td>
     </tr>
     <tr>
       <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln558">dps310.c:558</a></td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln355">dps310.c:355</a></td>
       <td id="col_level" style="color:#CACA00"><b>Low</b></td>
       <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '8U' expression should not be converted to the narrower essential 'unsigned' type.</td>
+      <td id="col_message">The value of the '(0x07U &lt;&lt; (4U))' expression should not be converted to the narrower essential 'unsigned' type.</td>
     </tr>
     <tr>
       <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln562">dps310.c:562</a></td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln370">dps310.c:370</a></td>
       <td id="col_level" style="color:#CACA00"><b>Low</b></td>
       <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '16U' expression should not be converted to the narrower essential 'unsigned' type.</td>
+      <td id="col_message">The value of the '~(0x07U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
     </tr>
     <tr>
       <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln566">dps310.c:566</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '32U' expression should not be converted to the narrower essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln570">dps310.c:570</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '64U' expression should not be converted to the narrower essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln574">dps310.c:574</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '128U' expression should not be converted to the narrower essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln578">dps310.c:578</a></td>
-      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2568/">V2568</td>
-      <td id="col_message">Both operands of the '=' operator should have the same essential type. The current types are: 'unsigned' and 'signed'.</td>
-    </tr>
-    <tr>
-      <td id="col_group">Customers Specific</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln589">dps310.c:589</a></td>
-      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2004/">V2004</td>
-      <td id="col_message">Explicit conversion from 'float' type to unsigned integer type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">Customers Specific</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln596">dps310.c:596</a></td>
-      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2004/">V2004</td>
-      <td id="col_message">Explicit conversion from 'float' type to unsigned integer type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln630">dps310.c:630</a></td>
-      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '(0x02U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln653">dps310.c:653</a></td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln379">dps310.c:379</a></td>
       <td id="col_level" style="color:#CACA00"><b>Low</b></td>
       <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
       <td id="col_message">The value of the '(0x01U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
     </tr>
     <tr>
       <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln710">dps310.c:710</a></td>
-      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2568/">V2568</td>
-      <td id="col_message">Both operands of the '=' operator should have the same essential type. The current types are: 'unsigned' and 'signed'.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln742">dps310.c:742</a></td>
-      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
-      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2568/">V2568</td>
-      <td id="col_message">Both operands of the '+' operator should have the same essential type. The current types are: 'signed' and 'unsigned'.</td>
-    </tr>
-    <tr>
-      <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln742">dps310.c:742</a></td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln383">dps310.c:383</a></td>
       <td id="col_level" style="color:#CACA00"><b>Low</b></td>
       <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">Value of the expression should not be converted from the essential 'signed' type to the essential 'unsigned' type.</td>
+      <td id="col_message">The value of the '(0x02U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
     </tr>
     <tr>
       <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln852">dps310.c:852</a></td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln387">dps310.c:387</a></td>
       <td id="col_level" style="color:#CACA00"><b>Low</b></td>
       <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
-      <td id="col_message">The value of the '(0x06U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
+      <td id="col_message">The value of the '(0x03U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
     </tr>
     <tr>
       <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln857">dps310.c:857</a></td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln391">dps310.c:391</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '(0x04U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln395">dps310.c:395</a></td>
       <td id="col_level" style="color:#CACA00"><b>Low</b></td>
       <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
       <td id="col_message">The value of the '(0x05U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
     </tr>
     <tr>
       <td id="col_group">MISRA</td>
-      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln867">dps310.c:867</a></td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln399">dps310.c:399</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '(0x06U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln403">dps310.c:403</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '(0x07U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln421">dps310.c:421</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '(value &amp; mask)' expression should not be converted from the essential 'signed' type to the essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln421">dps310.c:421</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2544/">V2544</td>
+      <td id="col_message">The right operand '(value &amp; mask)' of the '|=' operator should not have the essential 'signed' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln421">dps310.c:421</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2568/">V2568</td>
+      <td id="col_message">Both operands of the '|=' operator should have the same essential type. The current types are: 'unsigned' and 'signed'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln432">dps310.c:432</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '~(0x80U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln433">dps310.c:433</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the 'coef_src &amp; (0x80U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">Customers Specific</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln427">dps310.c:427</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2009/">V2009</td>
+      <td id="col_message">Consider rendering the 'ctx' pointer as a pointer to const.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln456">dps310.c:456</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '(0x08U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln496">dps310.c:496</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '(0x04U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln549">dps310.c:549</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '1U' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln553">dps310.c:553</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '2U' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln557">dps310.c:557</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '4U' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln561">dps310.c:561</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '8U' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln565">dps310.c:565</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '16U' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln569">dps310.c:569</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '32U' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln573">dps310.c:573</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '64U' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln577">dps310.c:577</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '128U' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln581">dps310.c:581</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2568/">V2568</td>
+      <td id="col_message">Both operands of the '=' operator should have the same essential type. The current types are: 'unsigned' and 'signed'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">Customers Specific</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln591">dps310.c:591</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2004/">V2004</td>
+      <td id="col_message">Explicit conversion from 'float' type to unsigned integer type: (uint32_t)(1.6F * (float) os_to_num(os))</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln623">dps310.c:623</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '(0x02U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln646">dps310.c:646</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '(0x01U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln703">dps310.c:703</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2568/">V2568</td>
+      <td id="col_message">Both operands of the '=' operator should have the same essential type. The current types are: 'unsigned' and 'signed'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln735">dps310.c:735</a></td>
+      <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2568/">V2568</td>
+      <td id="col_message">Both operands of the '+' operator should have the same essential type. The current types are: 'signed' and 'unsigned'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln735">dps310.c:735</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">Value of the expression should not be converted from the essential 'signed' type to the essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln845">dps310.c:845</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '(0x06U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln850">dps310.c:850</a></td>
+      <td id="col_level" style="color:#CACA00"><b>Low</b></td>
+      <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2572/">V2572</td>
+      <td id="col_message">The value of the '(0x05U)' expression should not be converted to the narrower essential 'unsigned' type.</td>
+    </tr>
+    <tr>
+      <td id="col_group">MISRA</td>
+      <td id="col_file"><a target="_blank" href="sources/dps310.c_0.html#ln860">dps310.c:860</a></td>
       <td id="col_level" style="color:#FFA500"><b>Medium</b></td>
       <td id="col_code"><a target="_blank" href="https://www.viva64.com/en/w/v2568/">V2568</td>
       <td id="col_message">Both operands of the '!=' operator should have the same essential type. The current types are: 'signed' and 'unsigned'.</td>
