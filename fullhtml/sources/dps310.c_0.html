@@ -745,9 +745,9 @@
 <a name="ln732">static inline __attribute__ ((nonnull)) int32_t</a>
 <a name="ln733">regs_to_i32 (const uint8_t * const regs)</a>
 <a name="ln734">{</a>
-<a name="ln735">    uint32_t b24_value = (uint32_t) (regs[0U] &lt;&lt; 16U)</a>
-<a name="ln736">                         + (uint32_t) (regs[1U] &lt;&lt; 8U)</a>
-<a name="ln737">                         + (uint32_t)regs[2U];</a>
+<a name="ln735">    uint32_t b24_value = ((uint32_t)regs[0U] &lt;&lt; 16U)</a>
+<a name="ln736">                         + ((uint32_t)regs[1U] &lt;&lt; 8U)</a>
+<a name="ln737">                         + ((uint32_t)regs[2U]);</a>
 <a name="ln738">    return twos_complement (b24_value, 24U);</a>
 <a name="ln739">}</a>
 <a name="ln740"> </a>

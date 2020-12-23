@@ -807,9 +807,9 @@ $(document).ready(function(){initNavTree('dps310_8c_source.html',''); initResiza
 <div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> __attribute__ ((nonnull)) int32_t</div>
 <div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;regs_to_i32 (<span class="keyword">const</span> uint8_t * <span class="keyword">const</span> regs)</div>
 <div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;{</div>
-<div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;    uint32_t b24_value = (uint32_t) (regs[0U] &lt;&lt; 16U)</div>
-<div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;                         + (uint32_t) (regs[1U] &lt;&lt; 8U)</div>
-<div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;                         + (uint32_t)regs[2U];</div>
+<div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;    uint32_t b24_value = ((uint32_t)regs[0U] &lt;&lt; 16U)</div>
+<div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;                         + ((uint32_t)regs[1U] &lt;&lt; 8U)</div>
+<div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;                         + ((uint32_t)regs[2U]);</div>
 <div class="line"><a name="l00738"></a><span class="lineno">  738</span>&#160;    <span class="keywordflow">return</span> twos_complement (b24_value, 24U);</div>
 <div class="line"><a name="l00739"></a><span class="lineno">  739</span>&#160;}</div>
 <div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160; </div>
