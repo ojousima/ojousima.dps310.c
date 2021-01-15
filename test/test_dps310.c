@@ -972,3 +972,27 @@ void test_dps310_get_continuous_results_ok (void)
     TEST_ASSERT (6U == temp_count);
     TEST_ASSERT (26U == pres_count);
 }
+
+void test_dps310_get_last_result_ok (void)
+{
+    dps310_status_t dps_status;
+    float temp;
+    float pres;
+    dps310_init (&dps);
+    dps_status = dps310_get_last_result (&dps, &temp, &pres);
+    TEST_ASSERT (DPS310_SUCCESS == dps_status);
+}
+
+void test_dps310_get_last_result_null (void)
+{
+    dps310_status_t dps_status;
+    float temp;
+    float pres;
+    dps310_init (&dps);
+    dps_status = dps310_get_last_result (NULL, &temp, &pres);
+    TEST_ASSERT (DPS310_ERROR_NULL == dps_status);
+    dps_status = dps310_get_last_result (&dps, NULL, &pres);
+    TEST_ASSERT (DPS310_ERROR_NULL == dps_status);
+    dps_status = dps310_get_last_result (&dps, &temp, NULL);
+    TEST_ASSERT (DPS310_ERROR_NULL == dps_status);
+}

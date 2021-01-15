@@ -266,6 +266,18 @@ dps310_status_t dps310_get_cont_results (dps310_ctx_t * const ctx, float * const
         uint8_t * const temp_count, float * const pres, uint8_t * const pres_count);
 
 /**
+ * @brief Get latest measurement in result registers.
+ *
+ * @param[in,out] ctx Input: State of sensor. Output: Updated state of sensor.
+ * @param[out] temp A pointer to float where temperature result will be placed to, in C.
+ * @param[out] pres A pointer to float where pressure result will be placed to, in Pa.
+ * @return status code, 0 on success.
+ *
+ */
+dps310_status_t
+dps310_get_last_result (dps310_ctx_t * const ctx, float * const temp, float * const pres);
+
+/**
  * @brief Initialize DPS310 instance.
  *
  * Before calling this function you must setup the function pointers and the communication context.

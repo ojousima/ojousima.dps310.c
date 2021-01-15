@@ -122,7 +122,8 @@ int main(void)
 
  - [X] Single temperature and pressure measurement with and without oversampling.
  - [X] Synchronous (get result on return) and asynchronous (measure now, get result later) operation.
- - [X] Continuous temperature and pressure measurement to FIFO, with independent measurement rates
+ - [X] Continuous temperature and pressure measurement
+ - []  FIFO, with independent measurement rates
  - [] Interrupts
 
 # Running unit tests

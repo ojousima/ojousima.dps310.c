@@ -933,4 +933,35 @@ dps310_status_t dps310_get_cont_results (dps310_ctx_t * const ctx, float * const
     return err_code;
 }
 
+dps310_status_t
+dps310_get_last_result (dps310_ctx_t * const ctx, float * const temp, float * const pres)
+{
+    dps310_status_t err_code = ctx_status_check (ctx);
+
+    if ((NULL == temp) || (NULL == pres))
+    {
+        err_code |= DPS310_ERROR_NULL;
+    }
+    else if (DPS310_SUCCESS == err_code)
+    {
+        uint8_t reg_entry[6U] = {0};
+        err_code |= ctx->read (ctx->comm_ctx, DPS310_PRES_VAL_REG, reg_entry,
+                               (DPS310_PRES_VAL_LEN + DPS310_TEMP_VAL_LEN));
+        // Calculate temperature first to update temperature compensation
+        *temp = calculate_temperature (ctx, regs_to_i32 (reg_entry + DPS310_PRES_VAL_LEN));
+        *pres = calculate_pressure (ctx, regs_to_i32 (reg_entry));
+
+        if (DPS310_SUCCESS != err_code)
+        {
+            err_code |= DPS310_BUS_ERROR;
+            ctx->device_status = DPS310_BUS_ERROR;
+        }
+    }
+    else
+    {
+        // No action needed
+    }
+
+    return err_code;
+}
 /** @} */
