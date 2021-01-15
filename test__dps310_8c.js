@@ -14,6 +14,8 @@ var test__dps310_8c =
     [ "tearDown", "test__dps310_8c.html#a9909011e5fea0c018842eec4d93d0662", null ],
     [ "test_dps310_config_pres_temp_os_m_16", "test__dps310_8c.html#ae1dfdea433578da6ad3ad38444d609bd", null ],
     [ "test_dps310_get_continuous_results_ok", "test__dps310_8c.html#a20484be665681fb695577a468daaf592", null ],
+    [ "test_dps310_get_last_result_null", "test__dps310_8c.html#a8b9a4bde10d11d3994eee842eadfb28e", null ],
+    [ "test_dps310_get_last_result_ok", "test__dps310_8c.html#a379e7b3249d18bde3f0a016440c79050", null ],
     [ "test_dps310_init_bus_error", "test__dps310_8c.html#a1e52f99b4b53b431b9ad0d30d5b74bb8", null ],
     [ "test_dps310_init_invalid_ctx", "test__dps310_8c.html#ad3446e00d0ad7d8c2a24d6ad3291ce49", null ],
     [ "test_dps310_init_null", "test__dps310_8c.html#a6a0f4ce823023b6ba32f458e3f8839fb", null ],
