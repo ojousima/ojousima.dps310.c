@@ -445,6 +445,8 @@ void test_dps310_standby_ok (void)
     dps310_status_t err_code = dps310_standby (&dps);
     TEST_ASSERT (DPS310_READY == dps.device_status);
     TEST_ASSERT (DPS310_SUCCESS == err_code);
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
 }
 
 void test_dps310_standby_bus_error (void)
@@ -995,4 +997,14 @@ void test_dps310_get_last_result_null (void)
     TEST_ASSERT (DPS310_ERROR_NULL == dps_status);
     dps_status = dps310_get_last_result (&dps, &temp, NULL);
     TEST_ASSERT (DPS310_ERROR_NULL == dps_status);
+}
+
+void test_dps310_uninit (void)
+{
+    dps310_ctx_t check = {0};
+    dps310_init (&dps);
+    dps310_uninit (&dps);
+    TEST_ASSERT (!memcmp (&check, &dps, sizeof (dps310_ctx_t)));
+    TEST_ASSERT (DPS310_MODE_STANDBY_VAL
+                 == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
 }
