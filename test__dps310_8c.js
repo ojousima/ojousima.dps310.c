@@ -55,5 +55,6 @@ var test__dps310_8c =
     [ "test_dps310_standby_null", "test__dps310_8c.html#a826646a5b672b8f8eb0ee6eb4bc7bf6e", null ],
     [ "test_dps310_standby_ok", "test__dps310_8c.html#a92ddecf232627e950f3858cb485cedc8", null ],
     [ "test_dps310_temp_coef_src_external", "test__dps310_8c.html#add60fa34f0a9c5136dfffc7117c3d80e", null ],
-    [ "test_dps310_temp_coef_src_internal", "test__dps310_8c.html#ae72e307e56bc6a215ee9ee9fab86ed80", null ]
+    [ "test_dps310_temp_coef_src_internal", "test__dps310_8c.html#ae72e307e56bc6a215ee9ee9fab86ed80", null ],
+    [ "test_dps310_uninit", "test__dps310_8c.html#a5ec3c48b4dda4ff4df11eed28f5b549e", null ]
 ];
