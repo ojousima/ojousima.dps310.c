@@ -16,6 +16,7 @@
 #include "dps310_reg.h"
 #include <stdbool.h>
 #include <stddef.h>
+#include <string.h>
 
 // Valid up to 31 bits
 static inline int32_t
@@ -536,6 +537,13 @@ dps310_status_t dps310_standby (dps310_ctx_t * const ctx)
         }
     }
 
+    return err_code;
+}
+
+dps310_status_t dps310_uninit (dps310_ctx_t * const ctx)
+{
+    dps310_status_t err_code = dps310_standby (ctx);
+    memset (ctx, 0, sizeof (dps310_ctx_t));
     return err_code;
 }
 
