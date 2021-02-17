@@ -338,6 +338,13 @@ static dps310_ctx_t dps =
     .write = &mock_write
 };
 
+static const dps310_ctx_t dps_init_state =
+{
+    .sleep = &mock_sleep,
+    .read  = &mock_read,
+    .write = &mock_write
+};
+
 static void init_dps_coefs (void)
 {
 }
@@ -1001,10 +1008,9 @@ void test_dps310_get_last_result_null (void)
 
 void test_dps310_uninit (void)
 {
-    dps310_ctx_t check = {0};
     dps310_init (&dps);
     dps310_uninit (&dps);
-    TEST_ASSERT (!memcmp (&check, &dps, sizeof (dps310_ctx_t)));
+    TEST_ASSERT (!memcmp (&dps_init_state, &dps, sizeof (dps310_ctx_t)));
     TEST_ASSERT (DPS310_MODE_STANDBY_VAL
                  == (dps310_registers[DPS310_MEAS_CFG_REG] & DPS310_MEAS_CFG_WMASK));
 }

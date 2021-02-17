@@ -18,6 +18,28 @@
 #include <stddef.h>
 #include <string.h>
 
+// Clear context without NULLing function pointers.
+static void dps310_ctx_clear (dps310_ctx_t * const p_ctx)
+{
+    p_ctx->device_status  = 0;
+    p_ctx->product_id     = 0;
+    p_ctx->revision_id    = 0;
+    p_ctx->temp_mr        = 0;
+    p_ctx->temp_osr       = 0;
+    p_ctx->pres_mr        = 0;
+    p_ctx->pres_osr       = 0;
+    p_ctx->c0             = 0;
+    p_ctx->c1             = 0;
+    p_ctx->c00            = 0;
+    p_ctx->c10            = 0;
+    p_ctx->c01            = 0;
+    p_ctx->c11            = 0;
+    p_ctx->c20            = 0;
+    p_ctx->c21            = 0;
+    p_ctx->c30            = 0;
+    p_ctx->last_temp_scal = 0;
+}
+
 // Valid up to 31 bits
 static inline int32_t
 twos_complement (const uint32_t value, const uint8_t bits)
@@ -543,7 +565,7 @@ dps310_status_t dps310_standby (dps310_ctx_t * const ctx)
 dps310_status_t dps310_uninit (dps310_ctx_t * const ctx)
 {
     dps310_status_t err_code = dps310_standby (ctx);
-    memset (ctx, 0, sizeof (dps310_ctx_t));
+    dps310_ctx_clear (ctx);
     return err_code;
 }
 
